@@ -1,0 +1,21 @@
+[project]
+name = "course-forge"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Gabriel Soares Baptista", email = "gsoaresbaptista@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "mistune>=3.1.4",
+    "pyparsing>=3.2.5",
+    "schemdraw>=0.22",
+]
+
+[project.scripts]
+course-forge = "course_forge.presentation.cli.main:main"
+
+[build-system]
+requires = ["uv_build>=0.9.16,<0.10.0"]
+build-backend = "uv_build"

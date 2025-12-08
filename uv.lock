@@ -1,0 +1,47 @@
+version = 1
+revision = 3
+requires-python = ">=3.13"
+
+[[package]]
+name = "course-forge"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "mistune" },
+    { name = "pyparsing" },
+    { name = "schemdraw" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "mistune", specifier = ">=3.1.4" },
+    { name = "pyparsing", specifier = ">=3.2.5" },
+    { name = "schemdraw", specifier = ">=0.22" },
+]
+
+[[package]]
+name = "mistune"
+version = "3.1.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d7/02/a7fb8b21d4d55ac93cdcde9d3638da5dd0ebdd3a4fed76c7725e10b81cbe/mistune-3.1.4.tar.gz", hash = "sha256:b5a7f801d389f724ec702840c11d8fc48f2b33519102fc7ee739e8177b672164", size = 94588, upload-time = "2025-08-29T07:20:43.594Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7a/f0/8282d9641415e9e33df173516226b404d367a0fc55e1a60424a152913abc/mistune-3.1.4-py3-none-any.whl", hash = "sha256:93691da911e5d9d2e23bc54472892aff676df27a75274962ff9edc210364266d", size = 53481, upload-time = "2025-08-29T07:20:42.218Z" },
+]
+
+[[package]]
+name = "pyparsing"
+version = "3.2.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f2/a5/181488fc2b9d093e3972d2a472855aae8a03f000592dbfce716a512b3359/pyparsing-3.2.5.tar.gz", hash = "sha256:2df8d5b7b2802ef88e8d016a2eb9c7aeaa923529cd251ed0fe4608275d4105b6", size = 1099274, upload-time = "2025-09-21T04:11:06.277Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/10/5e/1aa9a93198c6b64513c9d7752de7422c06402de6600a8767da1524f9570b/pyparsing-3.2.5-py3-none-any.whl", hash = "sha256:e38a4f02064cf41fe6593d328d0512495ad1f3d8a91c4f73fc401b3079a59a5e", size = 113890, upload-time = "2025-09-21T04:11:04.117Z" },
+]
+
+[[package]]
+name = "schemdraw"
+version = "0.22"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/6a/0e/3d2a9c2541ced42877e8b6049fb17c093329ccb81344529dc12a33d4c118/schemdraw-0.22.tar.gz", hash = "sha256:59d1fcfe817f93f8bfc37a3f4645186dc03316bbcfd9ac68804fd6cb3aa69f51", size = 10881350, upload-time = "2025-11-30T23:45:03.279Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/ab/b281071bc11555670a82c538e4be35e7f5ad5e4cb4de7ac356a05a4b2c6a/schemdraw-0.22-py3-none-any.whl", hash = "sha256:fb294fe086b89a7dc9bedce43dc39014a9b9e369864eab438f22009c9f0e1175", size = 148359, upload-time = "2025-11-30T23:42:04.794Z" },
+]
