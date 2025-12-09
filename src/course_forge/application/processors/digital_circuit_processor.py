@@ -10,7 +10,11 @@ from .base import Processor
 
 class DigitalCircuitProcessor(Processor):
     pattern = re.compile(
-        r"```digital-circuit\.plot\s+(?P<left>.+?)(?:=(?P<right>.+?))?```", re.DOTALL
+        r"```digital-circuit\.plot"
+        r"(?:\s+width=(?P<width>\d+))?"
+        r"(?:\s+height=(?P<height>\d+))?"
+        r"\s+(?P<left>.+?)(?:=(?P<right>.+?))?```",
+        re.DOTALL,
     )
 
     def execute(self, node: ContentNode, markdown: dict[str, Any]) -> dict[str, Any]:
@@ -21,16 +25,26 @@ class DigitalCircuitProcessor(Processor):
         for match in matches:
             left = match.group("left").strip()
             right = match.group("right").strip() if match.group("right") else ""
+            width = match.group("width")
+            height = match.group("height")
+
             svg_bytes = self._render_circuit(left, right)
             asset_index = len(assets)
             token = f"{{{{asset:digital_circuit:{asset_index}}}}}"
-            assets.append(
-                {
-                    "type": "digital_circuit",
-                    "data": svg_bytes,
-                    "extension": "svg",
-                }
-            )
+            attributes: dict[str, Any] = {
+                "type": "digital_circuit",
+                "data": svg_bytes.replace(
+                    b'fill="black"', b'fill="currentColor"'
+                ).replace(b"stroke:black", b"stroke:currentColor"),
+                "extension": "svg",
+            }
+
+            if width:
+                attributes["width"] = width
+            if height:
+                attributes["height"] = height
+
+            assets.append(attributes)
 
             content = content.replace(match.group(0), token)
 

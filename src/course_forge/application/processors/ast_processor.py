@@ -2,7 +2,7 @@ import re
 import uuid
 from typing import Any
 
-import graphviz
+import graphviz  # type: ignore
 
 from course_forge.domain.entities import ContentNode
 
@@ -10,7 +10,13 @@ from .base import Processor
 
 
 class ASTProcessor(Processor):
-    pattern = re.compile(r"```ast\.plot\s+(?P<ast_data>.+?)```", re.DOTALL)
+    pattern = re.compile(
+        r"```ast\.plot"
+        r"(?:\s+width=(?P<width>\d+))?"
+        r"(?:\s+height=(?P<height>\d+))?"
+        r"\s+(?P<ast_data>.+?)```",
+        re.DOTALL,
+    )
 
     def execute(self, node: ContentNode, markdown: dict[str, Any]) -> dict[str, Any]:
         content = markdown.get("content", "")
@@ -19,16 +25,24 @@ class ASTProcessor(Processor):
 
         for match in matches:
             left = match.group("ast_data").strip()
+            width = match.group("width")
+            height = match.group("height")
+
             svg_bytes = self._render_ast(left)
             asset_index = len(assets)
             token = f"{{{{asset:ast_plot:{asset_index}}}}}"
-            assets.append(
-                {
-                    "type": "ast_plot",
-                    "data": svg_bytes,
-                    "extension": "svg",
-                }
-            )
+            attributes: dict[str, Any] = {
+                "type": "ast_plot",
+                "data": svg_bytes,
+                "extension": "svg",
+            }
+
+            if width:
+                attributes.update({"width": width})
+            if height:
+                attributes.update({"height": height})
+
+            assets.append(attributes)
 
             content = content.replace(match.group(0), token)
 
@@ -37,11 +51,20 @@ class ASTProcessor(Processor):
     def _render_ast(self, expr: str) -> bytes:
         g = graphviz.Digraph(
             "G",
+            graph_attr={
+                "bgcolor": "transparent",
+                "color": "transparent",
+                "fontcolor": "currentColor",
+            },
             node_attr={
                 "shape": "plaintext",
                 "fontsize": "14",
                 "fontname": "Comic Sans MS, sans-serif",
-                "bgcolor": "transparent",
+                "color": "currentColor",
+                "fontcolor": "currentColor",
+            },
+            edge_attr={
+                "color": "currentColor",
             },
         )
         tokens = self._tokenize(expr)
