@@ -1,6 +1,8 @@
 import os
 from typing import Any
 
+from css_html_js_minify import html_minify
+
 from course_forge.application.writers import OutputWriter
 from course_forge.domain.entities import ContentNode
 
@@ -38,6 +40,7 @@ class FileSystemOutputWriter(OutputWriter):
             )
 
         html_path = os.path.join(out_dir, node.slug + ".html")
+        minified = html_minify(text)
 
         with open(html_path, "w", encoding="utf-8") as f:
-            f.write(text)
+            f.write(minified)

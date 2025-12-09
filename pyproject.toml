@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "css-html-js-minify>=2.5.5",
     "graphviz>=0.21",
     "mistune>=3.1.4",
     "pyparsing>=3.2.5",
