@@ -33,9 +33,9 @@ class DigitalCircuitProcessor(Processor):
             token = f"{{{{asset:digital_circuit:{asset_index}}}}}"
             attributes: dict[str, Any] = {
                 "type": "digital_circuit",
-                "data": svg_bytes.replace(
-                    b'fill="black"', b'fill="currentColor"'
-                ).replace(b"stroke:black", b"stroke:currentColor"),
+                "data": svg_bytes.replace(b'fill="black"', b"").replace(
+                    b"stroke:black", b""
+                ),
                 "extension": "svg",
             }
 

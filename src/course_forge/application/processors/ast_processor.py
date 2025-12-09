@@ -54,17 +54,11 @@ class ASTProcessor(Processor):
             graph_attr={
                 "bgcolor": "transparent",
                 "color": "transparent",
-                "fontcolor": "currentColor",
             },
             node_attr={
                 "shape": "plaintext",
                 "fontsize": "14",
                 "fontname": "Comic Sans MS, sans-serif",
-                "color": "currentColor",
-                "fontcolor": "currentColor",
-            },
-            edge_attr={
-                "color": "currentColor",
             },
         )
         tokens = self._tokenize(expr)
