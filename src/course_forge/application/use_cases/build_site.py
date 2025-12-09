@@ -38,17 +38,11 @@ class BuildSiteUseCase:
             markdown = self.loader.load(node.path)
 
             for processor in pre_processors:
-                print(
-                    f'  - Running pre-processor: {processor.__class__.__name__} on "{node.path}"'
-                )
                 markdown = processor.execute(node, markdown)
 
             html = self.renderer.render(markdown["content"])
 
             for processor in post_processors:
-                print(
-                    f'  - Running post-processor: {processor.__class__.__name__} on "{node.path}"'
-                )
                 markdown = processor.execute(node, markdown)
 
             self.writer.write(node, html, markdown.get("assets", []))

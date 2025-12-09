@@ -1,6 +1,6 @@
 import argparse
 
-from .commands import build
+from .commands import build, watch
 
 
 def main() -> None:
@@ -10,5 +10,10 @@ def main() -> None:
     parser.add_argument("--output", required=True, help="Path to output site")
     args = parser.parse_args()
 
-    if args.command == "build":
-        build(content_path=args.content, output_path=args.output)
+    match args.command:
+        case "build":
+            build(content_path=args.content, output_path=args.output)
+        case "watch":
+            watch(content_path=args.content, output_path=args.output)
+        case _:
+            print(f"Error: invalid command ({args.command})!")
