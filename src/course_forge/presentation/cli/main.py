@@ -1,30 +1,14 @@
-from course_forge.application.processors import (
-    ASTProcessor,
-    DigitalCircuitProcessor,
-    Processor,
-)
-from course_forge.application.use_cases.build_site import BuildSiteUseCase
-from course_forge.infrastructure.filesystem import (
-    FileSystemContentTreeRepository,
-    FileSystemMarkdownLoader,
-    FileSystemOutputWriter,
-)
-from course_forge.infrastructure.markdown import MistuneMarkdownRenderer
+import argparse
+
+from .commands import build
 
 
 def main() -> None:
-    print("Hello from course-forge CLI!")
-    output_path = "/home/gabriel/Documents/faesa/content"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("command", choices=["build", "watch"])
+    parser.add_argument("--content", required=True, help="Path to input content")
+    parser.add_argument("--output", required=True, help="Path to output site")
+    args = parser.parse_args()
 
-    repo = FileSystemContentTreeRepository()
-    loader = FileSystemMarkdownLoader()
-    renderer = MistuneMarkdownRenderer()
-    writer = FileSystemOutputWriter("/home/gabriel/Documents/site")
-
-    pre_processors: list[Processor] = [DigitalCircuitProcessor(), ASTProcessor()]
-    post_processors: list[Processor] = []
-
-    use_case = BuildSiteUseCase(repo, loader, renderer, writer)
-    use_case.execute(
-        output_path, pre_processors=pre_processors, post_processors=post_processors
-    )
+    if args.command == "build":
+        build(content_path=args.content, output_path=args.output)
