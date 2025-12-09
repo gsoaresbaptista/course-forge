@@ -1,4 +1,8 @@
-from course_forge.application.processors import DigitalCircuitProcessor, Processor
+from course_forge.application.processors import (
+    ASTProcessor,
+    DigitalCircuitProcessor,
+    Processor,
+)
 from course_forge.application.use_cases.build_site import BuildSiteUseCase
 from course_forge.infrastructure.filesystem import (
     FileSystemContentTreeRepository,
@@ -17,7 +21,7 @@ def main() -> None:
     renderer = MistuneMarkdownRenderer()
     writer = FileSystemOutputWriter("/home/gabriel/Documents/site")
 
-    pre_processors: list[Processor] = [DigitalCircuitProcessor()]
+    pre_processors: list[Processor] = [DigitalCircuitProcessor(), ASTProcessor()]
     post_processors: list[Processor] = []
 
     use_case = BuildSiteUseCase(repo, loader, renderer, writer)

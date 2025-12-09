@@ -3,8 +3,9 @@ from typing import Any
 
 from schemdraw.parsing.logic_parser import logicparse
 
-from course_forge.application.processors import Processor
 from course_forge.domain.entities import ContentNode
+
+from .base import Processor
 
 
 class DigitalCircuitProcessor(Processor):
