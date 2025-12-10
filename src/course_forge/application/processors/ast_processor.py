@@ -24,9 +24,9 @@ class ASTProcessor(Processor):
 
         for match in matches:
             ast = match.group("ast_data").strip()
-            width = int(match.group("width")) if match.group("width") else None
-            height = int(match.group("height")) if match.group("height") else None
-            svg_data, attach_name = self._render_ast(node, ast, width, height)
+            width = match.group("width")
+            height = match.group("height")
+            svg_data, attach_name = self._render_ast(node, ast)
 
             data: dict[str, Any] = {
                 "type": "image",
@@ -35,7 +35,9 @@ class ASTProcessor(Processor):
             }
 
             node.attach(data)
-            content = content.replace(match.group(0), f"![](static/{attach_name})")
+            img_attrs = f"{f'width="{width}"' if width else ''} {f'height="{height}"' if height else ''}"
+            img_code = f'<img src="static/{attach_name}" {img_attrs} />'
+            content = content.replace(match.group(0), img_code)
 
         return {**markdown, "content": content}
 
@@ -43,25 +45,10 @@ class ASTProcessor(Processor):
         self,
         node: ContentNode,
         expr: str,
-        width: int | None = None,
-        height: int | None = None,
     ) -> tuple[bytes, str]:
-        if width is not None and height is not None:
-            size = f"{width / 64},{height / 64}"
-        elif width is not None and height is None:
-            size = f"{width / 64},"
-        else:
-            size = None
-
-        graph_attrs = {"bgcolor": "transparent", "color": "transparent"}
-
-        if size is not None:
-            graph_attrs["size"] = size
-            graph_attrs["dpi"] = "64"
-
         g = graphviz.Digraph(
             "G",
-            graph_attr=graph_attrs,
+            graph_attr={"bgcolor": "transparent", "color": "transparent"},
             node_attr={
                 "shape": "plaintext",
                 "fontsize": "14",
