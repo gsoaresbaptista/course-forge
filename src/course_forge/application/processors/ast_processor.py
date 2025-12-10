@@ -12,8 +12,7 @@ from .base import Processor
 class ASTProcessor(Processor):
     pattern = re.compile(
         r"```ast\.plot"
-        r"(?:\s+width=(?P<width>\d+))?"
-        r"(?:\s+height=(?P<height>\d+))?"
+        r"(?:\s+(?:width=(?P<width>\d+)|height=(?P<height>\d+)|(?P<centered>centered)))*"
         r"\s+(?P<ast_data>.+?)```",
         re.DOTALL,
     )
@@ -26,7 +25,10 @@ class ASTProcessor(Processor):
             ast = match.group("ast_data").strip()
             width = match.group("width")
             height = match.group("height")
-            svg_data, attach_name = self._render_ast(node, ast)
+            centered = match.group("centered")
+
+            svg_data = self._render_ast(ast)
+            attach_name = f"{node.name}_{node.number_of_attachments}.svg"
 
             data: dict[str, Any] = {
                 "type": "image",
@@ -37,15 +39,12 @@ class ASTProcessor(Processor):
             node.attach(data)
             img_attrs = f"{f'width="{width}"' if width else ''} {f'height="{height}"' if height else ''}"
             img_code = f'<img src="static/{attach_name}" {img_attrs} />'
+            img_code = f'<div class="{"centered" if centered else ""}">{img_code}</div>'
             content = content.replace(match.group(0), img_code)
 
         return {**markdown, "content": content}
 
-    def _render_ast(
-        self,
-        node: ContentNode,
-        expr: str,
-    ) -> tuple[bytes, str]:
+    def _render_ast(self, expr: str) -> bytes:
         g = graphviz.Digraph(
             "G",
             graph_attr={"bgcolor": "transparent", "color": "transparent"},
@@ -59,10 +58,9 @@ class ASTProcessor(Processor):
         tokens = expr.replace("(", " ( ").replace(")", " ) ").split()
         self._parse(g, tokens)
 
-        attach_name = f"{node.name}_{node.number_of_attachments}.svg"
         svg_data = g.pipe(format="svg")
 
-        return svg_data, attach_name
+        return svg_data
 
     def _parse(self, g: graphviz.Digraph, tokens: list[str]) -> str | None:
         token = tokens.pop(0)

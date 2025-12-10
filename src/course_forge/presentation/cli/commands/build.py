@@ -1,6 +1,6 @@
 from course_forge.application.processors import (
     ASTProcessor,
-    # DigitalCircuitProcessor,
+    DigitalCircuitProcessor,
     HTMLMinifyProcessor,
     Processor,
 )
@@ -20,8 +20,7 @@ def build(content_path: str, output_path: str) -> None:
     renderer = MistuneMarkdownRenderer()
     writer = FileSystemOutputWriter(output_path)
 
-    # pre_processors: list[Processor] = [DigitalCircuitProcessor()]
-    pre_processors: list[Processor] = [ASTProcessor()]
+    pre_processors: list[Processor] = [DigitalCircuitProcessor(), ASTProcessor()]
     post_processors: list[Processor] = [HTMLMinifyProcessor()]
 
     print("Processing content and applying pre-processors...")

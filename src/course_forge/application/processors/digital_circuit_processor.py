@@ -11,15 +11,13 @@ from .base import Processor
 class DigitalCircuitProcessor(Processor):
     pattern = re.compile(
         r"```digital-circuit\.plot"
-        r"(?:\s+width=(?P<width>\d+))?"
-        r"(?:\s+height=(?P<height>\d+))?"
+        r"(?:\s+(?:width=(?P<width>\d+)|height=(?P<height>\d+)|(?P<centered>centered)))*"
         r"\s+(?P<left>.+?)(?:=(?P<right>.+?))?```",
         re.DOTALL,
     )
 
     def execute(self, node: ContentNode, markdown: dict[str, Any]) -> dict[str, Any]:
         content = markdown.get("content", "")
-        assets = markdown.get("assets", [])
         matches = list(self.pattern.finditer(content))
 
         for match in matches:
@@ -27,28 +25,24 @@ class DigitalCircuitProcessor(Processor):
             right = match.group("right").strip() if match.group("right") else ""
             width = match.group("width")
             height = match.group("height")
+            centered = match.group("centered")
 
-            svg_bytes = self._render_circuit(left, right)
-            asset_index = len(assets)
-            token = f"{{{{asset:digital_circuit:{asset_index}}}}}"
-            attributes: dict[str, Any] = {
-                "type": "digital_circuit",
-                "data": svg_bytes.replace(b'fill="black"', b"").replace(
-                    b"stroke:black", b""
-                ),
-                "extension": "svg",
+            svg_data = self._render_circuit(left, right)
+            attach_name = f"{node.name}_{node.number_of_attachments}.svg"
+
+            data: dict[str, Any] = {
+                "type": "image",
+                "data": svg_data,
+                "name": attach_name,
             }
 
-            if width:
-                attributes["width"] = width
-            if height:
-                attributes["height"] = height
+            node.attach(data)
+            img_attrs = f"{f'width="{width}"' if width else ''} {f'height="{height}"' if height else ''}"
+            img_code = f'<img src="static/{attach_name}" {img_attrs} />'
+            img_code = f'<div class="no-break {"centered" if centered else ""}">{img_code}</div>'
+            content = content.replace(match.group(0), img_code)
 
-            assets.append(attributes)
-
-            content = content.replace(match.group(0), token)
-
-        return {**markdown, "content": content, "assets": assets}
+        return {**markdown, "content": content}
 
     def _render_circuit(self, expr: str, outlabel: str) -> bytes:
         d = logicparse(expr, outlabel=outlabel)
