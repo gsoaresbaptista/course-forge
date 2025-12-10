@@ -20,53 +20,62 @@ class ASTProcessor(Processor):
 
     def execute(self, node: ContentNode, markdown: dict[str, Any]) -> dict[str, Any]:
         content = markdown.get("content", "")
-        assets = markdown.get("assets", [])
         matches = list(self.pattern.finditer(content))
 
         for match in matches:
-            left = match.group("ast_data").strip()
-            width = match.group("width")
-            height = match.group("height")
+            ast = match.group("ast_data").strip()
+            width = int(match.group("width")) if match.group("width") else None
+            height = int(match.group("height")) if match.group("height") else None
+            svg_data, attach_name = self._render_ast(node, ast, width, height)
 
-            svg_bytes = self._render_ast(left)
-            asset_index = len(assets)
-            token = f"{{{{asset:ast_plot:{asset_index}}}}}"
-            attributes: dict[str, Any] = {
-                "type": "ast_plot",
-                "data": svg_bytes,
-                "extension": "svg",
+            data: dict[str, Any] = {
+                "type": "image",
+                "data": svg_data,
+                "name": attach_name,
             }
 
-            if width:
-                attributes.update({"width": width})
-            if height:
-                attributes.update({"height": height})
+            node.attach(data)
+            content = content.replace(match.group(0), f"![](static/{attach_name})")
 
-            assets.append(attributes)
+        return {**markdown, "content": content}
 
-            content = content.replace(match.group(0), token)
+    def _render_ast(
+        self,
+        node: ContentNode,
+        expr: str,
+        width: int | None = None,
+        height: int | None = None,
+    ) -> tuple[bytes, str]:
+        if width is not None and height is not None:
+            size = f"{width / 64},{height / 64}"
+        elif width is not None and height is None:
+            size = f"{width / 64},"
+        else:
+            size = None
 
-        return {**markdown, "content": content, "assets": assets}
+        graph_attrs = {"bgcolor": "transparent", "color": "transparent"}
 
-    def _render_ast(self, expr: str) -> bytes:
+        if size is not None:
+            graph_attrs["size"] = size
+            graph_attrs["dpi"] = "64"
+
         g = graphviz.Digraph(
             "G",
-            graph_attr={
-                "bgcolor": "transparent",
-                "color": "transparent",
-            },
+            graph_attr=graph_attrs,
             node_attr={
                 "shape": "plaintext",
                 "fontsize": "14",
                 "fontname": "Comic Sans MS, sans-serif",
             },
         )
-        tokens = self._tokenize(expr)
-        self._parse(g, tokens)
-        return g.pipe(format="svg")
 
-    def _tokenize(self, text: str) -> list[str]:
-        return text.replace("(", " ( ").replace(")", " ) ").split()
+        tokens = expr.replace("(", " ( ").replace(")", " ) ").split()
+        self._parse(g, tokens)
+
+        attach_name = f"{node.name}_{node.number_of_attachments}.svg"
+        svg_data = g.pipe(format="svg")
+
+        return svg_data, attach_name
 
     def _parse(self, g: graphviz.Digraph, tokens: list[str]) -> str | None:
         token = tokens.pop(0)
@@ -84,7 +93,7 @@ class ASTProcessor(Processor):
             tokens.pop(0)
             return node_id
 
-        elif token == ")":
+        if token == ")":
             return None
 
         else:

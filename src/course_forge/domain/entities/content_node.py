@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 
 class ContentNode:
     def __init__(
@@ -15,11 +17,21 @@ class ContentNode:
         self.name = name
         self.children = children or []
         self._slugs_path: list[str] = [] if slugs_path is None else slugs_path
+        self._number_of_attachments: int = 0
+        self._attachments: dict[int, Any] = {}
+
+    @property
+    def number_of_attachments(self) -> int:
+        return self._number_of_attachments
+
+    @property
+    def attachments(self) -> dict[int, Any]:
+        return self._attachments
 
     @property
     def src_path(self) -> str:
         return self._src_path
-    
+
     @src_path.setter
     def src_path(self, path: str) -> None:
         self._src_path = path
@@ -46,3 +58,8 @@ class ContentNode:
             base += f"\n{entry.__str__(level + 1)}"
 
         return base
+
+    def attach(self, data: Any) -> int:
+        self._attachments[self._number_of_attachments] = data
+        self._number_of_attachments += 1
+        return self._number_of_attachments - 1
