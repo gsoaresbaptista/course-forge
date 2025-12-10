@@ -1,6 +1,6 @@
 from course_forge.application.processors import (
-    ASTProcessor,
-    DigitalCircuitProcessor,
+    # ASTProcessor,
+    # DigitalCircuitProcessor,
     Processor,
 )
 from course_forge.application.use_cases.build_site import BuildSiteUseCase
@@ -19,7 +19,8 @@ def build(content_path: str, output_path: str) -> None:
     renderer = MistuneMarkdownRenderer()
     writer = FileSystemOutputWriter(output_path)
 
-    pre_processors: list[Processor] = [DigitalCircuitProcessor(), ASTProcessor()]
+    # pre_processors: list[Processor] = [DigitalCircuitProcessor(), ASTProcessor()]
+    pre_processors: list[Processor] = []
     post_processors: list[Processor] = []
 
     print("Processing content and applying pre-processors...")

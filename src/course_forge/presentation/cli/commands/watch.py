@@ -22,5 +22,10 @@ def watch(content_path: str, output_path: str):
                 server.watch(full_path, rebuild)  # type: ignore
 
     server.serve(  # type: ignore
-        root=output_path, port=8000, host="localhost", open_url_delay=0
+        root=output_path,
+        port=8001,
+        host="localhost",
+        open_url_delay=0,
+        restart_delay=0,
+        default_filename="index.html",
     )

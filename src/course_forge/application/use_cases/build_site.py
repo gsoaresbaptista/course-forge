@@ -45,7 +45,7 @@ class BuildSiteUseCase:
             for processor in post_processors:
                 markdown = processor.execute(node, markdown)
 
-            self.writer.write(node, html, markdown.get("assets", []))
+            self.writer.write(node, html)
 
         for child in node.children:
             self._process_node(child, pre_processors, post_processors)
