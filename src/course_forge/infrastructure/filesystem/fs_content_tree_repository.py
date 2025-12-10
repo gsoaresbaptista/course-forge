@@ -19,8 +19,8 @@ class FileSystemContentTreeRepository(ContentTreeRepository):
         slug = Path(path).stem
 
         node = ContentNode(
-            path=path,
-            slug=slug,
+            src_path=path,
+            name=slug,
             is_file=os.path.isfile(path),
             slugs_path=parent_slugs,
         )

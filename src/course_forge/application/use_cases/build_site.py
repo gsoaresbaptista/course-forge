@@ -35,7 +35,7 @@ class BuildSiteUseCase:
         post_processors: list[Processor],
     ) -> None:
         if node.is_file:
-            markdown = self.loader.load(node.path)
+            markdown = self.loader.load(node.src_path)
 
             for processor in pre_processors:
                 markdown = processor.execute(node, markdown)
