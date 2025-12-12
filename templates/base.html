@@ -3,12 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ title or "Página" }}</title>
+    <link rel="stylesheet" href="/css/katex.min.css">
 </head>
 <body>
     <header></header>
     <main>{{ content }}</main>
     <footer></footer>
 </body>
+<script src="/js/katex.min.js"></script>
+<script src="/js/auto-render.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+        ]
+    });
+});
+</script>
 <script src="/js/rough.min.js"></script>
+</html>
 <script src="/js/apply_rough.js"></script>
 </html>
