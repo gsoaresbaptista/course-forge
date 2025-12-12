@@ -30,8 +30,7 @@ class BuildSiteUseCase:
     ) -> None:
         tree = self.repository.load(root_path)
         self._process_node(tree.root, pre_processors, post_processors)
-        if template_dir:
-            self.writer.copy_assets(template_dir)
+        self.writer.copy_assets(self.html_renderer.template_dir)
 
     def _process_node(
         self,
@@ -50,7 +49,7 @@ class BuildSiteUseCase:
             html = self.html_renderer.render(content, node)
 
             for processor in post_processors:
-                markdown = processor.execute(node, html)
+                html = processor.execute(node, html)
 
             self.writer.write(node, html)
 

@@ -1,4 +1,4 @@
-from css_html_js_minify import html_minify  # type: ignore
+import minify_html  # type: ignore
 
 from course_forge.domain.entities import ContentNode
 
@@ -7,5 +7,10 @@ from .base import Processor
 
 class HTMLMinifyProcessor(Processor):
     def execute(self, node: ContentNode, content: str) -> str:
-        minified = html_minify(content)
+        minified = minify_html.minify(
+            content,
+            minify_js=True,
+            minify_css=True,
+            remove_processing_instructions=True,
+        )
         return minified
