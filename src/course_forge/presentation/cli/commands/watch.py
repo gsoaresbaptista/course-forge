@@ -6,12 +6,7 @@ from .build import build
 
 
 def watch(content_path: str, output_path: str):
-    def rebuild():
-        print("Rebuilding...")
-        build(content_path, output_path)
-        print("Rebuild done!")
-
-    rebuild()
+    build(content_path, output_path)
 
     server = Server()
 
@@ -19,7 +14,7 @@ def watch(content_path: str, output_path: str):
         for file in files:
             if file.endswith(".md"):
                 full_path = os.path.join(root, file)
-                server.watch(full_path, rebuild)  # type: ignore
+                server.watch(full_path, build)  # type: ignore
 
     server.serve(  # type: ignore
         root=output_path,

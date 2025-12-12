@@ -11,20 +11,22 @@ from course_forge.infrastructure.filesystem import (
     FileSystemOutputWriter,
 )
 from course_forge.infrastructure.markdown import MistuneMarkdownRenderer
+from course_forge.infrastructure.templates import JinjaHTMLTemplateRenderer
 
 
 def build(content_path: str, output_path: str) -> None:
     print(f'Starting site build from content: "{content_path}"...')
     repo = FileSystemContentTreeRepository()
     loader = FileSystemMarkdownLoader()
-    renderer = MistuneMarkdownRenderer()
+    markdown_renderer = MistuneMarkdownRenderer()
+    html_renderer = JinjaHTMLTemplateRenderer()
     writer = FileSystemOutputWriter(output_path)
 
     pre_processors: list[Processor] = [DigitalCircuitProcessor(), ASTProcessor()]
     post_processors: list[Processor] = [HTMLMinifyProcessor()]
 
     print("Processing content and applying pre-processors...")
-    use_case = BuildSiteUseCase(repo, loader, renderer, writer)
+    use_case = BuildSiteUseCase(repo, loader, markdown_renderer, html_renderer, writer)
     use_case.execute(
         content_path, pre_processors=pre_processors, post_processors=post_processors
     )

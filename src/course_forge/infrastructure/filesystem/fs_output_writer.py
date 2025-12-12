@@ -13,7 +13,6 @@ class FileSystemOutputWriter(OutputWriter):
         out_dir = os.path.join(self._root_path, *node.slugs_path)
         os.makedirs(out_dir, exist_ok=True)
         html_path = os.path.join(out_dir, node.name + ".html")
-        html = f"<html><head><title>Temp. Template</title></head><body>{text}</body></html>"
 
         for attach in node.attachments.values():
             node_attachments = os.path.join(out_dir, "static")
@@ -22,4 +21,4 @@ class FileSystemOutputWriter(OutputWriter):
                 file.write(attach["data"])
 
         with open(html_path, "w", encoding="utf-8") as f:
-            f.write(html)
+            f.write(text)

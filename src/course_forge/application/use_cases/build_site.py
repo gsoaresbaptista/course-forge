@@ -1,6 +1,6 @@
 from course_forge.application.loaders import MarkdownLoader
 from course_forge.application.processors import Processor
-from course_forge.application.renders import MarkdownRenderer
+from course_forge.application.renders import HTMLTemplateRenderer, MarkdownRenderer
 from course_forge.application.writers import OutputWriter
 from course_forge.domain.entities import ContentNode
 from course_forge.domain.repositories import ContentTreeRepository
@@ -11,12 +11,14 @@ class BuildSiteUseCase:
         self,
         repository: ContentTreeRepository,
         loader: MarkdownLoader,
-        renderer: MarkdownRenderer,
+        markdown_renderer: MarkdownRenderer,
+        html_renderer: HTMLTemplateRenderer,
         writer: OutputWriter,
     ) -> None:
         self.repository = repository
         self.loader = loader
-        self.renderer = renderer
+        self.markdown_renderer = markdown_renderer
+        self.html_renderer = html_renderer
         self.writer = writer
 
     def execute(
@@ -40,7 +42,8 @@ class BuildSiteUseCase:
             for processor in pre_processors:
                 markdown = processor.execute(node, markdown)
 
-            html = self.renderer.render(markdown["content"])
+            content = self.markdown_renderer.render(markdown["content"])
+            html = self.html_renderer.render(content, node)
 
             for processor in post_processors:
                 markdown = processor.execute(node, markdown)
