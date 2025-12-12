@@ -7,3 +7,7 @@ class OutputWriter(ABC):
     @abstractmethod
     def write(self, node: ContentNode, text: str) -> None:
         pass
+
+    @abstractmethod
+    def copy_assets(self, template_dir: str) -> None:
+        pass

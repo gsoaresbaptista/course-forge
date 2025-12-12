@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from course_forge.application.writers import OutputWriter
 from course_forge.domain.entities import ContentNode
@@ -22,3 +23,14 @@ class FileSystemOutputWriter(OutputWriter):
 
         with open(html_path, "w", encoding="utf-8") as f:
             f.write(text)
+
+    def copy_assets(self, template_dir: str) -> None:
+        css_src = os.path.join(template_dir, "css")
+        js_src = os.path.join(template_dir, "js")
+        css_dst = os.path.join(self._root_path, "css")
+        js_dst = os.path.join(self._root_path, "js")
+
+        if os.path.exists(css_src):
+            shutil.copytree(css_src, css_dst, dirs_exist_ok=True)
+        if os.path.exists(js_src):
+            shutil.copytree(js_src, js_dst, dirs_exist_ok=True)

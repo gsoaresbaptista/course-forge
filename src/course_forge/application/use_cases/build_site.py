@@ -26,9 +26,12 @@ class BuildSiteUseCase:
         root_path: str,
         pre_processors: list[Processor],
         post_processors: list[Processor],
+        template_dir: str | None = None,
     ) -> None:
         tree = self.repository.load(root_path)
         self._process_node(tree.root, pre_processors, post_processors)
+        if template_dir:
+            self.writer.copy_assets(template_dir)
 
     def _process_node(
         self,

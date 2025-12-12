@@ -58,5 +58,6 @@ def build(content_path: str, output_path: str, template_dir: str | None = None) 
         content_path,
         pre_processors=container.pre_processors,
         post_processors=container.post_processors,
+        template_dir=template_dir,
     )
     print(f'Success! Site generated at: "{output_path}"')
