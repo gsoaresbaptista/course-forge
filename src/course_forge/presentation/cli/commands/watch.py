@@ -14,7 +14,7 @@ def watch(content_path: str, output_path: str):
         for file in files:
             if file.endswith(".md"):
                 full_path = os.path.join(root, file)
-                server.watch(full_path, build)  # type: ignore
+                server.watch(full_path, lambda: build(content_path, output_path))  # type: ignore
 
     server.serve(  # type: ignore
         root=output_path,
