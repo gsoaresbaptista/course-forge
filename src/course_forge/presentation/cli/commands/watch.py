@@ -2,11 +2,13 @@ import os
 
 from livereload import Server  # type: ignore
 
+from course_forge.config import Config
+
 from .build import build
 
 
-def watch(content_path: str, output_path: str):
-    build(content_path, output_path)
+def watch(content_path: str, output_path: str, template_dir: str | None = None):
+    build(content_path, output_path, template_dir=template_dir)
 
     server = Server()
 
@@ -14,11 +16,14 @@ def watch(content_path: str, output_path: str):
         for file in files:
             if file.endswith(".md"):
                 full_path = os.path.join(root, file)
-                server.watch(full_path, lambda: build(content_path, output_path))  # type: ignore
+                server.watch(  # type: ignore
+                    full_path,
+                    lambda: build(content_path, output_path, template_dir=template_dir),
+                )
 
     server.serve(  # type: ignore
         root=output_path,
-        port=8001,
+        port=Config.watch_port,
         host="localhost",
         open_url_delay=0,
         restart_delay=0,

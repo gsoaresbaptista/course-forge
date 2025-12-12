@@ -1,7 +1,8 @@
-from typing import Any, Protocol, runtime_checkable
+from abc import ABC, abstractmethod
+from typing import Any
 
 
-@runtime_checkable
-class MarkdownLoader(Protocol):
+class MarkdownLoader(ABC):
+    @abstractmethod
     def load(self, path: str) -> dict[str, Any]:
         raise NotImplementedError

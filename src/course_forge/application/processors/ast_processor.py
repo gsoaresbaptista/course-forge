@@ -18,8 +18,7 @@ class ASTProcessor(Processor):
         re.DOTALL,
     )
 
-    def execute(self, node: ContentNode, markdown: dict[str, Any]) -> dict[str, Any]:
-        content = markdown.get("content", "")
+    def execute(self, node: ContentNode, content: str) -> str:
         matches = list(self.pattern.finditer(content))
 
         for match in matches:
@@ -45,7 +44,7 @@ class ASTProcessor(Processor):
             img_code = f'<div class="{"centered" if centered else ""}">{img_code}</div>'
             content = content.replace(match.group(0), img_code)
 
-        return {**markdown, "content": content}
+        return content
 
     def _render_ast(self, expr: str) -> bytes:
         g = graphviz.Digraph(

@@ -16,8 +16,7 @@ class DigitalCircuitProcessor(Processor):
         re.DOTALL,
     )
 
-    def execute(self, node: ContentNode, markdown: dict[str, Any]) -> dict[str, Any]:
-        content = markdown.get("content", "")
+    def execute(self, node: ContentNode, content: str) -> str:
         matches = list(self.pattern.finditer(content))
 
         for match in matches:
@@ -42,7 +41,7 @@ class DigitalCircuitProcessor(Processor):
             img_code = f'<div class="no-break {"centered" if centered else ""}">{img_code}</div>'
             content = content.replace(match.group(0), img_code)
 
-        return {**markdown, "content": content}
+        return content
 
     def _render_circuit(self, expr: str, outlabel: str) -> bytes:
         d = logicparse(expr, outlabel=outlabel)

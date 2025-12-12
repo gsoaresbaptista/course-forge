@@ -15,18 +15,25 @@ from course_forge.infrastructure.templates import JinjaHTMLTemplateRenderer
 
 
 class DependencyContainer:
-    def __init__(self, output_path: str):
+    def __init__(self, output_path: str, template_dir: str | None = None):
         self._repo = FileSystemContentTreeRepository()
         self._loader = FileSystemMarkdownLoader()
         self._markdown_renderer = MistuneMarkdownRenderer()
-        self._html_renderer = JinjaHTMLTemplateRenderer()
+        self._html_renderer = JinjaHTMLTemplateRenderer(template_dir=template_dir)
         self._writer = FileSystemOutputWriter(output_path)
 
-        self._pre_processors: list[Processor] = [DigitalCircuitProcessor(), ASTProcessor()]
+        self._pre_processors: list[Processor] = [
+            DigitalCircuitProcessor(),
+            ASTProcessor(),
+        ]
         self._post_processors: list[Processor] = [HTMLMinifyProcessor()]
 
         self._build_use_case = BuildSiteUseCase(
-            self._repo, self._loader, self._markdown_renderer, self._html_renderer, self._writer
+            self._repo,
+            self._loader,
+            self._markdown_renderer,
+            self._html_renderer,
+            self._writer,
         )
 
     @property
@@ -42,9 +49,9 @@ class DependencyContainer:
         return self._post_processors
 
 
-def build(content_path: str, output_path: str) -> None:
+def build(content_path: str, output_path: str, template_dir: str | None = None) -> None:
     print(f'Starting site build from content: "{content_path}"...')
-    container = DependencyContainer(output_path)
+    container = DependencyContainer(output_path, template_dir=template_dir)
 
     print("Processing content and applying pre-processors...")
     container.build_use_case.execute(

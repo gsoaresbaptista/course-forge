@@ -1,7 +1,7 @@
 from .content_node import ContentNode
 
 
-class ContentTree(ContentNode):
+class ContentTree:
     def __init__(self, root: ContentNode):
         self._root = root
 

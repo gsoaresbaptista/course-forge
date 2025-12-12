@@ -38,15 +38,16 @@ class BuildSiteUseCase:
     ) -> None:
         if node.is_file:
             markdown = self.loader.load(node.src_path)
+            content = markdown["content"]
 
             for processor in pre_processors:
-                markdown = processor.execute(node, markdown)
+                content = processor.execute(node, content)
 
-            content = self.markdown_renderer.render(markdown["content"])
+            content = self.markdown_renderer.render(content)
             html = self.html_renderer.render(content, node)
 
             for processor in post_processors:
-                markdown = processor.execute(node, markdown)
+                markdown = processor.execute(node, html)
 
             self.writer.write(node, html)
 
