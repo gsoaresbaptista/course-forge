@@ -25,12 +25,12 @@ class FileSystemOutputWriter(OutputWriter):
             f.write(text)
 
     def copy_assets(self, template_dir: str) -> None:
-        css_src = os.path.join(template_dir, "css")
-        js_src = os.path.join(template_dir, "js")
-        css_dst = os.path.join(self._root_path, "css")
-        js_dst = os.path.join(self._root_path, "js")
-
-        if os.path.exists(css_src):
-            shutil.copytree(css_src, css_dst, dirs_exist_ok=True)
-        if os.path.exists(js_src):
-            shutil.copytree(js_src, js_dst, dirs_exist_ok=True)
+        for item in os.listdir(template_dir):
+            src_path = os.path.join(template_dir, item)
+            dst_path = os.path.join(self._root_path, item)
+            if item == "base.html":
+                continue
+            if os.path.isdir(src_path):
+                shutil.copytree(src_path, dst_path, dirs_exist_ok=True)
+            else:
+                shutil.copy2(src_path, dst_path)
