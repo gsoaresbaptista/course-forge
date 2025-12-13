@@ -9,5 +9,5 @@ class OutputWriter(ABC):
         pass
 
     @abstractmethod
-    def copy_assets(self, template_dir: str) -> None:
+    def copy_assets(self, template_dir: str, filters: list[str] | None = None) -> None:
         pass

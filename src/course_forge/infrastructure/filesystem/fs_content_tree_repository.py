@@ -3,20 +3,21 @@ from pathlib import Path
 
 from course_forge.domain.entities.content_node import ContentNode
 from course_forge.domain.entities.content_tree import ContentTree
-from course_forge.domain.repositories import (
-    ContentTreeRepository,
-)
+from course_forge.domain.repositories import ContentTreeRepository
 
 
 class FileSystemContentTreeRepository(ContentTreeRepository):
     def load(self, path: str) -> ContentTree:
         root = self._build_node(path, parent_slugs=[], is_root=True)
-        return ContentTree(root)
+        return ContentTree(root if root else ContentNode("", "root"))
 
     def _build_node(
         self, path: str, parent_slugs: list[str], is_root: bool = False
-    ) -> ContentNode:
+    ) -> ContentNode | None:
         slug = Path(path).stem
+
+        if os.path.isfile(path) and not path.endswith(".md"):
+            return None
 
         node = ContentNode(
             src_path=path,
@@ -30,6 +31,7 @@ class FileSystemContentTreeRepository(ContentTreeRepository):
                 full = os.path.join(path, entry)
                 child_parent_slugs = parent_slugs if is_root else [*parent_slugs, slug]
                 child = self._build_node(full, child_parent_slugs, is_root=False)
-                node.add_child(child)
+                if child:
+                    node.add_child(child)
 
         return node

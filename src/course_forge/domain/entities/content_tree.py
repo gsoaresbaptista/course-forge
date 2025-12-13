@@ -3,7 +3,7 @@ from .content_node import ContentNode
 
 class ContentTree:
     def __init__(self, root: ContentNode):
-        self._root = root
+        self._root: ContentNode = root
 
     @property
     def root(self) -> ContentNode:

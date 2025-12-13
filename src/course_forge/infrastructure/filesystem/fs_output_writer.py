@@ -24,12 +24,17 @@ class FileSystemOutputWriter(OutputWriter):
         with open(html_path, "w", encoding="utf-8") as f:
             f.write(text)
 
-    def copy_assets(self, template_dir: str) -> None:
+    def copy_assets(self, template_dir: str, filters: list[str] | None = None) -> None:
+        if filters is None:
+            filters = [".html", ".md"]
+
         for item in os.listdir(template_dir):
+            if any([item.endswith(ext) for ext in filters]):
+                continue
+
             src_path = os.path.join(template_dir, item)
             dst_path = os.path.join(self._root_path, item)
-            if item == "base.html":
-                continue
+
             if os.path.isdir(src_path):
                 shutil.copytree(src_path, dst_path, dirs_exist_ok=True)
             else:
