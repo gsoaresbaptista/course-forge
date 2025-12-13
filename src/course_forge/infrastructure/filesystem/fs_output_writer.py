@@ -39,3 +39,9 @@ class FileSystemOutputWriter(OutputWriter):
                 shutil.copytree(src_path, dst_path, dirs_exist_ok=True)
             else:
                 shutil.copy2(src_path, dst_path)
+
+    def copy_file(self, node: ContentNode) -> None:
+        dst_foler = os.path.join(self._root_path, *node.slugs_path)
+        dst_path = os.path.join(dst_foler, node.name + node.file_extension)
+        os.makedirs(dst_foler, exist_ok=True)
+        shutil.copy2(node.src_path, dst_path)

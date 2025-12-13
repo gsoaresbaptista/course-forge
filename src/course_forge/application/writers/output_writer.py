@@ -11,3 +11,7 @@ class OutputWriter(ABC):
     @abstractmethod
     def copy_assets(self, template_dir: str, filters: list[str] | None = None) -> None:
         pass
+
+    @abstractmethod
+    def copy_file(self, node: ContentNode) -> None:
+        pass

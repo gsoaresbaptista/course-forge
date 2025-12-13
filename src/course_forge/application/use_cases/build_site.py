@@ -39,19 +39,22 @@ class BuildSiteUseCase:
         post_processors: list[Processor],
     ) -> None:
         if node.is_file:
-            markdown = self.loader.load(node.src_path)
-            content = markdown["content"]
+            if node.file_extension == ".md":
+                markdown = self.loader.load(node.src_path)
+                content = markdown["content"]
 
-            for processor in pre_processors:
-                content = processor.execute(node, content)
+                for processor in pre_processors:
+                    content = processor.execute(node, content)
 
-            content = self.markdown_renderer.render(content)
-            html = self.html_renderer.render(content, node)
+                content = self.markdown_renderer.render(content)
+                html = self.html_renderer.render(content, node)
 
-            for processor in post_processors:
-                html = processor.execute(node, html)
+                for processor in post_processors:
+                    html = processor.execute(node, html)
 
-            self.writer.write(node, html)
+                self.writer.write(node, html)
+            else:
+                self.writer.copy_file(node)
 
         for child in node.children:
             self._process_node(child, pre_processors, post_processors)

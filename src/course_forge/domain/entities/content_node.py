@@ -8,6 +8,7 @@ class ContentNode:
         self,
         src_path: str,
         name: str,
+        file_extension: str,
         is_file: bool = False,
         children: list[ContentNode] | None = None,
         slugs_path: list[str] | None = None,
@@ -19,6 +20,11 @@ class ContentNode:
         self._slugs_path: list[str] = [] if slugs_path is None else slugs_path
         self._number_of_attachments: int = 0
         self._attachments: dict[int, Any] = {}
+        self._file_extension: str = file_extension
+
+    @property
+    def file_extension(self) -> str:
+        return self._file_extension
 
     @property
     def number_of_attachments(self) -> int:
