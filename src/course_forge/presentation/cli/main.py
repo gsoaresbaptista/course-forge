@@ -9,8 +9,8 @@ from .commands import build, watch
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=["build", "watch"])
-    parser.add_argument("--content", required=True, help="Path to input content")
-    parser.add_argument("--output", required=True, help="Path to output site")
+    parser.add_argument("-c", "--content", required=True, help="Path to input content")
+    parser.add_argument("-o", "--output", required=True, help="Path to output site")
     parser.add_argument("--template-dir", help="Path to template directory")
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
     parser.add_argument("--port", type=int, help="Port for watch server")
