@@ -48,7 +48,8 @@ class FileSystemOutputWriter(OutputWriter):
 
     def write_contents(self, node: ContentNode, text: str) -> None:
         """Write contents.html for a course directory."""
-        out_dir = os.path.join(self._root_path, node.name)
+        # Use full path including parents (slugs_path) + current node name
+        out_dir = os.path.join(self._root_path, *node.slugs_path, node.name)
         os.makedirs(out_dir, exist_ok=True)
         html_path = os.path.join(out_dir, "contents.html")
         with open(html_path, "w", encoding="utf-8") as f:

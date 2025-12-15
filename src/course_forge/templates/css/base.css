@@ -29,7 +29,7 @@
     --font: 'Crimson Text', Georgia, serif;
     --font-code: Consolas, Monaco, monospace;
 
-    --content-max: 620px;
+    --content-max: 720px;
     --sidebar-width: 300px;
 }
 
@@ -851,14 +851,30 @@ figcaption {
 /* Grouped Parts Grid */
 .parts-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2.5rem;
+    grid-template-columns: 1fr;
+    gap: 4rem;
     margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .parts-container {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+    }
+
+    /* Force single column for courses without parts grouping */
+    .parts-container--single {
+        grid-template-columns: 1fr;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 
 .part-block {
     display: flex;
     flex-direction: column;
+    /* margin-bottom handled by grid gap */
 }
 
 .part-title {
@@ -866,11 +882,16 @@ figcaption {
     font-size: 1.1rem;
     color: var(--heading);
     margin-bottom: 0.75rem;
-    padding-bottom: 0.25rem;
-    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem;
+    /* Removed border to avoid double line */
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 600;
+    min-height: 4.5rem;
+    /* Increased height for safer 2-line alignment */
+    display: flex;
+    align-items: flex-end;
+    /* Align bottom */
 }
 
 .part-roman {
@@ -890,6 +911,12 @@ figcaption {
     font-weight: 600;
     text-align: right;
 }
+
+/* Ensure no double borders in lists */
+.contents-item:last-child {
+    border-bottom: none;
+}
+
 
 .contents-name {
     font-weight: 400;

@@ -1,4 +1,5 @@
 import os
+
 import yaml
 
 
@@ -16,5 +17,5 @@ class ConfigLoader:
                     config.update(loaded)
         except Exception as e:
             print(f"Error loading config {path}: {e}")
-        
+
         return config

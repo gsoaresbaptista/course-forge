@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 from jinja2 import BaseLoader, ChoiceLoader, Environment, FileSystemLoader
 
@@ -60,6 +61,14 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         metadata = metadata or {}
         config = config or self.config
 
+        # Define missing variables needed for template context
+        courses_title = self.config.get("courses_title", "Disciplinas")
+
+        # Default back link for chapters -> Course Contents
+        # Since chapters and contents.html are in the same directory usually:
+        back_link_url = "../index.html"
+        back_link_text = f"Voltar para {config.get('name') or strip_leading_number(node.parent.name) if node.parent else 'Índice'}"
+
         course_name = ""
         if node.parent:
             course_name = strip_leading_number(node.parent.name)
@@ -103,8 +112,11 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "next_chapter": next_chapter,
                 "toc": toc,
                 "site_name": self.config.get("site_name", "Course Forge"),
-                "author": self.config.get("author", "Course Forge"),
-                "courses_title": self.config.get("courses_title", "Disciplinas"),
+                "year": config.get("year", str(datetime.now().year)),
+                "author": config.get("author", "Course Forge"),
+                "courses_title": courses_title,
+                "back_link_url": back_link_url,
+                "back_link_text": back_link_text,
             }
         )
 
@@ -135,33 +147,33 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
 
         parts = []
         config_parts = config.get("parts") or config.get("groups")
-        
+
         if config_parts:
             for i, part_config in enumerate(config_parts):
                 part_title = part_config.get("title") or part_config.get("name")
-                
+
                 part_items = part_config.get("items") or []
-                
+
                 part_chapters = []
                 for item in part_items:
                     for ch in chapters:
                         if ch["slug"] == item or ch["slug"].startswith(item + "-"):
-                             part_chapters.append(ch)
-                             
-                from course_forge.infrastructure.markdown.mistune_markdown_renderer import to_roman
-                
-                parts.append({
-                    "title": part_title,
-                    "roman": to_roman(i + 1),
-                    "chapters": part_chapters
-                })
-                
+                            part_chapters.append(ch)
+
+                from course_forge.infrastructure.markdown.mistune_markdown_renderer import (
+                    to_roman,
+                )
+
+                parts.append(
+                    {
+                        "title": part_title,
+                        "roman": to_roman(i + 1),
+                        "chapters": part_chapters,
+                    }
+                )
+
         else:
-            parts.append({
-                "title": None,
-                "roman": None,
-                "chapters": chapters
-            })
+            parts.append({"title": None, "roman": None, "chapters": chapters})
 
         # Sub-courses / Modules
         modules = []
@@ -174,9 +186,21 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                     modules.append(
                         {
                             "name": strip_leading_number(c.name),
-                            "slug": f"{c.name}/contents",  # Link to its contents page
+                            "slug": f"{c.name}/contents.html",  # Link to its contents page
                         }
                     )
+
+        # Smart Back Link Logic for Contents Page
+        courses_title = self.config.get("courses_title", "Disciplinas")
+        back_link_url = "../index.html"
+        back_link_text = f"Voltar para {courses_title}"
+
+        # If course_node has a parent that is NOT the root (root.parent is None),
+        # then we are in a sub-course and should link to parent course.
+        if course_node.parent and course_node.parent.parent is not None:
+            back_link_url = "../contents.html"
+            parent_name = strip_leading_number(course_node.parent.name)
+            back_link_text = f"Voltar para {parent_name}"
 
         return template.render(
             {
@@ -186,7 +210,9 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "site_name": self.config.get("site_name", "Course Forge"),
                 "author": self.config.get("author", "Course Forge"),
                 "year": config.get("year"),
-                "courses_title": self.config.get("courses_title", "Disciplinas"),
+                "courses_title": courses_title,
+                "back_link_url": back_link_url,
+                "back_link_text": back_link_text,
             }
         )
 

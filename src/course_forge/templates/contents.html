@@ -17,13 +17,12 @@
 <body>
     <div class="contents-page">
         <header class="contents-header">
-            <a href="/" class="back-link">← Voltar para {{ courses_title }}</a>
+            <a href="{{ back_link_url }}" class="back-link">← {{ back_link_text }}</a>
             <div class="contents-ornament">❧</div>
             <h1 class="contents-title">{{ course_name }}</h1>
             {% if year %}
             <p class="contents-year">{{ year }}</p>
             {% endif %}
-
         </header>
 
         <main class="contents-main">
@@ -46,7 +45,7 @@
 
             <p class="contents-subtitle">Tabela de Conteúdos</p>
 
-            <div class="parts-container">
+            <div class="parts-container {% if parts|length == 1 %}parts-container--single{% endif %}">
                 {% for part in parts %}
                 <div class="part-block {% if not part.title %}single-part{% endif %}">
                     {% if part.title %}
@@ -71,7 +70,7 @@
         </main>
 
         <footer class="footer">
-            <p>© 2025 · Gerado com <a href="#">{{ author }}</a></p>
+            <p>© 2025 · <a href="#">{{ author }}</a></p>
         </footer>
     </div>
 </body>
