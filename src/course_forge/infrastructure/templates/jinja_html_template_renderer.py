@@ -14,23 +14,26 @@ def strip_leading_number(name: str) -> str:
 
 def extract_toc(html_content: str) -> list[dict]:
     """Extract table of contents from HTML headings (h2, h3)."""
-    h2_pattern = r'<h2[^>]*id="([^"]+)"[^>]*><span class="heading-roman">([^<]+)</span><span class="heading-text">([^<]+)</span>'
-    h3_pattern = r'<h3[^>]*id="([^"]+)"[^>]*><span class="heading-text">([^<]+)</span><span class="heading-arabic">([^<]+)</span>'
-
     toc = []
 
-    for match in re.finditer(h2_pattern, html_content, re.IGNORECASE):
-        id_attr, roman, text = match.groups()
-        toc.append({"id": id_attr, "text": f"{roman}. {text.strip()}", "level": 2})
+    def clean(s):
+        return s.strip()
 
-    for match in re.finditer(h3_pattern, html_content, re.IGNORECASE):
-        id_attr, text, arabic = match.groups()
-        toc.append({"id": id_attr, "text": f"{arabic} {text.strip()}", "level": 3})
+    # For now, let's assume we will change the renderer to:
+    # H2: <h2 id=".."><span class="heading-text">Title</span><span class="heading-arabic">1</span></h2>
+    # H3: <h3 id=".."><span class="heading-text">Title</span><span class="heading-arabic">1.1</span></h3>
 
-    all_headings = re.findall(r'<h[23][^>]*id="([^"]+)"', html_content)
-    toc.sort(
-        key=lambda x: all_headings.index(x["id"]) if x["id"] in all_headings else 0
-    )
+    heading_pattern = r'<h([23])[^>]*id="([^"]+)"[^>]*>.*?<span class="heading-text">([^<]+)</span>.*?<span class="heading-arabic">([^<]+)</span>'
+
+    for match in re.finditer(heading_pattern, html_content, re.IGNORECASE | re.DOTALL):
+        level, id_attr, text, number = match.groups()
+        toc.append(
+            {
+                "id": id_attr,
+                "text": f"{clean(number)}. {clean(text)}",
+                "level": int(level),
+            }
+        )
 
     return toc
 
@@ -101,6 +104,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "toc": toc,
                 "site_name": self.config.get("site_name", "Course Forge"),
                 "author": self.config.get("author", "Course Forge"),
+                "courses_title": self.config.get("courses_title", "Disciplinas"),
             }
         )
 
@@ -113,9 +117,9 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
             config or self.config
         )  # Merge logic happened in build_site, but here we fallback to global
 
-        course_name = (
-            config.get("name") if config else strip_leading_number(course_node.name)
-        )
+        course_name = config.get("name") if config else None
+        if not course_name:
+            course_name = strip_leading_number(course_node.name)
 
         chapters = [
             {"name": strip_leading_number(c.name), "slug": c.name}
@@ -148,6 +152,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "site_name": self.config.get("site_name", "Course Forge"),
                 "author": self.config.get("author", "Course Forge"),
                 "year": config.get("year"),
+                "courses_title": self.config.get("courses_title", "Disciplinas"),
             }
         )
 

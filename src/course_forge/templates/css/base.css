@@ -741,12 +741,18 @@ figcaption {
     font-family: var(--font-headers);
     margin-top: 0.5rem;
     letter-spacing: 0.05em;
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
 /* Back Link */
 .back-link {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    z-index: 999;
+
     display: inline-block;
-    margin-bottom: 1rem;
     font-family: var(--font-headers);
     font-size: 0.9rem;
     text-transform: uppercase;
@@ -754,11 +760,56 @@ figcaption {
     color: var(--text-muted);
     text-decoration: none;
     transition: color 0.2s;
+    background: var(--bg);
+    /* Ensure readability over content */
+    padding: 0.5rem;
+    border-radius: 4px;
 }
 
 .back-link:hover {
     color: var(--course-accent);
 }
+
+/* Sidebar Title Styling */
+.course-title-link {
+    text-decoration: none;
+    display: block;
+    position: relative;
+    padding: 1rem 0;
+    margin: 0 1rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.course-title-link::before {
+    content: "❧";
+    position: absolute;
+    top: -0.8rem;
+    left: 0;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    background: var(--sidebar-bg);
+    padding-right: 0.5rem;
+}
+
+.course-title-link::after {
+    content: "❧";
+    position: absolute;
+    bottom: -0.9rem;
+    right: 0;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    background: var(--sidebar-bg);
+    padding-left: 0.5rem;
+    transform: scaleX(-1);
+    /* Mirror for symmetry */
+}
+
+/* Hide the old ornament if it exists in HTML */
+.sidebar-ornament {
+    display: none;
+}
+
 
 /* Tables of Contents List */
 .contents-main {

@@ -48,8 +48,6 @@ class HeadingRenderer(mistune.HTMLRenderer):
             self.h2_counter += 1
             self.h3_counter = 0
 
-            roman = to_roman(self.h2_counter)
-
             if self.chapter is not None:
                 arabic = f"{self.chapter}.{self.h2_counter}"
             else:
@@ -57,7 +55,6 @@ class HeadingRenderer(mistune.HTMLRenderer):
 
             return (
                 f'<h2 id="{slug}">'
-                f'<span class="heading-roman">{roman}</span>'
                 f'<span class="heading-text">{clean_text}</span>'
                 f'<span class="heading-arabic">{arabic}</span>'
                 f"</h2>\n"

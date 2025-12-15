@@ -17,13 +17,13 @@
 <body>
     <div class="contents-page">
         <header class="contents-header">
-            <a href="/" class="back-link">← Voltar para Disciplinas</a>
+            <a href="/" class="back-link">← Voltar para {{ courses_title }}</a>
             <div class="contents-ornament">❧</div>
             <h1 class="contents-title">{{ course_name }}</h1>
             {% if year %}
             <p class="contents-year">{{ year }}</p>
             {% endif %}
-            <p class="contents-subtitle">Tabela de Conteúdos</p>
+
         </header>
 
         <main class="contents-main">
@@ -41,9 +41,10 @@
                     {% endfor %}
                 </ul>
             </section>
-            <div class="section-divider"></div>
+
             {% endif %}
 
+            <p class="contents-subtitle">Tabela de Conteúdos</p>
             <ol class="contents-list">
                 {% for chapter in chapters %}
                 <li class="contents-item">

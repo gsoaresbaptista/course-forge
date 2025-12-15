@@ -31,8 +31,9 @@ class BuildSiteUseCase:
         template_dir: str | None = None,
     ) -> None:
         # Load config from root_path
-        from course_forge.infrastructure.config.config_loader import ConfigLoader
         import os
+
+        from course_forge.infrastructure.config.config_loader import ConfigLoader
 
         config_path = os.path.join(root_path, "config.yaml")
         config = ConfigLoader().load(config_path)
@@ -58,32 +59,38 @@ class BuildSiteUseCase:
         self.writer.copy_assets(self.html_renderer.template_dir)
 
     def _collect_top_level_courses(self, node: ContentNode) -> list[dict]:
+        import os
+
+        from course_forge.infrastructure.config.config_loader import ConfigLoader
+
         courses = []
         # We only want direct children of root that are courses
         for child in node.children:
+            course_name = self._clean_name(child.name)
+
+            # Check for config.yaml to get custom name
+            if not child.is_file and child.src_path:
+                local_config_path = os.path.join(child.src_path, "config.yaml")
+                if os.path.exists(local_config_path):
+                    local_config = ConfigLoader().load(local_config_path)
+                    if local_config and local_config.get("name"):
+                        course_name = local_config.get("name")
+
             if not child.is_file:
-                # Check if it has markdown files directly or is a course container
                 has_md = any(
                     c.is_file and c.file_extension == ".md" for c in child.children
                 )
 
-                # If it has MD files, it's a course. Add it.
                 if has_md:
                     courses.append(
                         {
-                            "name": self._clean_name(child.name),
+                            "name": course_name,
                             "slug": child.relative_path
                             if hasattr(child, "relative_path")
                             else child.name,  # logic adjustment
                             "node": child,
                         }
                     )
-                # If it doesn't have MD files but has children directories, maybe one of them is a course?
-                # But for the root index, we typically want "Discipline" level.
-                # If "sistemas-digitais" contains "logica-proposicional", "sistemas-digitais" IS the entry point.
-                # Even if "sistemas-digitais" has NO md files itself (just sub-courses), it should act as the grouping.
-                # Current logic requires MD files to be considered a course.
-                # Let's stick to: if it has MD files or has children that are dirs with MD files.
                 elif any(
                     not gc.is_file
                     and any(
@@ -94,7 +101,7 @@ class BuildSiteUseCase:
                 ):
                     courses.append(
                         {
-                            "name": self._clean_name(child.name),
+                            "name": course_name,
                             "slug": child.name,
                             "node": child,
                         }
@@ -114,6 +121,7 @@ class BuildSiteUseCase:
         parent_course_config: dict | None = None,
     ) -> None:
         import os
+
         from course_forge.infrastructure.config.config_loader import ConfigLoader
 
         current_config = parent_course_config
@@ -124,7 +132,6 @@ class BuildSiteUseCase:
             if os.path.exists(local_config_path):
                 local_config = ConfigLoader().load(local_config_path)
                 # Merge with parent config or override? Usually override for specific fields.
-                # Let's assume local config takes precedence for course details.
                 current_config = local_config
 
         if node.is_file:
@@ -142,8 +149,7 @@ class BuildSiteUseCase:
                     chapter = int(match.group(1))
 
                 content = self.markdown_renderer.render(content, chapter=chapter)
-                # Pass merged config (global + course) to renderer
-                # Merging logic: global base, course override
+
                 render_config = (global_config or {}).copy()
                 if current_config:
                     render_config.update(current_config)
