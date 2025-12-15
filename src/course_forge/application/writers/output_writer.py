@@ -15,3 +15,11 @@ class OutputWriter(ABC):
     @abstractmethod
     def copy_file(self, node: ContentNode) -> None:
         pass
+
+    @abstractmethod
+    def write_contents(self, node: ContentNode, text: str) -> None:
+        pass
+
+    @abstractmethod
+    def write_index(self, text: str) -> None:
+        pass

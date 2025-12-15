@@ -12,6 +12,7 @@ class ContentNode:
         is_file: bool = False,
         children: list[ContentNode] | None = None,
         slugs_path: list[str] | None = None,
+        parent: ContentNode | None = None,
     ) -> None:
         self._src_path: str = src_path
         self._is_file = is_file
@@ -21,6 +22,7 @@ class ContentNode:
         self._number_of_attachments: int = 0
         self._attachments: dict[int, Any] = {}
         self._file_extension: str = file_extension
+        self._parent: ContentNode | None = parent
 
     @property
     def file_extension(self) -> str:
@@ -54,7 +56,20 @@ class ContentNode:
     def is_dir(self) -> bool:
         return not self._is_file
 
+    @property
+    def parent(self) -> ContentNode | None:
+        return self._parent
+
+    @property
+    def siblings(self) -> list[ContentNode]:
+        if self._parent is None:
+            return []
+        return [
+            c for c in self._parent.children if c.is_file and c.file_extension == ".md"
+        ]
+
     def add_child(self, child: ContentNode) -> None:
+        child._parent = self
         self.children.append(child)
 
     def __str__(self, level: int = 0) -> str:

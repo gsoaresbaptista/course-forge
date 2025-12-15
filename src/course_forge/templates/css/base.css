@@ -1,0 +1,839 @@
+/* ===================================
+   Crafting Interpreters Style Theme
+   =================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===================================
+   Colors
+   =================================== */
+:root {
+    --bg: #f5f2eb;
+    --sidebar-bg: #eae6dc;
+    --text: #333;
+    --text-muted: #666;
+    --heading: #111;
+    --link: #884422;
+    --link-hover: #662211;
+    --border: #d4d0c6;
+    --code-bg: #f0ede5;
+    --active-bg: rgba(136, 68, 34, 0.12);
+    --course-accent: #884422;
+
+    --font: 'Crimson Text', Georgia, serif;
+    --font-code: Consolas, Monaco, monospace;
+
+    --content-max: 620px;
+    --sidebar-width: 300px;
+}
+
+html {
+    font-size: 19px;
+}
+
+body {
+    font-family: var(--font);
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
+}
+
+/* ===================================
+   Layout
+   =================================== */
+.page-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===================================
+   Sidebar
+   =================================== */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.sidebar-content {
+    padding: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Title Section */
+.sidebar-title-section {
+    padding: 2.5rem 1.5rem 1rem;
+    text-align: center;
+}
+
+.course-title-link {
+    text-decoration: none;
+    display: block;
+}
+
+.course-title-link:hover .sidebar-course-title {
+    color: var(--link-hover);
+}
+
+.sidebar-course-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--course-accent);
+    text-align: center;
+    line-height: 1.3;
+    margin: 0;
+}
+
+.sidebar-ornament {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    margin-top: 1rem;
+}
+
+/* TOC Section */
+.sidebar-toc-section {
+    padding: 0 1.5rem;
+    flex: 1;
+}
+
+.toc-header {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.75rem;
+}
+
+.toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.toc-item {
+    margin: 0;
+}
+
+.toc-item a {
+    display: block;
+    padding: 0.35rem 0;
+    font-size: 0.9rem;
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+.toc-item a:hover {
+    color: var(--link);
+}
+
+.toc-item.level-3 {
+    margin-left: 1.25rem;
+}
+
+.toc-item.level-3 a {
+    font-size: 0.85rem;
+}
+
+/* Navigation Section */
+.sidebar-nav-section {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.sidebar-nav-link {
+    font-size: 0.9rem;
+    color: var(--link);
+    text-decoration: none;
+}
+
+.sidebar-nav-link:hover {
+    text-decoration: underline;
+}
+
+.sidebar-nav-link.prev {
+    text-align: left;
+}
+
+.sidebar-nav-link.next {
+    text-align: right;
+}
+
+/* ===================================
+   Mobile Menu Toggle
+   =================================== */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 200;
+    width: 48px;
+    height: 48px;
+    background: var(--bg);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mobile-menu-toggle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-menu-toggle.open {
+    background: var(--course-accent);
+}
+
+.mobile-menu-toggle.open .menu-icon {
+    color: white;
+}
+
+.menu-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--text);
+}
+
+.mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 90;
+}
+
+.mobile-menu-overlay.open {
+    display: block;
+}
+
+/* ===================================
+   Main Content
+   =================================== */
+.main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 2rem;
+}
+
+.article {
+    width: 100%;
+    max-width: var(--content-max);
+    flex: 1;
+}
+
+.article-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.article-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--heading);
+    line-height: 1.2;
+}
+
+.title-text {
+    flex: 1;
+}
+
+.title-number {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    margin-left: 1rem;
+    font-style: italic;
+}
+
+/* ===================================
+   Typography In Article
+   =================================== */
+.article-body h1 {
+    font-size: 1.7rem;
+    font-weight: 400;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.article-body h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--course-accent);
+    color: var(--heading);
+}
+
+.article-body h3 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: 1.15rem;
+    font-weight: 400;
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--heading);
+}
+
+.article-body h4,
+.article-body h5,
+.article-body h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.heading-roman {
+    font-size: 0.85em;
+    color: var(--course-accent);
+    font-weight: 600;
+    min-width: 1.5rem;
+}
+
+.heading-text {
+    flex: 1;
+}
+
+.heading-arabic {
+    font-size: 0.85em;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.article-body p {
+    margin-bottom: 1rem;
+    text-align: justify;
+    hyphens: auto;
+}
+
+/* ===================================
+   Links
+   =================================== */
+a {
+    color: var(--link);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ===================================
+   Lists
+   =================================== */
+.article-body ul,
+.article-body ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.article-body li {
+    margin-bottom: 0.25rem;
+}
+
+/* ===================================
+   Blockquotes
+   =================================== */
+.article-body blockquote {
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    background: var(--code-bg);
+    border-left: 3px solid var(--link);
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+.article-body blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* ===================================
+   Code
+   =================================== */
+code {
+    font-family: var(--font-code);
+    font-size: 0.8em;
+    background: var(--code-bg);
+    padding: 0.1em 0.25em;
+    border-radius: 2px;
+}
+
+pre {
+    margin: 1rem 0;
+    padding: 0.85rem 1rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow-x: auto;
+    line-height: 1.4;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.75rem;
+}
+
+/* ===================================
+   Tables
+   =================================== */
+table {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+thead {
+    border-bottom: 2px solid var(--border);
+}
+
+th {
+    font-weight: 600;
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+}
+
+td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+/* ===================================
+   HR
+   =================================== */
+hr {
+    border: none;
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+hr::before {
+    content: "❧";
+    color: var(--text-muted);
+}
+
+/* ===================================
+   Images - Respect inline width/height
+   =================================== */
+img {
+    display: block;
+    margin: 1rem auto;
+}
+
+img:not([width]):not([height]) {
+    max-width: 100%;
+    height: auto;
+}
+
+img[width] {
+    max-width: none;
+}
+
+figure {
+    margin: 1.25rem 0;
+    text-align: center;
+}
+
+figcaption {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 0.4rem;
+}
+
+.asset-svg,
+.asset-img,
+.centered {
+    display: flex;
+    justify-content: center;
+}
+
+.no-break {
+    page-break-inside: avoid;
+}
+
+.svg-graph {
+    max-width: 100%;
+}
+
+/* ===================================
+   KaTeX - Responsive equations
+   =================================== */
+.katex-display {
+    margin: 1rem 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    max-width: 100%;
+}
+
+.katex-display>.katex {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.25rem 0;
+}
+
+.katex {
+    font-size: 1em;
+}
+
+.katex-html {
+    white-space: normal;
+}
+
+/* ===================================
+   Footer
+   =================================== */
+.footer {
+    width: 100%;
+    max-width: var(--content-max);
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+.footer p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ===================================
+   Contents Page
+   =================================== */
+.contents-page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.contents-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.contents-title {
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: var(--heading);
+}
+
+.contents-main {
+    flex: 1;
+}
+
+.contents-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: contents-chapter;
+}
+
+.contents-item {
+    counter-increment: contents-chapter;
+    border-bottom: 1px solid var(--border);
+}
+
+.contents-item:first-child {
+    border-top: 1px solid var(--border);
+}
+
+.contents-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0.5rem;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+
+.contents-link:hover {
+    background: var(--active-bg);
+}
+
+.contents-link::before {
+    content: counter(contents-chapter) ".";
+    min-width: 2rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.contents-name {
+    flex: 1;
+    color: var(--text);
+    font-size: 1.1rem;
+}
+
+/* ===================================
+   Selection
+   =================================== */
+::selection {
+    background: rgba(136, 68, 34, 0.15);
+}
+
+/* ===================================
+   Responsive
+   =================================== */
+@media (max-width: 900px) {
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        width: 280px;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
+    .page-wrapper {
+        flex-direction: column;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 4rem 1.5rem 2rem;
+    }
+}
+
+@media (max-width: 500px) {
+    html {
+        font-size: 17px;
+    }
+
+    .main-content {
+        padding: 4rem 1rem 1.5rem;
+    }
+
+    .article-title {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .title-number {
+        align-self: flex-end;
+        margin-left: 0;
+    }
+
+    .contents-page {
+        padding: 2rem 1rem;
+    }
+}
+
+/* ===================================
+   Print
+   =================================== */
+@media print {
+
+    .sidebar,
+    .mobile-menu-toggle {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
+
+/* ===================================
+   Start of Contents & Index Page Styles
+   =================================== */
+
+.contents-page {
+    max-width: 700px;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
+    font-family: var(--font-serif);
+    color: var(--text);
+}
+
+.contents-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.contents-ornament {
+    font-size: 2rem;
+    color: var(--course-accent);
+    margin: 1rem 0;
+}
+
+.contents-title {
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin: 0.5rem 0;
+    color: var(--heading);
+}
+
+.contents-title::after {
+    display: none;
+    /* Override any potential default styles */
+}
+
+.contents-subtitle {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--text-muted);
+    font-family: var(--font-headers);
+    margin-top: 0.5rem;
+    letter-spacing: 0.05em;
+}
+
+/* Back Link */
+.back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-family: var(--font-headers);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: var(--course-accent);
+}
+
+/* Tables of Contents List */
+.contents-main {
+    margin-bottom: 6rem;
+}
+
+.contents-list {
+    list-style: none;
+    /* We use CSS counters for formatting */
+    padding: 0;
+    margin: 0;
+    counter-reset: chapter-roman;
+}
+
+.contents-item {
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.contents-item:last-child {
+    border-bottom: none;
+}
+
+.contents-link {
+    display: flex;
+    align-items: baseline;
+    padding: 1.25rem 0.5rem;
+    text-decoration: none;
+    color: var(--heading);
+    transition: background-color 0.15s, color 0.15s;
+    font-size: 1.25rem;
+}
+
+.contents-link:hover {
+    background-color: var(--bg-alt);
+    color: var(--course-accent);
+}
+
+/* Roman Numerals for Course Contents */
+.contents-list:not(.index-list) .contents-link::before {
+    counter-increment: chapter-roman;
+    content: counter(chapter-roman, upper-roman) ".";
+    min-width: 2.5rem;
+    font-family: var(--font-headers);
+    font-size: 0.9rem;
+    color: var(--course-accent);
+    font-weight: 600;
+    text-align: right;
+    margin-right: 1.5rem;
+}
+
+.contents-name {
+    font-weight: 400;
+}
+
+/* Index Page Specifics */
+.index-list .contents-link {
+    justify-content: space-between;
+}
+
+.index-list .contents-name {
+    font-weight: 400;
+}
+
+.course-arrow {
+    opacity: 0;
+    transform: translateX(-5px);
+    transition: all 0.2s;
+    color: var(--course-accent);
+}
+
+.contents-link:hover .course-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Footer for Contents Page */
+.contents-page .footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+    margin-top: 4rem;
+}

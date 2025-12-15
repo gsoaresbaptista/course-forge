@@ -45,3 +45,17 @@ class FileSystemOutputWriter(OutputWriter):
         dst_path = os.path.join(dst_foler, node.name + node.file_extension)
         os.makedirs(dst_foler, exist_ok=True)
         shutil.copy2(node.src_path, dst_path)
+
+    def write_contents(self, node: ContentNode, text: str) -> None:
+        """Write contents.html for a course directory."""
+        out_dir = os.path.join(self._root_path, node.name)
+        os.makedirs(out_dir, exist_ok=True)
+        html_path = os.path.join(out_dir, "contents.html")
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(text)
+
+    def write_index(self, text: str) -> None:
+        """Write root index.html."""
+        html_path = os.path.join(self._root_path, "index.html")
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(text)

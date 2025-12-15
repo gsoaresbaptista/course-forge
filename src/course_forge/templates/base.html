@@ -3,32 +3,125 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title or "Página" }}</title>
     <link rel="icon" href="/favicon.svg">
     <link rel="icon" href="/img/dark-favicon.svg" media="(prefers-color-scheme: light)">
     <link rel="icon" href="/img/light-favicon.svg" media="(prefers-color-scheme: dark)">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="/css/katex.min.css">
     <link rel="stylesheet" href="/css/base.css">
 </head>
 
 <body>
-    <header></header>
-    <main>{{ content }}</main>
-    <footer></footer>
-</body>
-<script src="/js/katex.min.js"></script>
-<script src="/js/auto-render.min.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        renderMathInElement(document.body, {
-            delimiters: [
-                { left: "$$", right: "$$", display: true },
-                { left: "$", right: "$", display: false }
-            ]
+    <div class="page-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-content">
+                <header class="sidebar-title-section">
+                    <a href="contents.html" class="course-title-link">
+                        <h1 class="sidebar-course-title">{{ course_name }}</h1>
+                    </a>
+                    <div class="sidebar-ornament">❧</div>
+                </header>
+
+                {% if toc %}
+                <section class="sidebar-toc-section">
+                    <h2 class="toc-header">Tabela de Conteúdos</h2>
+                    <ol class="toc-list">
+                        {% for item in toc %}
+                        <li class="toc-item level-{{ item.level }}">
+                            <a href="#{{ item.id }}">{{ item.text }}</a>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </section>
+                {% endif %}
+
+                <nav class="sidebar-nav-section">
+                    {% if prev_chapter %}
+                    <a href="{{ prev_chapter.slug }}.html" class="sidebar-nav-link prev">← {{ prev_chapter.name }}</a>
+                    {% endif %}
+                    {% if next_chapter %}
+                    <a href="{{ next_chapter.slug }}.html" class="sidebar-nav-link next">{{ next_chapter.name }} →</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </nav>
+
+        <button class="mobile-menu-toggle" aria-label="Menu">
+            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12h18M3 6h18M3 18h18" />
+            </svg>
+        </button>
+
+        <div class="mobile-menu-overlay"></div>
+
+        <main class="main-content">
+            <article class="article">
+                <header class="article-header">
+                    <h1 class="article-title">
+                        <span class="title-text">{{ title }}</span>
+                        <span class="title-number">{{ chapter_num }}</span>
+                    </h1>
+                </header>
+                <div class="article-body">
+                    {{ content }}
+                </div>
+            </article>
+            <footer class="footer">
+                <p>© 2025 · Gerado com <a href="#">Course Forge</a></p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        const toggle = document.querySelector('.mobile-menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.mobile-menu-overlay');
+
+        function openMenu() {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            toggle.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            toggle.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        toggle.addEventListener('click', () => {
+            if (sidebar.classList.contains('open')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
         });
-    });
-</script>
-<script src="/js/rough.min.js"></script>
-<script src="/js/apply_rough.js"></script>
+
+        overlay.addEventListener('click', closeMenu);
+    </script>
+
+    <script src="/js/katex.min.js"></script>
+    <script src="/js/auto-render.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false }
+                ],
+                throwOnError: false
+            });
+        });
+    </script>
+    <script src="/js/rough.min.js"></script>
+    <script src="/js/apply_rough.js"></script>
+</body>
 
 </html>
