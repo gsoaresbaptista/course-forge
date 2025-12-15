@@ -848,17 +848,47 @@ figcaption {
     color: var(--course-accent);
 }
 
-/* Roman Numerals for Course Contents */
+/* Grouped Parts Grid */
+.parts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    margin-top: 1.5rem;
+}
+
+.part-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.part-title {
+    font-family: var(--font-headers);
+    font-size: 1.1rem;
+    color: var(--heading);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.part-roman {
+    margin-right: 0.5rem;
+    color: var(--course-accent);
+}
+
 .contents-list:not(.index-list) .contents-link::before {
     counter-increment: chapter-roman;
-    content: counter(chapter-roman, upper-roman) ".";
-    min-width: 2.5rem;
+    content: counter(chapter-roman, decimal) ".";
+    /* Changed to decimal */
+    min-width: 1.5rem;
+    margin-right: 0.75rem;
     font-family: var(--font-headers);
     font-size: 0.9rem;
     color: var(--course-accent);
     font-weight: 600;
     text-align: right;
-    margin-right: 1.5rem;
 }
 
 .contents-name {

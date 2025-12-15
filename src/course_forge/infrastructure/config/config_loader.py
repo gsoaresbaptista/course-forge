@@ -1,4 +1,5 @@
 import os
+import yaml
 
 
 class ConfigLoader:
@@ -9,16 +10,11 @@ class ConfigLoader:
             return config
 
         try:
-            with open(path, "r") as f:
-                for line in f:
-                    line = line.strip()
-                    if not line or line.startswith("#"):
-                        continue
-
-                    if ":" in line:
-                        key, value = line.split(":", 1)
-                        config[key.strip()] = value.strip()
-        except Exception:
-            pass
-
+            with open(path, "r", encoding="utf-8") as f:
+                loaded = yaml.safe_load(f)
+                if loaded and isinstance(loaded, dict):
+                    config.update(loaded)
+        except Exception as e:
+            print(f"Error loading config {path}: {e}")
+        
         return config

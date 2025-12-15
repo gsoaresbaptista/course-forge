@@ -45,15 +45,29 @@
             {% endif %}
 
             <p class="contents-subtitle">Tabela de Conteúdos</p>
-            <ol class="contents-list">
-                {% for chapter in chapters %}
-                <li class="contents-item">
-                    <a href="{{ chapter.slug }}.html" class="contents-link">
-                        <span class="contents-name">{{ chapter.name }}</span>
-                    </a>
-                </li>
+
+            <div class="parts-container">
+                {% for part in parts %}
+                <div class="part-block {% if not part.title %}single-part{% endif %}">
+                    {% if part.title %}
+                    <h3 class="part-title">
+                        <span class="part-roman">{{ part.roman }}</span>
+                        {{ part.title }}
+                    </h3>
+                    {% endif %}
+
+                    <ol class="contents-list">
+                        {% for chapter in part.chapters %}
+                        <li class="contents-item">
+                            <a href="{{ chapter.slug }}.html" class="contents-link">
+                                <span class="contents-name">{{ chapter.name }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
                 {% endfor %}
-            </ol>
+            </div>
         </main>
 
         <footer class="footer">

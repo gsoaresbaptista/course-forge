@@ -82,6 +82,6 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
     def render(self, text: str, chapter: int | None = None) -> str:
         renderer = HeadingRenderer(chapter=chapter)
         markdown = mistune.create_markdown(
-            renderer=renderer, plugins=["table", "math", "strikethrough"]
+            renderer=renderer, plugins=["table", "strikethrough"]
         )
         return str(markdown(text))

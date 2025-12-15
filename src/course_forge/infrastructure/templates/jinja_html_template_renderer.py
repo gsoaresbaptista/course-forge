@@ -127,15 +127,49 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
             if c.is_file and c.file_extension == ".md"
         ]
 
+        def sort_key(ch):
+            match = re.search(r"^(\d+)", ch["slug"])
+            return int(match.group(1)) if match else 9999
+
+        chapters.sort(key=sort_key)
+
+        parts = []
+        config_parts = config.get("parts") or config.get("groups")
+        
+        if config_parts:
+            for i, part_config in enumerate(config_parts):
+                part_title = part_config.get("title") or part_config.get("name")
+                
+                part_items = part_config.get("items") or []
+                
+                part_chapters = []
+                for item in part_items:
+                    for ch in chapters:
+                        if ch["slug"] == item or ch["slug"].startswith(item + "-"):
+                             part_chapters.append(ch)
+                             
+                from course_forge.infrastructure.markdown.mistune_markdown_renderer import to_roman
+                
+                parts.append({
+                    "title": part_title,
+                    "roman": to_roman(i + 1),
+                    "chapters": part_chapters
+                })
+                
+        else:
+            parts.append({
+                "title": None,
+                "roman": None,
+                "chapters": chapters
+            })
+
         # Sub-courses / Modules
         modules = []
         for c in course_node.children:
             if not c.is_file:
-                # Check if it is a sub-course (has MD files or children with MD files)
                 has_md = any(
                     gc.is_file and gc.file_extension == ".md" for gc in c.children
                 )
-                # Or recursive check if deeper nesting is allowed
                 if has_md:
                     modules.append(
                         {
@@ -147,7 +181,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         return template.render(
             {
                 "course_name": course_name,
-                "chapters": chapters,
+                "parts": parts,
                 "modules": modules,
                 "site_name": self.config.get("site_name", "Course Forge"),
                 "author": self.config.get("author", "Course Forge"),
