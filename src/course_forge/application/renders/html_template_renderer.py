@@ -18,12 +18,18 @@ class HTMLTemplateRenderer(ABC):
 
     @abstractmethod
     def render(
-        self, content: str, node: ContentNode, metadata: dict | None = None
+        self,
+        content: str,
+        node: ContentNode,
+        metadata: dict | None = None,
+        config: dict | None = None,
     ) -> str:
         pass
 
     @abstractmethod
-    def render_contents(self, course_node: ContentNode) -> str:
+    def render_contents(
+        self, course_node: ContentNode, config: dict | None = None
+    ) -> str:
         pass
 
     @abstractmethod

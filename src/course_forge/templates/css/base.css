@@ -37,6 +37,13 @@ html {
     font-size: 19px;
 }
 
+.article-body {
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    line-height: 1.55;
+    color: var(--text-body);
+}
+
 body {
     font-family: var(--font);
     font-size: 1rem;
@@ -836,6 +843,30 @@ figcaption {
     border-top: 1px solid var(--border);
     padding-top: 2rem;
     margin-top: 4rem;
+}
+
+.contents-year {
+    font-family: var(--font-headers);
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+.section-title {
+    font-family: var(--font-headers);
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.section-divider {
+    height: 1px;
+    background-color: var(--border);
+    margin: 2rem auto;
+    width: 50%;
 }
 
 .article-date {

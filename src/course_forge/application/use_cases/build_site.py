@@ -42,9 +42,12 @@ class BuildSiteUseCase:
             self.html_renderer.config = config
 
         tree = self.repository.load(root_path)
-        self._process_node(tree.root, pre_processors, post_processors)
+        self._process_node(
+            tree.root, pre_processors, post_processors, global_config=config
+        )
 
-        courses = self._collect_courses(tree.root)
+        # Only collect top-level courses for the main index
+        courses = self._collect_top_level_courses(tree.root)
 
         if courses:
             index_html = self.html_renderer.render_index(courses)
@@ -54,22 +57,48 @@ class BuildSiteUseCase:
 
         self.writer.copy_assets(self.html_renderer.template_dir)
 
-    def _collect_courses(self, node: ContentNode) -> list[dict]:
+    def _collect_top_level_courses(self, node: ContentNode) -> list[dict]:
         courses = []
-        if not node.is_file:
-            # Check if this directory has any markdown files directly inside it
-            has_md = any(c.is_file and c.file_extension == ".md" for c in node.children)
-            if has_md and node.parent is not None:  # Exclude root itself
-                slug = "/".join(node.slugs_path + [node.name])
-                courses.append(
-                    {
-                        "name": self._clean_name(node.name),
-                        "slug": slug,
-                    }
+        # We only want direct children of root that are courses
+        for child in node.children:
+            if not child.is_file:
+                # Check if it has markdown files directly or is a course container
+                has_md = any(
+                    c.is_file and c.file_extension == ".md" for c in child.children
                 )
 
-            for child in node.children:
-                courses.extend(self._collect_courses(child))
+                # If it has MD files, it's a course. Add it.
+                if has_md:
+                    courses.append(
+                        {
+                            "name": self._clean_name(child.name),
+                            "slug": child.relative_path
+                            if hasattr(child, "relative_path")
+                            else child.name,  # logic adjustment
+                            "node": child,
+                        }
+                    )
+                # If it doesn't have MD files but has children directories, maybe one of them is a course?
+                # But for the root index, we typically want "Discipline" level.
+                # If "sistemas-digitais" contains "logica-proposicional", "sistemas-digitais" IS the entry point.
+                # Even if "sistemas-digitais" has NO md files itself (just sub-courses), it should act as the grouping.
+                # Current logic requires MD files to be considered a course.
+                # Let's stick to: if it has MD files or has children that are dirs with MD files.
+                elif any(
+                    not gc.is_file
+                    and any(
+                        ggc.is_file and ggc.file_extension == ".md"
+                        for ggc in gc.children
+                    )
+                    for gc in child.children
+                ):
+                    courses.append(
+                        {
+                            "name": self._clean_name(child.name),
+                            "slug": child.name,
+                            "node": child,
+                        }
+                    )
         return courses
 
     def _clean_name(self, name: str) -> str:
@@ -81,7 +110,23 @@ class BuildSiteUseCase:
         node: ContentNode,
         pre_processors: list[Processor],
         post_processors: list[Processor],
+        global_config: dict | None = None,
+        parent_course_config: dict | None = None,
     ) -> None:
+        import os
+        from course_forge.infrastructure.config.config_loader import ConfigLoader
+
+        current_config = parent_course_config
+
+        # Check for config.yaml in this directory if it's a directory
+        if not node.is_file and node.src_path:
+            local_config_path = os.path.join(node.src_path, "config.yaml")
+            if os.path.exists(local_config_path):
+                local_config = ConfigLoader().load(local_config_path)
+                # Merge with parent config or override? Usually override for specific fields.
+                # Let's assume local config takes precedence for course details.
+                current_config = local_config
+
         if node.is_file:
             if node.file_extension == ".md":
                 markdown = self.loader.load(node.src_path)
@@ -97,7 +142,15 @@ class BuildSiteUseCase:
                     chapter = int(match.group(1))
 
                 content = self.markdown_renderer.render(content, chapter=chapter)
-                html = self.html_renderer.render(content, node, metadata=metadata)
+                # Pass merged config (global + course) to renderer
+                # Merging logic: global base, course override
+                render_config = (global_config or {}).copy()
+                if current_config:
+                    render_config.update(current_config)
+
+                html = self.html_renderer.render(
+                    content, node, metadata=metadata, config=render_config
+                )
 
                 for processor in post_processors:
                     html = processor.execute(node, html)
@@ -109,11 +162,26 @@ class BuildSiteUseCase:
             has_md_files = any(
                 c.is_file and c.file_extension == ".md" for c in node.children
             )
-            if has_md_files and node.parent is not None:
-                contents_html = self.html_renderer.render_contents(node)
+            # Or has sub-courses?
+            has_subcourses = any(
+                not c.is_file
+                and any(gc.is_file and gc.file_extension == ".md" for gc in c.children)
+                for c in node.children
+            )
+
+            if (has_md_files or has_subcourses) and node.parent is not None:
+                render_config = (global_config or {}).copy()
+                if current_config:
+                    render_config.update(current_config)
+
+                contents_html = self.html_renderer.render_contents(
+                    node, config=render_config
+                )
                 for processor in post_processors:
                     contents_html = processor.execute(node, contents_html)
                 self.writer.write_contents(node, contents_html)
 
         for child in node.children:
-            self._process_node(child, pre_processors, post_processors)
+            self._process_node(
+                child, pre_processors, post_processors, global_config, current_config
+            )

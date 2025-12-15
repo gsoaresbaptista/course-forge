@@ -17,13 +17,33 @@
 <body>
     <div class="contents-page">
         <header class="contents-header">
-            <a href="/" class="back-link">← Voltar para Cursos</a>
+            <a href="/" class="back-link">← Voltar para Disciplinas</a>
             <div class="contents-ornament">❧</div>
             <h1 class="contents-title">{{ course_name }}</h1>
+            {% if year %}
+            <p class="contents-year">{{ year }}</p>
+            {% endif %}
             <p class="contents-subtitle">Tabela de Conteúdos</p>
         </header>
 
         <main class="contents-main">
+            {% if modules %}
+            <section class="contents-section">
+                <h2 class="section-title">Módulos / Sub-cursos</h2>
+                <ul class="contents-list">
+                    {% for module in modules %}
+                    <li class="contents-item">
+                        <a href="{{ module.slug }}" class="contents-link">
+                            <span class="contents-name">{{ module.name }}</span>
+                            <span class="course-arrow">→</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+            <div class="section-divider"></div>
+            {% endif %}
+
             <ol class="contents-list">
                 {% for chapter in chapters %}
                 <li class="contents-item">
@@ -36,7 +56,7 @@
         </main>
 
         <footer class="footer">
-            <p>© 2025 · Gerado com <a href="#">{{ site_name }}</a></p>
+            <p>© 2025 · Gerado com <a href="#">{{ author }}</a></p>
         </footer>
     </div>
 </body>

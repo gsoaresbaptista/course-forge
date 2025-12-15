@@ -47,10 +47,15 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         self.env = Environment(loader=ChoiceLoader(loaders))
 
     def render(
-        self, content: str, node: ContentNode, metadata: dict | None = None
+        self,
+        content: str,
+        node: ContentNode,
+        metadata: dict | None = None,
+        config: dict | None = None,
     ) -> str:
         template = self.env.get_template("base.html")
         metadata = metadata or {}
+        config = config or self.config
 
         course_name = ""
         if node.parent:
@@ -73,6 +78,10 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
 
         title = metadata.get("title") or strip_leading_number(node.name)
         date = metadata.get("date")
+        if date and isinstance(date, str) and re.match(r"^\d{4}-\d{2}-\d{2}$", date):
+            # Convert YYYY-MM-DD to DD/MM/YYYY
+            y, m, d = date.split("-")
+            date = f"{d}/{m}/{y}"
 
         toc = extract_toc(content)
 
@@ -81,7 +90,9 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "title": title,
                 "date": date,
                 "content": content,
-                "course_name": course_name,
+                "course_name": config.get("name", course_name)
+                if config
+                else course_name,
                 "siblings": siblings,
                 "current_slug": node.name,
                 "chapter_num": chapter_num,
@@ -89,25 +100,54 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "next_chapter": next_chapter,
                 "toc": toc,
                 "site_name": self.config.get("site_name", "Course Forge"),
+                "author": self.config.get("author", "Course Forge"),
             }
         )
 
-    def render_contents(self, course_node: ContentNode) -> str:
+    def render_contents(
+        self, course_node: ContentNode, config: dict | None = None
+    ) -> str:
         """Render contents.html for a course directory."""
         template = self.env.get_template("contents.html")
+        config = (
+            config or self.config
+        )  # Merge logic happened in build_site, but here we fallback to global
 
-        course_name = strip_leading_number(course_node.name)
+        course_name = (
+            config.get("name") if config else strip_leading_number(course_node.name)
+        )
+
         chapters = [
             {"name": strip_leading_number(c.name), "slug": c.name}
             for c in course_node.children
             if c.is_file and c.file_extension == ".md"
         ]
 
+        # Sub-courses / Modules
+        modules = []
+        for c in course_node.children:
+            if not c.is_file:
+                # Check if it is a sub-course (has MD files or children with MD files)
+                has_md = any(
+                    gc.is_file and gc.file_extension == ".md" for gc in c.children
+                )
+                # Or recursive check if deeper nesting is allowed
+                if has_md:
+                    modules.append(
+                        {
+                            "name": strip_leading_number(c.name),
+                            "slug": f"{c.name}/contents",  # Link to its contents page
+                        }
+                    )
+
         return template.render(
             {
                 "course_name": course_name,
                 "chapters": chapters,
+                "modules": modules,
                 "site_name": self.config.get("site_name", "Course Forge"),
+                "author": self.config.get("author", "Course Forge"),
+                "year": config.get("year"),
             }
         )
 
