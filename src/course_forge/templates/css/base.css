@@ -837,3 +837,12 @@ figcaption {
     padding-top: 2rem;
     margin-top: 4rem;
 }
+
+.article-date {
+    font-family: var(--font-headers);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-style: italic;
+    letter-spacing: 0.05em;
+}

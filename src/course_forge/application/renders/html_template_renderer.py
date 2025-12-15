@@ -17,5 +17,15 @@ class HTMLTemplateRenderer(ABC):
             self.template_dir = template_dir
 
     @abstractmethod
-    def render(self, content: str, node: ContentNode) -> str:
+    def render(
+        self, content: str, node: ContentNode, metadata: dict | None = None
+    ) -> str:
+        pass
+
+    @abstractmethod
+    def render_contents(self, course_node: ContentNode) -> str:
+        pass
+
+    @abstractmethod
+    def render_index(self, courses: list[dict]) -> str:
         pass

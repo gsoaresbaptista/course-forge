@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title or "Página" }}</title>
+    <title>{{ title or "Página" }} | {{ site_name }}</title>
     <link rel="icon" href="/favicon.svg">
     <link rel="icon" href="/img/dark-favicon.svg" media="(prefers-color-scheme: light)">
     <link rel="icon" href="/img/light-favicon.svg" media="(prefers-color-scheme: dark)">
@@ -66,13 +66,16 @@
                         <span class="title-text">{{ title }}</span>
                         <span class="title-number">{{ chapter_num }}</span>
                     </h1>
+                    {% if date %}
+                    <p class="article-date">{{ date }}</p>
+                    {% endif %}
                 </header>
                 <div class="article-body">
                     {{ content }}
                 </div>
             </article>
             <footer class="footer">
-                <p>© 2025 · Gerado com <a href="#">Course Forge</a></p>
+                <p>© 2025 · Gerado com <a href="#">{{ site_name }}</a></p>
             </footer>
         </main>
     </div>

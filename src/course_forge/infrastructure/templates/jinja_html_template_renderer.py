@@ -36,8 +36,9 @@ def extract_toc(html_content: str) -> list[dict]:
 
 
 class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
-    def __init__(self, template_dir: str | None = None):
+    def __init__(self, template_dir: str | None = None, config: dict | None = None):
         super().__init__(template_dir)
+        self.config = config or {}
 
         loaders: list[BaseLoader] = []
 
@@ -45,8 +46,11 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
 
         self.env = Environment(loader=ChoiceLoader(loaders))
 
-    def render(self, content: str, node: ContentNode) -> str:
+    def render(
+        self, content: str, node: ContentNode, metadata: dict | None = None
+    ) -> str:
         template = self.env.get_template("base.html")
+        metadata = metadata or {}
 
         course_name = ""
         if node.parent:
@@ -67,12 +71,15 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
             siblings[current_index + 1] if current_index < len(siblings) - 1 else None
         )
 
-        title = strip_leading_number(node.name)
+        title = metadata.get("title") or strip_leading_number(node.name)
+        date = metadata.get("date")
+
         toc = extract_toc(content)
 
         return template.render(
             {
                 "title": title,
+                "date": date,
                 "content": content,
                 "course_name": course_name,
                 "siblings": siblings,
@@ -81,6 +88,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "prev_chapter": prev_chapter,
                 "next_chapter": next_chapter,
                 "toc": toc,
+                "site_name": self.config.get("site_name", "Course Forge"),
             }
         )
 
@@ -99,15 +107,18 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
             {
                 "course_name": course_name,
                 "chapters": chapters,
+                "site_name": self.config.get("site_name", "Course Forge"),
             }
         )
 
-    def render_index(self, courses: list[ContentNode]) -> str:
+    def render_index(self, courses: list[dict]) -> str:
         """Render index.html listing available courses."""
         template = self.env.get_template("index.html")
 
-        course_list = [
-            {"name": strip_leading_number(c.name), "slug": c.name} for c in courses
-        ]
-
-        return template.render({"courses": course_list})
+        return template.render(
+            {
+                "courses": courses,
+                "site_name": self.config.get("site_name", "Course Forge"),
+                "courses_title": self.config.get("courses_title", "Cursos Disponíveis"),
+            }
+        )
