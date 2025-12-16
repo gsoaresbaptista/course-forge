@@ -80,8 +80,36 @@ class HeadingRenderer(mistune.HTMLRenderer):
 
 class MistuneMarkdownRenderer(MarkdownRenderer):
     def render(self, text: str, chapter: int | None = None) -> str:
+        text, placeholders = self._protect_latex(text)
+
         renderer = HeadingRenderer(chapter=chapter)
         markdown = mistune.create_markdown(
             renderer=renderer, plugins=["table", "strikethrough"]
         )
-        return str(markdown(text))
+        html = str(markdown(text))
+
+        html = self._restore_latex(html, placeholders)
+        return html
+
+    def _protect_latex(self, text: str) -> tuple[str, dict[str, str]]:
+        """Replace LaTeX blocks with placeholders to prevent markdown processing."""
+        placeholders: dict[str, str] = {}
+        counter = 0
+
+        def replace_block(match: re.Match) -> str:
+            nonlocal counter
+            placeholder = f"<!--LATEXBLOCK{counter}-->"
+            placeholders[placeholder] = match.group(0)
+            counter += 1
+            return placeholder
+
+        text = re.sub(r"\$\$[\s\S]+?\$\$", replace_block, text)
+        text = re.sub(r"(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)", replace_block, text)
+
+        return text, placeholders
+
+    def _restore_latex(self, html: str, placeholders: dict[str, str]) -> str:
+        """Restore LaTeX blocks from placeholders."""
+        for placeholder, original in placeholders.items():
+            html = html.replace(placeholder, original)
+        return html

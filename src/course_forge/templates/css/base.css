@@ -30,7 +30,7 @@
     --font-code: Consolas, Monaco, monospace;
 
     --content-max: 720px;
-    --sidebar-width: 300px;
+    --sidebar-width: 350px;
 }
 
 html {
@@ -40,7 +40,7 @@ html {
 .article-body {
     font-family: var(--font-body);
     font-size: 1.125rem;
-    line-height: 1.55;
+    line-height: 1.85;
     color: var(--text-body);
 }
 
