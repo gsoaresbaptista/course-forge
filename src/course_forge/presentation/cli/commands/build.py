@@ -2,6 +2,7 @@ from course_forge.application.processors import (
     ASTProcessor,
     DigitalCircuitProcessor,
     HTMLMinifyProcessor,
+    InternalLinkProcessor,
     Processor,
 )
 from course_forge.application.use_cases.build_site import BuildSiteUseCase
@@ -23,6 +24,7 @@ class DependencyContainer:
         self._writer = FileSystemOutputWriter(output_path)
 
         self._pre_processors: list[Processor] = [
+            InternalLinkProcessor(),
             DigitalCircuitProcessor(),
             ASTProcessor(),
         ]
