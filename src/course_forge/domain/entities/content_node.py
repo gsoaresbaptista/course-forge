@@ -11,7 +11,6 @@ class ContentNode:
         file_extension: str,
         is_file: bool = False,
         children: list[ContentNode] | None = None,
-        slugs_path: list[str] | None = None,
         parent: ContentNode | None = None,
         metadata: dict | None = None,
     ) -> None:
@@ -19,7 +18,6 @@ class ContentNode:
         self._is_file = is_file
         self.name = name
         self.children = children or []
-        self._slugs_path: list[str] = [] if slugs_path is None else slugs_path
         self._number_of_attachments: int = 0
         self._attachments: dict[int, Any] = {}
         self._file_extension: str = file_extension
@@ -48,7 +46,13 @@ class ContentNode:
 
     @property
     def slugs_path(self) -> list[str]:
-        return self._slugs_path
+        """Compute path from parent chain dynamically."""
+        path = []
+        node = self._parent
+        while node is not None and node._parent is not None:
+            path.insert(0, node.name)
+            node = node._parent
+        return path
 
     @property
     def is_file(self) -> bool:
