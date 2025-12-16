@@ -1,3 +1,4 @@
+import os
 import re
 
 from course_forge.application.loaders import MarkdownLoader
@@ -6,6 +7,7 @@ from course_forge.application.renders import HTMLTemplateRenderer, MarkdownRende
 from course_forge.application.writers import OutputWriter
 from course_forge.domain.entities import ContentNode
 from course_forge.domain.repositories import ContentTreeRepository
+from course_forge.infrastructure.config.config_loader import ConfigLoader
 
 
 class BuildSiteUseCase:
@@ -30,11 +32,6 @@ class BuildSiteUseCase:
         post_processors: list[Processor],
         template_dir: str | None = None,
     ) -> None:
-        # Load config from root_path
-        import os
-
-        from course_forge.infrastructure.config.config_loader import ConfigLoader
-
         config_path = os.path.join(root_path, "config.yaml")
         config = ConfigLoader().load(config_path)
 
@@ -59,10 +56,6 @@ class BuildSiteUseCase:
         self.writer.copy_assets(self.html_renderer.template_dir)
 
     def _collect_top_level_courses(self, node: ContentNode) -> list[dict]:
-        import os
-
-        from course_forge.infrastructure.config.config_loader import ConfigLoader
-
         courses = []
         # We only want direct children of root that are courses
         for child in node.children:
@@ -120,10 +113,6 @@ class BuildSiteUseCase:
         global_config: dict | None = None,
         parent_course_config: dict | None = None,
     ) -> None:
-        import os
-
-        from course_forge.infrastructure.config.config_loader import ConfigLoader
-
         current_config = parent_course_config
 
         # Check for config.yaml in this directory if it's a directory

@@ -90,11 +90,6 @@ body {
     text-align: center;
 }
 
-.course-title-link {
-    text-decoration: none;
-    display: block;
-}
-
 .course-title-link:hover .sidebar-course-title {
     color: var(--link-hover);
 }
@@ -549,80 +544,7 @@ figcaption {
     color: var(--text-muted);
 }
 
-/* ===================================
-   Contents Page
-   =================================== */
-.contents-page {
-    max-width: 750px;
-    margin: 0 auto;
-    padding: 3rem 2rem;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
 
-.contents-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.back-link {
-    display: inline-block;
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
-}
-
-.contents-title {
-    font-size: 2.5rem;
-    font-weight: 400;
-    color: var(--heading);
-}
-
-.contents-main {
-    flex: 1;
-}
-
-.contents-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    counter-reset: contents-chapter;
-}
-
-.contents-item {
-    counter-increment: contents-chapter;
-    border-bottom: 1px solid var(--border);
-}
-
-.contents-item:first-child {
-    border-top: 1px solid var(--border);
-}
-
-.contents-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0.5rem;
-    text-decoration: none;
-    transition: background 0.15s;
-}
-
-.contents-link:hover {
-    background: var(--active-bg);
-}
-
-.contents-link::before {
-    content: counter(contents-chapter) ".";
-    min-width: 2rem;
-    color: var(--text-muted);
-    font-weight: 600;
-}
-
-.contents-name {
-    flex: 1;
-    color: var(--text);
-    font-size: 1.1rem;
-}
 
 /* ===================================
    Selection
@@ -730,7 +652,6 @@ figcaption {
 
 .contents-title::after {
     display: none;
-    /* Override any potential default styles */
 }
 
 .contents-subtitle {
@@ -760,7 +681,6 @@ figcaption {
     text-decoration: none;
     transition: color 0.2s;
     background: var(--bg);
-    /* Ensure readability over content */
     padding: 0.5rem;
     border-radius: 4px;
 }
@@ -801,10 +721,8 @@ figcaption {
     background: var(--sidebar-bg);
     padding-left: 0.5rem;
     transform: scaleX(-1);
-    /* Mirror for symmetry */
 }
 
-/* Hide the old ornament if it exists in HTML */
 .sidebar-ornament {
     display: none;
 }
@@ -812,12 +730,12 @@ figcaption {
 
 /* Tables of Contents List */
 .contents-main {
+    flex: 1;
     margin-bottom: 6rem;
 }
 
 .contents-list {
     list-style: none;
-    /* We use CSS counters for formatting */
     padding: 0;
     margin: 0;
     counter-reset: chapter-roman;
