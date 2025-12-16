@@ -285,9 +285,24 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                     gc.is_file and gc.file_extension == ".md" for gc in c.children
                 )
                 if has_md:
+                    # Try to load the submodule's config.yaml for its name
+                    module_name = strip_leading_number(c.name)
+                    if c.src_path:
+                        import os
+
+                        from course_forge.infrastructure.config.config_loader import (
+                            ConfigLoader,
+                        )
+
+                        module_config_path = os.path.join(c.src_path, "config.yaml")
+                        if os.path.exists(module_config_path):
+                            module_config = ConfigLoader().load(module_config_path)
+                            if module_config.get("name"):
+                                module_name = module_config["name"]
+
                     modules.append(
                         {
-                            "name": strip_leading_number(c.name),
+                            "name": module_name,
                             "slug": f"{c.slug}/contents.html",
                         }
                     )
