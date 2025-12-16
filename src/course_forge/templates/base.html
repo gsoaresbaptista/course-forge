@@ -47,7 +47,8 @@
                     {% if next_chapter %}
                     <a href="{{ next_chapter.slug }}.html" class="sidebar-nav-link next">{{ next_chapter.name }} →</a>
                     {% endif %}
-                    <a href="javascript:history.back()" class="sidebar-nav-link back">Voltar</a>
+                    <a href="javascript:void(0)" onclick="handleBackNavigation()"
+                        class="sidebar-nav-link back">Voltar</a>
                 </nav>
 
             </div>
@@ -146,6 +147,15 @@
         });
     </script>
     <script src="/js/rough.min.js"></script>
+    <script>
+        function handleBackNavigation() {
+            if (document.referrer && document.referrer.indexOf(window.location.hostname) !== -1) {
+                history.back();
+            } else {
+                window.location.href = 'contents.html';
+            }
+        }
+    </script>
     <script src="/js/apply_rough.js"></script>
 </body>
 
