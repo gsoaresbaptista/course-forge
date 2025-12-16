@@ -73,10 +73,16 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         if node.parent:
             course_name = strip_leading_number(node.parent.name)
 
-        siblings = [
-            {"name": strip_leading_number(s.name), "slug": s.name}
-            for s in node.siblings
-        ]
+        siblings = []
+        for s in node.siblings:
+            sibling_name = strip_leading_number(s.name)
+            if s.metadata and s.metadata.get("title"):
+                sibling_name = s.metadata["title"]
+            elif s.src_path:
+                title = self._read_title_from_file(s.src_path)
+                if title:
+                    sibling_name = title
+            siblings.append({"name": sibling_name, "slug": s.name})
 
         def sort_key(s):
             match = re.search(r"^(\d+)", s["slug"])
