@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+import unicodedata
 from typing import Any
 
 
@@ -45,12 +47,24 @@ class ContentNode:
         self._src_path = path
 
     @property
+    def slug(self) -> str:
+        """Generate URL-friendly slug from name."""
+        text = self.name
+        text = unicodedata.normalize("NFKD", text)
+        text = text.encode("ascii", "ignore").decode("ascii")
+        text = text.lower()
+        text = re.sub(r"[^\w\s-]", "", text)
+        text = re.sub(r"[-\s]+", "-", text)
+        text = text.strip("-")
+        return text if text else self.name
+
+    @property
     def slugs_path(self) -> list[str]:
-        """Compute path from parent chain dynamically."""
+        """Compute path from parent chain dynamically using slugs."""
         path = []
         node = self._parent
         while node is not None and node._parent is not None:
-            path.insert(0, node.name)
+            path.insert(0, node.slug)
             node = node._parent
         return path
 

@@ -82,7 +82,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 title = self._read_title_from_file(s.src_path)
                 if title:
                     sibling_name = title
-            siblings.append({"name": sibling_name, "slug": s.name})
+            siblings.append({"name": sibling_name, "slug": s.slug})
 
         def sort_key(s):
             match = re.search(r"^(\d+)", s["slug"])
@@ -91,7 +91,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         siblings.sort(key=sort_key)
 
         current_index = next(
-            (i for i, s in enumerate(siblings) if s["slug"] == node.name), 0
+            (i for i, s in enumerate(siblings) if s["slug"] == node.slug), 0
         )
         chapter_num = current_index + 1
 
@@ -194,7 +194,13 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                     title = self._read_title_from_file(c.src_path)
                     if title:
                         chapter_name = title
-                chapters.append({"name": chapter_name, "slug": c.name})
+                chapters.append(
+                    {
+                        "name": chapter_name,
+                        "slug": c.slug,
+                        "original_name": c.name,
+                    }
+                )
 
         def sort_key(ch):
             match = re.search(r"^(\d+)", ch["slug"])
@@ -214,7 +220,13 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 part_chapters = []
                 for item in part_items:
                     for ch in chapters:
-                        if ch["slug"] == item or ch["slug"].startswith(item + "-"):
+                        if (
+                            ch["slug"] == item
+                            or ch["slug"].startswith(item + "-")
+                            or ch["original_name"] == item
+                            or ch["original_name"].startswith(item + " ")
+                            or ch["original_name"].startswith(item + "-")
+                        ):
                             part_chapters.append(ch)
 
                 from course_forge.infrastructure.markdown.mistune_markdown_renderer import (
@@ -243,7 +255,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                     modules.append(
                         {
                             "name": strip_leading_number(c.name),
-                            "slug": f"{c.name}/contents.html",  # Link to its contents page
+                            "slug": f"{c.slug}/contents.html",
                         }
                     )
 

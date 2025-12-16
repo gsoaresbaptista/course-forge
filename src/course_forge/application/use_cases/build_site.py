@@ -78,9 +78,7 @@ class BuildSiteUseCase:
                     courses.append(
                         {
                             "name": course_name,
-                            "slug": child.relative_path
-                            if hasattr(child, "relative_path")
-                            else child.name,  # logic adjustment
+                            "slug": child.slug,
                             "node": child,
                         }
                     )
@@ -134,7 +132,7 @@ class BuildSiteUseCase:
                     content = processor.execute(node, content)
 
                 chapter = None
-                match = re.match(r"^(\d+)-", node.name)
+                match = re.match(r"^(\d+)\s*[-_.\s]", node.name)
                 if match:
                     chapter = int(match.group(1))
 

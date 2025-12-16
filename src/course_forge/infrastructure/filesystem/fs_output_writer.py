@@ -13,7 +13,7 @@ class FileSystemOutputWriter(OutputWriter):
     def write(self, node: ContentNode, text: str) -> None:
         out_dir = os.path.join(self._root_path, *node.slugs_path)
         os.makedirs(out_dir, exist_ok=True)
-        html_path = os.path.join(out_dir, node.name + ".html")
+        html_path = os.path.join(out_dir, node.slug + ".html")
 
         for attach in node.attachments.values():
             node_attachments = os.path.join(out_dir, "static")
@@ -42,14 +42,14 @@ class FileSystemOutputWriter(OutputWriter):
 
     def copy_file(self, node: ContentNode) -> None:
         dst_foler = os.path.join(self._root_path, *node.slugs_path)
-        dst_path = os.path.join(dst_foler, node.name + node.file_extension)
+        dst_path = os.path.join(dst_foler, node.slug + node.file_extension)
         os.makedirs(dst_foler, exist_ok=True)
         shutil.copy2(node.src_path, dst_path)
 
     def write_contents(self, node: ContentNode, text: str) -> None:
         """Write contents.html for a course directory."""
         # Use full path including parents (slugs_path) + current node name
-        out_dir = os.path.join(self._root_path, *node.slugs_path, node.name)
+        out_dir = os.path.join(self._root_path, *node.slugs_path, node.slug)
         os.makedirs(out_dir, exist_ok=True)
         html_path = os.path.join(out_dir, "contents.html")
         with open(html_path, "w", encoding="utf-8") as f:
