@@ -40,6 +40,12 @@ class BuildSiteUseCase:
             self.html_renderer.config = config
 
         tree = self.repository.load(root_path)
+
+        # Inject root node into processors that need it
+        for processor in pre_processors + post_processors:
+            if hasattr(processor, "set_root"):
+                processor.set_root(tree.root)
+
         self._process_node(
             tree.root, pre_processors, post_processors, global_config=config
         )
