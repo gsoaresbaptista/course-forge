@@ -5,12 +5,7 @@ from jinja2 import BaseLoader, ChoiceLoader, Environment, FileSystemLoader
 
 from course_forge.application.renders import HTMLTemplateRenderer
 from course_forge.domain.entities import ContentNode
-
-
-def strip_leading_number(name: str) -> str:
-    """Remove leading numbers and separators from name (e.g., '1-intro' -> 'intro')."""
-    cleaned = re.sub(r"^[\d]+[-_.\s]*", "", name)
-    return cleaned.replace("-", " ").replace("_", " ").title() if cleaned else name
+from course_forge.utils import strip_leading_number, to_roman
 
 
 def extract_toc(html_content: str) -> list[dict]:
@@ -19,10 +14,6 @@ def extract_toc(html_content: str) -> list[dict]:
 
     def clean(s):
         return s.strip()
-
-    # For now, let's assume we will change the renderer to:
-    # H2: <h2 id=".."><span class="heading-text">Title</span><span class="heading-arabic">1</span></h2>
-    # H3: <h3 id=".."><span class="heading-text">Title</span><span class="heading-arabic">1.1</span></h3>
 
     heading_pattern = r'<h([23])[^>]*id="([^"]+)"[^>]*>.*?<span class="heading-text">([^<]+)</span>.*?<span class="heading-arabic">([^<]+)</span>'
 
@@ -228,10 +219,6 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                             or ch["original_name"].startswith(item + "-")
                         ):
                             part_chapters.append(ch)
-
-                from course_forge.infrastructure.markdown.mistune_markdown_renderer import (
-                    to_roman,
-                )
 
                 parts.append(
                     {

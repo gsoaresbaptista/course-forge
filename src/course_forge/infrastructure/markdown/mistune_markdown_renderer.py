@@ -19,18 +19,6 @@ def strip_heading_number(text: str) -> str:
     return re.sub(r"^[\d]+(?:\.[\d]+)*\s*", "", text).strip()
 
 
-def to_roman(num: int) -> str:
-    """Convert integer to Roman numeral."""
-    val = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
-    syms = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
-    roman = ""
-    for i, v in enumerate(val):
-        while num >= v:
-            roman += syms[i]
-            num -= v
-    return roman
-
-
 class HeadingRenderer(mistune.HTMLRenderer):
     """Custom renderer that adds section numbers to headings."""
 

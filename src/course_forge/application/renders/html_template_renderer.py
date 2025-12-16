@@ -1,3 +1,4 @@
+import os
 from abc import ABC, abstractmethod
 
 from course_forge.domain.entities import ContentNode
@@ -8,8 +9,6 @@ class HTMLTemplateRenderer(ABC):
         super().__init__()
 
         if template_dir is None:
-            import os
-
             self.template_dir = os.path.join(
                 os.path.dirname(__file__), "..", "..", "templates"
             )
