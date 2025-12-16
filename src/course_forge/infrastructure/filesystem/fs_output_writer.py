@@ -66,6 +66,12 @@ class FileSystemOutputWriter(OutputWriter):
             else:
                 self._smart_copy(src_path, dst_path)
 
+        # Copy dark-favicon.svg as fallback favicon.svg at root
+        favicon_src = os.path.join(self._root_path, "img", "dark-favicon.svg")
+        favicon_dst = os.path.join(self._root_path, "favicon.svg")
+        if os.path.exists(favicon_src) and not os.path.exists(favicon_dst):
+            shutil.copy2(favicon_src, favicon_dst)
+
     def _smart_copy(self, src: str, dst: str, **kwargs) -> None:
         ext = Path(src).suffix.lower()
         if ext in [".css", ".js", ".svg"]:
