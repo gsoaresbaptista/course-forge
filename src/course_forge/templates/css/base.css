@@ -280,7 +280,7 @@ body {
 
 .breadcrumb-separator {
     margin: 0 0.4rem;
-    color: var(--border);
+    color: var(--heading);
 }
 
 .breadcrumb-current {
@@ -854,14 +854,13 @@ figcaption {
     font-family: var(--font-headers);
     font-size: 1.1rem;
     color: var(--heading);
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.5rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 600;
     min-height: 2.5rem;
     display: flex;
     align-items: flex-end;
+    border-bottom: 1px solid var(--course-accent);
 }
 
 .part-roman {
