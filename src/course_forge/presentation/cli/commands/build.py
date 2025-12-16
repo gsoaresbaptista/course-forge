@@ -1,3 +1,6 @@
+import os
+import shutil
+
 from course_forge.application.processors import (
     ASTProcessor,
     DigitalCircuitProcessor,
@@ -53,6 +56,11 @@ class DependencyContainer:
 
 def build(content_path: str, output_path: str, template_dir: str | None = None) -> None:
     print(f'Starting site build from content: "{content_path}"...')
+
+    # Remove output directory if exists to avoid old artifacts
+    if os.path.exists(output_path):
+        shutil.rmtree(output_path)
+
     container = DependencyContainer(output_path, template_dir=template_dir)
 
     print("Processing content and applying pre-processors...")
