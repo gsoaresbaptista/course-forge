@@ -186,6 +186,27 @@ body {
     text-align: right;
 }
 
+.sidebar-nav-link.back {
+    display: inline-flex;
+    align-items: center;
+}
+
+.sidebar-nav-link.back::before {
+    content: "←";
+    display: inline-block;
+    opacity: 0;
+    max-width: 0;
+    margin-right: 0;
+    transition: all 0.2s ease-out;
+    white-space: nowrap;
+}
+
+.sidebar-nav-link.back:hover::before {
+    opacity: 1;
+    max-width: 1.2em;
+    margin-right: 0.25rem;
+}
+
 /* ===================================
    Mobile Menu Toggle
    =================================== */
