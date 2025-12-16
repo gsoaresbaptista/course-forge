@@ -1,4 +1,5 @@
 import re
+from urllib.parse import quote
 
 from course_forge.domain.entities import ContentNode
 
@@ -13,6 +14,8 @@ class InternalLinkProcessor(Processor):
     - [text](page.md) -> [text](page.html)
     - [text](../other/page.md) -> [text](../other/page.html)
     - [text](/course/module/page) -> [text](/course/module/page.html)
+
+    Also URL-encodes spaces so Mistune can parse them correctly.
     """
 
     LINK_PATTERN = re.compile(
@@ -36,6 +39,8 @@ class InternalLinkProcessor(Processor):
             elif not self._has_extension(href) and not href.endswith("/"):
                 href = href + ".html"
 
+            href = self._encode_path(href)
+
             return f"[{text}]({href})"
 
         return self.LINK_PATTERN.sub(replace_link, content)
@@ -47,3 +52,9 @@ class InternalLinkProcessor(Processor):
         path = href.split("#")[0].split("?")[0]
         last_part = path.split("/")[-1]
         return "." in last_part
+
+    def _encode_path(self, href: str) -> str:
+        """URL-encode spaces and special chars in path, preserving structure."""
+        parts = href.split("/")
+        encoded_parts = [quote(part, safe="") for part in parts]
+        return "/".join(encoded_parts)

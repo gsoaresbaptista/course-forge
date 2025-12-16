@@ -626,8 +626,12 @@ figcaption {
    =================================== */
 
 .contents-page {
+    max-width: 800px;
     margin: 4rem auto;
     padding: 0 1.5rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     font-family: var(--font-serif);
     color: var(--text);
 }
