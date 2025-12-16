@@ -70,7 +70,10 @@ class HeadingRenderer(mistune.HTMLRenderer):
 
 
 class MistuneMarkdownRenderer(MarkdownRenderer):
+    COMMENT_PATTERN = re.compile(r"%%[\s\S]*?%%", re.MULTILINE)
+
     def render(self, text: str, chapter: int | None = None) -> str:
+        text = self._strip_comments(text)
         text, placeholders = self._protect_latex(text)
 
         renderer = HeadingRenderer(chapter=chapter)
@@ -81,6 +84,10 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
 
         html = self._restore_latex(html, placeholders)
         return html
+
+    def _strip_comments(self, text: str) -> str:
+        """Remove Obsidian-style comments (%% ... %%)."""
+        return self.COMMENT_PATTERN.sub("", text)
 
     def _protect_latex(self, text: str) -> tuple[str, dict[str, str]]:
         """Replace LaTeX blocks with placeholders to prevent markdown processing."""
