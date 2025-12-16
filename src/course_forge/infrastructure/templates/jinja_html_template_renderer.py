@@ -157,40 +157,42 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 depth = len(parents) - i - 1
                 url = "../" * depth + "contents.html"
             breadcrumbs.append({"name": name, "url": url})
-        
+
         # Check if the current node belongs to a "part" (logical grouping)
         part_info = self._find_part_title_for_node(node, config)
         if part_info:
-             roman = part_info["roman"]
-             title = part_info["title"]
-             
-             if breadcrumbs:
-                 last_crumb = breadcrumbs[-1]
-                 base_url = last_crumb["url"]
-                 if base_url:
-                     part_url = f"{base_url}#part-{roman}"
-                     breadcrumbs.append({"name": f"{roman} - {title}", "url": part_url})
-                 else:
-                     breadcrumbs.append({"name": f"{roman} - {title}", "url": None})
-             else:
-                 breadcrumbs.append({"name": f"{roman} - {title}", "url": None})
+            roman = part_info["roman"]
+            title = part_info["title"]
+
+            if breadcrumbs:
+                last_crumb = breadcrumbs[-1]
+                base_url = last_crumb["url"]
+                if base_url:
+                    part_url = f"{base_url}#part-{roman}"
+                    breadcrumbs.append({"name": f"{roman} - {title}", "url": part_url})
+                else:
+                    breadcrumbs.append({"name": f"{roman} - {title}", "url": None})
+            else:
+                breadcrumbs.append({"name": f"{roman} - {title}", "url": None})
 
         breadcrumbs.append({"name": current_title, "url": "#"})
 
         return breadcrumbs
 
-    def _find_part_title_for_node(self, node: ContentNode, config: dict | None) -> dict | None:
+    def _find_part_title_for_node(
+        self, node: ContentNode, config: dict | None
+    ) -> dict | None:
         """Find the logical part info for a given node based on config."""
         if not config:
             return None
-        
+
         parts = config.get("parts") or config.get("groups")
         if not parts:
             return None
 
         target_slug = node.slug
         target_name = node.name
-        
+
         for i, part_config in enumerate(parts):
             items = part_config.get("items") or []
             for item in items:

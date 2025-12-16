@@ -1,7 +1,6 @@
+import os
 import re
 from urllib.parse import quote
-import os
-
 
 from course_forge.domain.entities import ContentNode
 
@@ -75,24 +74,24 @@ class InternalLinkProcessor(Processor):
 
         if target_node:
             slugs = target_node.slugs_path + [target_node.slug]
-            
+
             # Construct relative path from current_node to target_node
             current_slugs = current_node.slugs_path + [current_node.slug]
-            
+
             if current_node.is_file:
                 current_dir_slugs = current_slugs[:-1]
             else:
                 current_dir_slugs = current_slugs
 
             rel_path = self._compute_relative_slug_path(current_dir_slugs, slugs)
-            
+
             # Append .html extension if it's a file
             if target_node.is_file:
                 rel_path += ".html"
-            
+
             if anchor:
                 rel_path += f"#{anchor}"
-                
+
             return rel_path
 
         return None
@@ -101,7 +100,9 @@ class InternalLinkProcessor(Processor):
         # Implementation relying on relative resolution for now
         return None  # To be implemented if we need absolute path support
 
-    def _resolve_relative_path(self, current_node: ContentNode, href: str) -> ContentNode | None:
+    def _resolve_relative_path(
+        self, current_node: ContentNode, href: str
+    ) -> ContentNode | None:
         if current_node.is_file:
             current_dir = current_node.parent
         else:
@@ -111,7 +112,7 @@ class InternalLinkProcessor(Processor):
             return None
 
         parts = href.split("/")
-        
+
         node = current_dir
         for part in parts:
             if part == "." or part == "":
@@ -130,30 +131,36 @@ class InternalLinkProcessor(Processor):
                     if child.name == part:
                         found = child
                         break
-                        
+
                 if found:
                     node = found
                 else:
                     return None
-        
+
         return node
 
-    def _compute_relative_slug_path(self, start_slugs: list[str], target_slugs: list[str]) -> str:
+    def _compute_relative_slug_path(
+        self, start_slugs: list[str], target_slugs: list[str]
+    ) -> str:
         # Find common prefix
         i = 0
-        while i < len(start_slugs) and i < len(target_slugs) and start_slugs[i] == target_slugs[i]:
+        while (
+            i < len(start_slugs)
+            and i < len(target_slugs)
+            and start_slugs[i] == target_slugs[i]
+        ):
             i += 1
-            
+
         # Steps up
         up_steps = len(start_slugs) - i
-        
+
         # Steps down
         down_steps = target_slugs[i:]
-        
+
         path_parts = [".."] * up_steps + down_steps
         if not path_parts:
-            return "." # Same directory?
-            
+            return "."  # Same directory?
+
         return "/".join(path_parts)
 
     def _is_external_link(self, href: str) -> bool:

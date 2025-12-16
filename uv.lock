@@ -7,8 +7,10 @@ name = "course-forge"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "csscompressor" },
     { name = "graphviz" },
     { name = "jinja2" },
+    { name = "jsmin" },
     { name = "livereload" },
     { name = "minify-html" },
     { name = "mistune" },
@@ -19,8 +21,10 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "csscompressor", specifier = ">=0.9.5" },
     { name = "graphviz", specifier = ">=0.21" },
     { name = "jinja2", specifier = ">=3.1.6" },
+    { name = "jsmin", specifier = ">=3.0.1" },
     { name = "livereload", specifier = ">=2.7.1" },
     { name = "minify-html", specifier = ">=0.15.0" },
     { name = "mistune", specifier = ">=3.1.4" },
@@ -28,6 +32,12 @@ requires-dist = [
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "schemdraw", specifier = ">=0.22" },
 ]
+
+[[package]]
+name = "csscompressor"
+version = "0.9.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f1/2a/8c3ac3d8bc94e6de8d7ae270bb5bc437b210bb9d6d9e46630c98f4abd20c/csscompressor-0.9.5.tar.gz", hash = "sha256:afa22badbcf3120a4f392e4d22f9fff485c044a1feda4a950ecc5eba9dd31a05", size = 237808, upload-time = "2017-11-26T21:13:08.238Z" }
 
 [[package]]
 name = "graphviz"
@@ -49,6 +59,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c
 wheels = [
     { url = "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl", hash = "sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67", size = 134899, upload-time = "2025-03-05T20:05:00.369Z" },
 ]
+
+[[package]]
+name = "jsmin"
+version = "3.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/73/e01e4c5e11ad0494f4407a3f623ad4d87714909f50b17a06ed121034ff6e/jsmin-3.0.1.tar.gz", hash = "sha256:c0959a121ef94542e807a674142606f7e90214a2b3d1eb17300244bbb5cc2bfc", size = 13925, upload-time = "2022-01-16T20:35:59.13Z" }
 
 [[package]]
 name = "livereload"
