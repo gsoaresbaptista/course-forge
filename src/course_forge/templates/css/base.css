@@ -1,18 +1,11 @@
-/* ===================================
-   Crafting Interpreters Style Theme
-   =================================== */
-
 *,
-*::before,
-*::after {
+::after,
+::before {
     box-sizing: border-box;
     margin: 0;
-    padding: 0;
+    padding: 0
 }
 
-/* ===================================
-   Colors
-   =================================== */
 :root {
     --bg: #f5f2eb;
     --sidebar-bg: #eae6dc;
@@ -25,23 +18,21 @@
     --code-bg: #f0ede5;
     --active-bg: rgba(136, 68, 34, 0.12);
     --course-accent: #884422;
-
     --font: 'Crimson Text', Georgia, serif;
     --font-code: Consolas, Monaco, monospace;
-
     --content-max: 720px;
-    --sidebar-width: 350px;
+    --sidebar-width: 350px
 }
 
 html {
-    font-size: 19px;
+    font-size: 19px
 }
 
 .article-body {
     font-family: var(--font-body);
     font-size: 1.125rem;
     line-height: 1.65rem;
-    color: var(--text-body);
+    color: var(--text-body)
 }
 
 body {
@@ -49,20 +40,20 @@ body {
     font-size: 1rem;
     line-height: 1.65;
     color: var(--text);
-    background: var(--bg);
+    background: var(--bg)
 }
 
-/* ===================================
-   Layout
-   =================================== */
 .page-wrapper {
     display: flex;
-    min-height: 100vh;
+    min-height: 100vh
 }
 
-/* ===================================
-   Sidebar
-   =================================== */
+.sidebar,
+.sidebar-content {
+    display: flex;
+    flex-direction: column
+}
+
 .sidebar {
     position: fixed;
     left: 0;
@@ -71,27 +62,22 @@ body {
     height: 100vh;
     background: var(--sidebar-bg);
     border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
     overflow-y: auto;
-    z-index: 100;
+    z-index: 100
 }
 
 .sidebar-content {
     padding: 0;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    flex: 1
 }
 
-/* Title Section */
 .sidebar-title-section {
     padding: 2.5rem 1.5rem 1rem;
-    text-align: center;
+    text-align: center
 }
 
 .course-title-link:hover .sidebar-course-title {
-    color: var(--link-hover);
+    color: var(--link-hover)
 }
 
 .sidebar-course-title {
@@ -100,95 +86,94 @@ body {
     color: var(--course-accent);
     text-align: center;
     line-height: 1.3;
-    margin: 0;
+    margin: 0
 }
 
 .sidebar-ornament {
     font-size: 1.5rem;
     color: var(--text-muted);
-    margin-top: 1rem;
+    margin-top: 1rem
 }
 
-/* TOC Section */
 .sidebar-toc-section {
     padding: 0 1.5rem;
-    flex: 1;
+    flex: 1
 }
 
 .toc-header {
-    font-size: 0.8rem;
+    font-size: .8rem;
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: .08em;
     text-align: center;
-    padding-bottom: 0.5rem;
+    padding-bottom: .5rem;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 0.75rem;
+    margin-bottom: .75rem
 }
 
 .toc-list {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 0
 }
 
 .toc-item {
-    margin: 0;
+    margin: 0
 }
 
 .toc-item a {
     display: block;
-    padding: 0.35rem 0;
-    font-size: 0.9rem;
+    padding: .35rem 0;
+    font-size: .9rem;
     color: var(--text);
     text-decoration: none;
-    transition: color 0.15s;
+    transition: color .15s
 }
 
 .toc-item a:hover {
-    color: var(--link);
+    color: var(--link)
 }
 
 .toc-item.level-3 {
-    margin-left: 1.25rem;
+    margin-left: 1.25rem
 }
 
 .toc-item.level-3 a {
-    font-size: 0.85rem;
+    font-size: .85rem
 }
 
-/* Navigation Section */
 .sidebar-nav-section {
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--border);
     margin-top: auto;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: .5rem
 }
 
 .sidebar-nav-link {
-    font-size: 0.9rem;
+    font-size: .9rem;
     color: var(--link);
-    text-decoration: none;
+    text-decoration: none
 }
 
-.sidebar-nav-link:hover {
-    text-decoration: underline;
+.sidebar-nav-link:hover,
+a:hover {
+    text-decoration: underline
 }
 
 .sidebar-nav-link.prev {
-    text-align: left;
+    text-align: left
 }
 
 .sidebar-nav-link.next {
-    text-align: right;
+    text-align: right
 }
 
 .sidebar-nav-link.back {
     display: inline-flex;
-    align-items: center;
+    align-items: center
 }
 
 .sidebar-nav-link.back::before {
@@ -197,19 +182,16 @@ body {
     opacity: 0;
     max-width: 0;
     margin-right: 0;
-    transition: all 0.2s ease-out;
-    white-space: nowrap;
+    transition: all .2s ease-out;
+    white-space: nowrap
 }
 
 .sidebar-nav-link.back:hover::before {
     opacity: 1;
     max-width: 1.2em;
-    margin-right: 0.25rem;
+    margin-right: .25rem
 }
 
-/* ===================================
-   Mobile Menu Toggle
-   =================================== */
 .mobile-menu-toggle {
     display: none;
     position: fixed;
@@ -219,100 +201,97 @@ body {
     width: 48px;
     height: 48px;
     background: var(--bg);
-    border: none;
+    border: 0;
     border-radius: 50%;
     cursor: pointer;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    transition: transform .2s, box-shadow .2s
 }
 
 .mobile-menu-toggle:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .2)
 }
 
 .mobile-menu-toggle.open {
-    background: var(--course-accent);
+    background: var(--course-accent)
 }
 
 .mobile-menu-toggle.open .menu-icon {
-    color: white;
+    color: #fff
 }
 
 .menu-icon {
     width: 24px;
     height: 24px;
-    color: var(--text);
+    color: var(--text)
 }
 
 .mobile-menu-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 90;
+    background: rgba(0, 0, 0, .4);
+    z-index: 90
 }
 
 .mobile-menu-overlay.open {
-    display: block;
+    display: block
 }
 
-/* ===================================
-   Main Content
-   =================================== */
 .main-content {
     flex: 1;
     margin-left: var(--sidebar-width);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2.5rem 2rem;
+    padding: 2.5rem 2rem
 }
 
 .article {
     width: 100%;
     max-width: var(--content-max);
-    flex: 1;
+    flex: 1
 }
 
-/* Breadcrumb Navigation */
 .breadcrumb {
-    font-size: 0.85rem;
+    font-size: .85rem;
     color: var(--text-muted);
     text-align: center;
-    padding: 0.75rem 0;
+    padding: .75rem 0;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
-    margin-top: 1rem;
+    margin-top: 1rem
 }
 
 .breadcrumb-link {
     color: var(--text-muted);
     text-decoration: none;
-    transition: color 0.15s;
+    transition: color .15s
 }
 
-.breadcrumb-link:hover {
+.breadcrumb-link:hover,
+a {
     color: var(--link);
-    text-decoration: underline;
+    text-decoration: underline
 }
 
 .breadcrumb-separator {
-    margin: 0 0.4rem;
-    color: var(--heading);
+    margin: 0 .4rem;
+    color: var(--heading)
 }
 
 .breadcrumb-current {
-    color: var(--text);
+    color: var(--text)
 }
 
 .article-header {
     text-align: center;
     margin-bottom: 2.5rem;
     padding-bottom: 0;
-    border-bottom: none;
+    border-bottom: none
 }
 
 .chapter-number {
@@ -320,76 +299,65 @@ body {
     font-size: 1.3rem;
     font-style: italic;
     color: var(--text-muted);
-    margin-bottom: 0.5rem;
+    margin-bottom: .5rem
 }
 
 .article-title {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.75rem;
+    gap: .75rem;
     font-size: 2rem;
     font-weight: 400;
     color: var(--heading);
     line-height: 1.3;
-    margin-bottom: 0.5rem;
+    margin-bottom: .5rem
 }
 
 .title-ornament {
     font-size: 1.4rem;
     color: var(--course-accent);
-    display: inline-block;
+    display: inline-block
 }
 
 .title-ornament.right {
-    transform: scaleX(-1);
+    transform: scaleX(-1)
 }
 
 .title-text {
-    flex: none;
+    flex: none
 }
 
 .article-date {
-    font-size: 0.95rem;
-    color: var(--text-muted);
-    font-style: italic;
-    margin: 0;
+    margin: 0
 }
 
-/* ===================================
-   Typography In Article
-   =================================== */
-.article-body h1 {
+.article-body h1,
+.article-body h2,
+.article-body h3 {
     font-size: 1.7rem;
     font-weight: 400;
     margin-top: 2.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1rem
 }
 
-.article-body h2 {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    font-size: 1.4rem;
-    font-weight: 400;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--course-accent);
-    color: var(--heading);
-}
-
+.article-body h2,
 .article-body h3 {
     display: flex;
     align-items: baseline;
-    gap: 0.5rem;
+    gap: .5rem;
+    font-size: 1.4rem;
+    padding-bottom: .5rem;
+    border-bottom: 2px solid var(--course-accent);
+    color: var(--heading)
+}
+
+.article-body h3 {
     font-size: 1.15rem;
-    font-weight: 400;
     margin-top: 1.75rem;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.25rem;
-    border-bottom: 1px solid var(--border);
-    color: var(--heading);
+    margin-bottom: .5rem;
+    padding-bottom: .25rem;
+    border-bottom: 1px solid var(--border)
 }
 
 .article-body h4,
@@ -397,309 +365,274 @@ body {
 .article-body h6 {
     display: flex;
     align-items: baseline;
-    gap: 0.5rem;
+    gap: .5rem;
     font-size: 1rem;
     font-weight: 600;
     margin-top: 1.25rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: .5rem
 }
 
 .heading-roman {
-    font-size: 0.85em;
+    font-size: .85em;
     color: var(--course-accent);
     font-weight: 600;
-    min-width: 1.5rem;
+    min-width: 1.5rem
 }
 
 .heading-text {
-    flex: 1;
+    flex: 1
 }
 
 .heading-arabic {
-    font-size: 0.85em;
+    font-size: .85em;
     color: var(--text-muted);
-    font-style: italic;
+    font-style: italic
 }
 
 .article-body p {
     margin-bottom: 1rem;
     text-align: justify;
-    hyphens: auto;
+    hyphens: auto
 }
 
-/* ===================================
-   Links
-   =================================== */
 a {
-    color: var(--link);
-    text-decoration: none;
+    text-decoration: none
 }
 
-a:hover {
-    text-decoration: underline;
-}
-
-/* ===================================
-   Lists
-   =================================== */
-.article-body ul,
-.article-body ol {
+.article-body ol,
+.article-body ul {
     margin-bottom: 1rem;
-    padding-left: 1.5rem;
+    padding-left: 1.5rem
 }
 
 .article-body li {
-    margin-bottom: 0.25rem;
+    margin-bottom: .25rem
 }
 
-/* ===================================
-   Blockquotes
-   =================================== */
 .article-body blockquote {
     margin: 1rem 0;
-    padding: 0.75rem 1rem;
+    padding: .75rem 1rem;
     background: var(--code-bg);
     border-left: 3px solid var(--link);
     font-style: italic;
-    color: var(--text-muted);
+    color: var(--text-muted)
 }
 
 .article-body blockquote p:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0
 }
 
-/* ===================================
-   Code
-   =================================== */
 code {
     font-family: var(--font-code);
-    font-size: 0.8em;
-    background: var(--code-bg);
-    padding: 0.1em 0.25em;
-    border-radius: 2px;
+    font-size: .8em;
+    padding: .1em .25em;
+    border-radius: 2px
+}
+
+pre,
+table {
+    margin: 1rem 0
+}
+
+code,
+pre {
+    background: var(--code-bg)
 }
 
 pre {
-    margin: 1rem 0;
-    padding: 0.85rem 1rem;
-    background: var(--code-bg);
+    padding: .85rem 1rem;
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow-x: auto;
-    line-height: 1.4;
+    line-height: 1.4
 }
 
 pre code {
-    background: none;
+    background: 0 0;
     padding: 0;
-    font-size: 0.75rem;
+    font-size: .75rem
 }
 
-/* ===================================
-   Tables
-   =================================== */
 table {
     width: 100%;
-    margin: 1rem 0;
     border-collapse: collapse;
-    font-size: 0.9rem;
+    font-size: .9rem
 }
 
 thead {
-    border-bottom: 2px solid var(--border);
+    border-bottom: 2px solid var(--border)
+}
+
+td,
+th {
+    padding: .5rem .75rem
 }
 
 th {
     font-weight: 600;
-    text-align: left;
-    padding: 0.5rem 0.75rem;
+    text-align: left
 }
 
 td {
-    padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border)
 }
 
-/* ===================================
-   HR
-   =================================== */
 hr {
-    border: none;
+    border: 0;
     text-align: center;
-    margin: 1.5rem 0;
+    margin: 1.5rem 0
 }
 
 hr::before {
     content: "❧";
-    color: var(--text-muted);
+    color: var(--text-muted)
 }
 
-/* ===================================
-   Images - Respect inline width/height
-   =================================== */
 img {
     display: block;
-    margin: 1rem auto;
+    margin: 1rem auto
 }
 
 img:not([width]):not([height]) {
     max-width: 100%;
-    height: auto;
+    height: auto
 }
 
 img[width] {
-    max-width: none;
+    max-width: none
 }
 
 figure {
     margin: 1.25rem 0;
-    text-align: center;
+    text-align: center
+}
+
+.footer p,
+figcaption {
+    color: var(--text-muted)
 }
 
 figcaption {
-    font-size: 0.85rem;
-    color: var(--text-muted);
+    font-size: .85rem;
     font-style: italic;
-    margin-top: 0.4rem;
+    margin-top: .4rem
 }
 
-.asset-svg,
 .asset-img,
+.asset-svg,
 .centered {
     display: flex;
-    justify-content: center;
+    justify-content: center
 }
 
 .no-break {
-    page-break-inside: avoid;
+    page-break-inside: avoid
 }
 
 .svg-graph {
-    max-width: 100%;
+    max-width: 100%
 }
 
-/* ===================================
-   KaTeX - Responsive equations
-   =================================== */
 .katex-display {
     margin: 1rem 0;
     overflow-x: auto;
     overflow-y: visible;
-    max-width: 100%;
+    max-width: 100%
 }
 
 .katex-display>.katex {
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 0.25rem 0;
+    padding: .25rem 0
 }
 
 .katex {
-    font-size: 1em;
+    font-size: 1em
 }
 
 .katex-html {
-    white-space: normal;
+    white-space: normal
 }
 
-/* ===================================
-   Footer
-   =================================== */
 .footer {
     width: 100%;
     max-width: var(--content-max);
     margin-top: 3rem;
     padding-top: 1.5rem;
     border-top: 1px solid var(--border);
-    text-align: center;
+    text-align: center
 }
 
 .footer p {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+    font-size: .8rem
 }
 
-
-
-/* ===================================
-   Selection
-   =================================== */
 ::selection {
-    background: rgba(136, 68, 34, 0.15);
+    background: rgba(136, 68, 34, .15)
 }
 
-/* ===================================
-   Responsive
-   =================================== */
-@media (max-width: 900px) {
+@media (max-width:900px) {
     .sidebar {
         position: fixed;
         left: -100%;
         width: 280px;
-        transition: left 0.3s ease;
+        transition: left .3s ease
     }
 
     .sidebar.open {
-        left: 0;
+        left: 0
     }
 
     .mobile-menu-toggle {
-        display: flex;
+        display: flex
     }
 
     .page-wrapper {
-        flex-direction: column;
+        flex-direction: column
     }
 
     .main-content {
         margin-left: 0;
-        padding: 4rem 1.5rem 2rem;
+        padding: 4rem 1.5rem 2rem
     }
 }
 
-@media (max-width: 500px) {
+@media (max-width:500px) {
     html {
-        font-size: 17px;
+        font-size: 17px
     }
 
     .main-content {
-        padding: 4rem 1rem 1.5rem;
+        padding: 4rem 1rem 1.5rem
     }
 
     .article-title {
         flex-direction: column;
-        gap: 0.25rem;
+        gap: .25rem
     }
 
     .title-number {
         align-self: flex-end;
-        margin-left: 0;
+        margin-left: 0
     }
 
     .contents-page {
-        padding: 2rem 1rem;
+        padding: 2rem 1rem
     }
 }
 
-/* ===================================
-   Print
-   =================================== */
 @media print {
 
-    .sidebar,
-    .mobile-menu-toggle {
-        display: none;
+    .mobile-menu-toggle,
+    .sidebar {
+        display: none
     }
 
     .main-content {
-        margin-left: 0;
+        margin-left: 0
     }
 }
-
-/* ===================================
-   Start of Contents & Index Page Styles
-   =================================== */
 
 .contents-page {
     max-width: 800px;
@@ -709,67 +642,66 @@ figcaption {
     display: flex;
     flex-direction: column;
     font-family: var(--font-serif);
-    color: var(--text);
+    color: var(--text)
 }
 
 .contents-header {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 4rem
 }
 
 .contents-ornament {
     font-size: 2rem;
     color: var(--course-accent);
-    margin: 1rem 0;
+    margin: 1rem 0
 }
 
 .contents-title {
     font-size: 2.5rem;
     font-weight: 400;
-    margin: 0.5rem 0;
-    color: var(--heading);
+    margin: .5rem 0;
+    color: var(--heading)
 }
 
 .contents-title::after {
-    display: none;
+    display: none
+}
+
+.back-link,
+.contents-subtitle {
+    font-family: var(--font-headers);
+    letter-spacing: .05em;
+    color: var(--text-muted)
 }
 
 .contents-subtitle {
     font-size: 1.1rem;
     font-style: italic;
-    color: var(--text-muted);
-    font-family: var(--font-headers);
     margin-top: 2.5rem;
-    letter-spacing: 0.05em;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2rem
 }
 
-/* Back Link */
 .back-link {
     position: fixed;
     top: 2rem;
     left: 2rem;
     z-index: 999;
-
     display: inline-block;
-    font-family: var(--font-headers);
-    font-size: 0.9rem;
+    font-size: .9rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color .2s;
     background: var(--bg);
-    padding: 0.5rem;
-    border-radius: 4px;
+    padding: .5rem;
+    border-radius: 4px
 }
 
-.back-link:hover {
-    color: var(--course-accent);
+.back-link:hover,
+.contents-link:hover {
+    color: var(--course-accent)
 }
 
-/* Sidebar Title Styling */
 .course-title-link {
     text-decoration: none;
     display: block;
@@ -777,58 +709,51 @@ figcaption {
     padding: 1rem 0;
     margin: 0 1rem;
     border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border)
 }
 
+.course-title-link::after,
 .course-title-link::before {
     content: "❧";
     position: absolute;
-    top: -0.8rem;
-    left: 0;
     font-size: 1.2rem;
     color: var(--text-muted);
-    background: var(--sidebar-bg);
-    padding-right: 0.5rem;
+    background: var(--sidebar-bg)
+}
+
+.course-title-link::before {
+    top: -.8rem;
+    left: 0;
+    padding-right: .5rem
 }
 
 .course-title-link::after {
-    content: "❧";
-    position: absolute;
-    bottom: -0.9rem;
+    bottom: -.9rem;
     right: 0;
-    font-size: 1.2rem;
-    color: var(--text-muted);
-    background: var(--sidebar-bg);
-    padding-left: 0.5rem;
-    transform: scaleX(-1);
+    padding-left: .5rem;
+    transform: scaleX(-1)
 }
 
 .sidebar-ornament {
-    display: none;
+    display: none
 }
 
-
-/* Tables of Contents List */
 .contents-main {
     flex: 1;
-    margin-bottom: 6rem;
+    margin-bottom: 6rem
 }
 
 .contents-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    counter-reset: chapter-roman;
+    counter-reset: chapter-roman
 }
 
 .contents-item {
     margin-bottom: 0;
     border-bottom: 1px solid var(--border);
-    padding: 10px 0px;
-}
-
-.contents-item:last-child {
-    border-bottom: none;
+    padding: 10px 0
 }
 
 .contents-link {
@@ -836,42 +761,38 @@ figcaption {
     align-items: baseline;
     text-decoration: none;
     color: var(--heading);
-    transition: background-color 0.15s, color 0.15s;
-    font-size: 1.25rem;
+    transition: background-color .15s, color .15s;
+    font-size: 1.25rem
 }
 
 .contents-link:hover {
-    background-color: var(--bg-alt);
-    color: var(--course-accent);
+    background-color: var(--bg-alt)
 }
 
-/* Grouped Parts Grid */
 .parts-container {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
-    margin-top: 1.5rem;
+    margin-top: 1.5rem
 }
 
-@media (min-width: 768px) {
+@media (min-width:768px) {
     .parts-container {
         grid-template-columns: 1fr 1fr;
-        align-items: start;
+        align-items: start
     }
 
-    /* Force single column for courses without parts grouping */
     .parts-container--single {
         grid-template-columns: 1fr;
         max-width: 800px;
         margin-left: auto;
-        margin-right: auto;
+        margin-right: auto
     }
 }
 
 .part-block {
     display: flex;
-    flex-direction: column;
-    /* margin-bottom handled by grid gap */
+    flex-direction: column
 }
 
 .part-title {
@@ -879,129 +800,202 @@ figcaption {
     font-size: 1.1rem;
     color: var(--heading);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: .05em;
     font-weight: 600;
     min-height: 2.5rem;
     display: flex;
     align-items: flex-end;
-    border-bottom: 1px solid var(--course-accent);
+    border-bottom: 1px solid var(--course-accent)
 }
 
 .part-roman {
-    margin-right: 0.5rem;
-    color: var(--course-accent);
+    margin-right: .5rem;
+    color: var(--course-accent)
 }
 
 .contents-list:not(.index-list) .contents-link::before {
     counter-increment: chapter-roman;
-    content: counter(chapter-roman, decimal) ".";
-    /* Changed to decimal */
+    content: counter(chapter-roman, decimal)".";
     min-width: 1.5rem;
-    margin-right: 0.75rem;
+    margin-right: .75rem;
     font-family: var(--font-headers);
-    font-size: 0.9rem;
+    font-size: .9rem;
     color: var(--course-accent);
     font-weight: 600;
-    text-align: right;
+    text-align: right
 }
 
-/* Ensure no double borders in lists */
 .contents-item:last-child {
-    border-bottom: none;
+    border-bottom: none
 }
 
-
-.contents-name {
-    font-weight: 400;
-}
-
-/* Index Page Specifics */
 .index-list .contents-link {
-    justify-content: space-between;
+    justify-content: space-between
 }
 
+.contents-name,
 .index-list .contents-name {
-    font-weight: 400;
+    font-weight: 400
 }
 
 .course-arrow {
     opacity: 0;
     transform: translateX(-5px);
-    transition: all 0.2s;
+    transition: all .2s;
     color: var(--course-accent);
-    margin-left: auto;
+    margin-left: auto
 }
 
 .contents-link:hover .course-arrow {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(0)
 }
 
-/* Modules section specific styles */
 .contents-section .contents-link {
-    width: 100%;
+    width: 100%
 }
 
-/* Footer for Contents Page */
-.contents-page .footer {
-    text-align: center;
-    font-size: 0.9rem;
-    color: var(--text-muted);
+.contents-page .footer,
+.sidebar-nav-link.back {
     border-top: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-muted)
+}
+
+.contents-page .footer {
+    font-size: .9rem;
     padding-top: 2rem;
-    margin-top: 4rem;
+    margin-top: 4rem
+}
+
+.contents-year,
+.section-title {
+    font-family: var(--font-headers)
 }
 
 .contents-year {
-    font-family: var(--font-headers);
     font-size: 1.1rem;
     color: var(--text-muted);
-    margin-top: 0.5rem;
-    font-style: italic;
+    margin-top: .5rem;
+    font-style: italic
 }
 
 .section-title {
-    font-family: var(--font-headers);
     font-size: 1.25rem;
     color: var(--text-primary);
     margin-bottom: 1rem;
     text-align: center;
-    font-weight: 600;
+    font-weight: 600
 }
 
 .section-divider {
     height: 1px;
     background-color: var(--border);
     margin: 2rem auto;
-    width: 50%;
+    width: 50%
 }
 
 .article-date {
     font-family: var(--font-headers);
-    font-size: 0.9rem;
+    font-size: .9rem;
     color: var(--text-muted);
-    margin-top: 0.5rem;
+    margin-top: .5rem;
     font-style: italic;
-    letter-spacing: 0.05em;
+    letter-spacing: .05em
 }
 
-/* Sidebar Back Link */
 .sidebar-nav-link.back {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--border);
-    text-align: center;
-    display: block;
-    color: var(--text-muted);
+    display: block
 }
 
 .sidebar-nav-link.back:hover {
-    color: var(--course-accent);
+    color: var(--course-accent)
 }
 
-/* Breadcrumb Parts */
 .breadcrumb-part {
     color: var(--text-muted);
     font-weight: 500;
-    cursor: default;
+    cursor: default
+}
+
+.downloads {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    background: var(--code-bg);
+    border-radius: 4px;
+    border-left: 3px solid var(--course-accent)
+}
+
+.downloads::before {
+    content: "Downloads";
+    display: block;
+    font-size: .75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--text-muted);
+    margin-bottom: .5rem;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid var(--border)
+}
+
+p:has(>.download-link) {
+    text-align: center;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center
+}
+
+.download-link {
+    display: block;
+    padding: .5rem 1.5rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    color: var(--link);
+    text-decoration: none;
+    transition: color .15s ease
+}
+
+.download-link+.download-link {
+    border-top: none
+}
+
+p:has(>.download-link)+p:has(>.download-link) .download-link:first-child {
+    border-top: none
+}
+
+.download-link::after {
+    content: "";
+    display: inline-block;
+    width: .9em;
+    height: .9em;
+    margin-left: .4em;
+    vertical-align: -.1em;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODg0NDIyIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTEyIDE1VjMiLz48cGF0aCBkPSJNMjEgMTV2NGEyIDIgMCAwIDEtMiAySDVhMiAyIDAgMCAxLTItMnYtNCIvPjxwYXRoIGQ9Im03IDEwIDUgNSA1LTUiLz48L3N2Zz4=);
+    background-size: contain;
+    background-repeat: no-repeat
+}
+
+.download-link:hover {
+    color: var(--course-accent);
+    text-decoration: underline
+}
+
+td .download-link,
+th .download-link {
+    border: none;
+    padding: 0;
+    display: inline
+}
+
+.downloads .download-link {
+    display: block;
+    padding: .4rem 0;
+    border: none
 }

@@ -85,9 +85,13 @@ class InternalLinkProcessor(Processor):
 
             rel_path = self._compute_relative_slug_path(current_dir_slugs, slugs)
 
-            # Append .html extension if it's a file
+            # Only add .html extension for markdown files
+            # Binary files (.zip, .pdf, etc.) keep their original extension
             if target_node.is_file:
-                rel_path += ".html"
+                if target_node.file_extension == ".md":
+                    rel_path += ".html"
+                else:
+                    rel_path += target_node.file_extension
 
             if anchor:
                 rel_path += f"#{anchor}"

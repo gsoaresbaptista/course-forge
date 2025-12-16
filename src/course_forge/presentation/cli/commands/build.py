@@ -4,6 +4,8 @@ import shutil
 from course_forge.application.processors import (
     ASTProcessor,
     DigitalCircuitProcessor,
+    DownloadLinkMarkerProcessor,
+    DownloadLinkProcessor,
     HTMLMinifyProcessor,
     InternalLinkProcessor,
     Processor,
@@ -28,10 +30,14 @@ class DependencyContainer:
 
         self._pre_processors: list[Processor] = [
             InternalLinkProcessor(),
+            DownloadLinkMarkerProcessor(),
             DigitalCircuitProcessor(),
             ASTProcessor(),
         ]
-        self._post_processors: list[Processor] = [HTMLMinifyProcessor()]
+        self._post_processors: list[Processor] = [
+            DownloadLinkProcessor(),
+            HTMLMinifyProcessor(),
+        ]
 
         self._build_use_case = BuildSiteUseCase(
             self._repo,
