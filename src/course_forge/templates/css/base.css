@@ -975,3 +975,10 @@ figcaption {
 .sidebar-nav-link.back:hover {
     color: var(--course-accent);
 }
+
+/* Breadcrumb Parts */
+.breadcrumb-part {
+    color: var(--text-muted);
+    font-weight: 500;
+    cursor: default;
+}

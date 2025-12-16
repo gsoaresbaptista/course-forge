@@ -77,7 +77,11 @@
                     <nav class="breadcrumb" aria-label="Breadcrumb">
                         {% for crumb in breadcrumbs %}
                         {% if not loop.last %}
+                        {% if crumb.url %}
                         <a href="{{ crumb.url }}" class="breadcrumb-link">{{ crumb.name }}</a>
+                        {% else %}
+                        <span class="breadcrumb-part">{{ crumb.name }}</span>
+                        {% endif %}
                         <span class="breadcrumb-separator">›</span>
                         {% else %}
                         <span class="breadcrumb-current">{{ crumb.name }}</span>
