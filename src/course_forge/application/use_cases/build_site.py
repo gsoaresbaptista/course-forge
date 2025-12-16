@@ -128,6 +128,7 @@ class BuildSiteUseCase:
                 markdown = self.loader.load(node.src_path)
                 content = markdown["content"]
                 metadata = markdown.get("metadata", {})
+                node.metadata = metadata
 
                 for processor in pre_processors:
                     content = processor.execute(node, content)

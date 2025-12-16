@@ -13,6 +13,7 @@ class ContentNode:
         children: list[ContentNode] | None = None,
         slugs_path: list[str] | None = None,
         parent: ContentNode | None = None,
+        metadata: dict | None = None,
     ) -> None:
         self._src_path: str = src_path
         self._is_file = is_file
@@ -23,6 +24,7 @@ class ContentNode:
         self._attachments: dict[int, Any] = {}
         self._file_extension: str = file_extension
         self._parent: ContentNode | None = parent
+        self._metadata: dict = metadata or {}
 
     @property
     def file_extension(self) -> str:
@@ -59,6 +61,14 @@ class ContentNode:
     @property
     def parent(self) -> ContentNode | None:
         return self._parent
+
+    @property
+    def metadata(self) -> dict:
+        return self._metadata
+
+    @metadata.setter
+    def metadata(self, value: dict) -> None:
+        self._metadata = value
 
     @property
     def siblings(self) -> list[ContentNode]:

@@ -78,6 +78,12 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
             for s in node.siblings
         ]
 
+        def sort_key(s):
+            match = re.search(r"^(\d+)", s["slug"])
+            return int(match.group(1)) if match else 9999
+
+        siblings.sort(key=sort_key)
+
         current_index = next(
             (i for i, s in enumerate(siblings) if s["slug"] == node.name), 0
         )
@@ -87,6 +93,20 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         next_chapter = (
             siblings[current_index + 1] if current_index < len(siblings) - 1 else None
         )
+
+        if metadata.get("prev"):
+            prev_slug = metadata["prev"]
+            prev_chapter = next(
+                (s for s in siblings if s["slug"] == prev_slug),
+                {"name": strip_leading_number(prev_slug), "slug": prev_slug},
+            )
+
+        if metadata.get("next"):
+            next_slug = metadata["next"]
+            next_chapter = next(
+                (s for s in siblings if s["slug"] == next_slug),
+                {"name": strip_leading_number(next_slug), "slug": next_slug},
+            )
 
         title = metadata.get("title") or strip_leading_number(node.name)
         date = metadata.get("date")
@@ -133,11 +153,17 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         if not course_name:
             course_name = strip_leading_number(course_node.name)
 
-        chapters = [
-            {"name": strip_leading_number(c.name), "slug": c.name}
-            for c in course_node.children
-            if c.is_file and c.file_extension == ".md"
-        ]
+        chapters = []
+        for c in course_node.children:
+            if c.is_file and c.file_extension == ".md":
+                chapter_name = strip_leading_number(c.name)
+                if c.metadata and c.metadata.get("title"):
+                    chapter_name = c.metadata["title"]
+                elif c.src_path:
+                    title = self._read_title_from_file(c.src_path)
+                    if title:
+                        chapter_name = title
+                chapters.append({"name": chapter_name, "slug": c.name})
 
         def sort_key(ch):
             match = re.search(r"^(\d+)", ch["slug"])
@@ -227,3 +253,20 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "courses_title": self.config.get("courses_title", "Cursos Disponíveis"),
             }
         )
+
+    def _read_title_from_file(self, file_path: str) -> str | None:
+        """Read title from markdown frontmatter."""
+        try:
+            with open(file_path, encoding="utf-8") as f:
+                content = f.read()
+            if content.startswith("---"):
+                end = content.find("---", 3)
+                if end != -1:
+                    frontmatter = content[3:end]
+                    for line in frontmatter.split("\n"):
+                        if line.strip().startswith("title:"):
+                            title = line.split(":", 1)[1].strip()
+                            return title.strip("\"'")
+        except Exception:
+            pass
+        return None
