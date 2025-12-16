@@ -34,45 +34,36 @@ def to_roman(num: int) -> str:
 class HeadingRenderer(mistune.HTMLRenderer):
     """Custom renderer that adds section numbers to headings."""
 
+    MAX_LEVELS = 6
+
     def __init__(self, chapter: int | None = None):
         super().__init__(escape=False)
         self.chapter = chapter
-        self.h2_counter = 0
-        self.h3_counter = 0
+        self.counters = [0] * self.MAX_LEVELS
 
     def heading(self, text: str, level: int, **attrs) -> str:
         clean_text = strip_heading_number(text)
         slug = slugify(clean_text)
 
-        if level == 2:
-            self.h2_counter += 1
-            self.h3_counter = 0
+        if 1 <= level <= self.MAX_LEVELS:
+            self.counters[level - 1] += 1
+            for i in range(level, self.MAX_LEVELS):
+                self.counters[i] = 0
 
+            parts = []
             if self.chapter is not None:
-                arabic = f"{self.chapter}.{self.h2_counter}"
-            else:
-                arabic = str(self.h2_counter)
+                parts.append(str(self.chapter))
+            for i in range(level):
+                parts.append(str(self.counters[i]))
+
+            arabic = ".".join(parts)
+            html_level = level + 1
 
             return (
-                f'<h2 id="{slug}">'
+                f'<h{html_level} id="{slug}">'
                 f'<span class="heading-text">{clean_text}</span>'
                 f'<span class="heading-arabic">{arabic}</span>'
-                f"</h2>\n"
-            )
-
-        if level == 3:
-            self.h3_counter += 1
-
-            if self.chapter is not None:
-                arabic = f"{self.chapter}.{self.h2_counter}.{self.h3_counter}"
-            else:
-                arabic = f"{self.h2_counter}.{self.h3_counter}"
-
-            return (
-                f'<h3 id="{slug}">'
-                f'<span class="heading-text">{clean_text}</span>'
-                f'<span class="heading-arabic">{arabic}</span>'
-                f"</h3>\n"
+                f"</h{html_level}>\n"
             )
 
         return f'<h{level} id="{slug}">{clean_text}</h{level}>\n'
