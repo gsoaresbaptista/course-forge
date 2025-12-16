@@ -276,6 +276,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "course_name": course_name,
                 "parts": parts,
                 "modules": modules,
+                "modules_title": config.get("modules_title"),
                 "site_name": self.config.get("site_name", "Course Forge"),
                 "author": self.config.get("author", "Course Forge"),
                 "year": config.get("year"),
