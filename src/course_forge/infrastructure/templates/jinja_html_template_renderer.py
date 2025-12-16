@@ -143,8 +143,33 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "courses_title": courses_title,
                 "back_link_url": back_link_url,
                 "back_link_text": back_link_text,
+                "breadcrumbs": self._build_breadcrumbs(node, config, title),
             }
         )
+
+    def _build_breadcrumbs(
+        self, node: ContentNode, config: dict | None, current_title: str
+    ) -> list[dict]:
+        """Build breadcrumb trail from parent chain."""
+        breadcrumbs = []
+        parents = []
+
+        current = node.parent
+        while current is not None and current.parent is not None:
+            parents.insert(0, strip_leading_number(current.name))
+            current = current.parent
+
+        for i, name in enumerate(parents):
+            if i == len(parents) - 1:
+                url = "contents.html"
+            else:
+                depth = len(parents) - i - 1
+                url = "../" * depth + "contents.html"
+            breadcrumbs.append({"name": name, "url": url})
+
+        breadcrumbs.append({"name": current_title, "url": "#"})
+
+        return breadcrumbs
 
     def render_contents(
         self, course_node: ContentNode, config: dict | None = None

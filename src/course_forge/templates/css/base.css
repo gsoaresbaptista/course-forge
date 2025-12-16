@@ -256,6 +256,35 @@ body {
     flex: 1;
 }
 
+/* Breadcrumb Navigation */
+.breadcrumb {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.breadcrumb-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+
+.breadcrumb-link:hover {
+    color: var(--link);
+    text-decoration: underline;
+}
+
+.breadcrumb-separator {
+    margin: 0 0.4rem;
+    color: var(--border);
+}
+
+.breadcrumb-current {
+    color: var(--text);
+}
+
 .article-header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -663,7 +692,7 @@ figcaption {
     font-style: italic;
     color: var(--text-muted);
     font-family: var(--font-headers);
-    margin-top: 0.5rem;
+    margin-top: 2.5rem;
     letter-spacing: 0.05em;
     text-align: center;
     margin-bottom: 2rem;
@@ -748,6 +777,7 @@ figcaption {
 .contents-item {
     margin-bottom: 0;
     border-bottom: 1px solid var(--border);
+    padding: 10px 0px;
 }
 
 .contents-item:last-child {
@@ -853,11 +883,17 @@ figcaption {
     transform: translateX(-5px);
     transition: all 0.2s;
     color: var(--course-accent);
+    margin-left: auto;
 }
 
 .contents-link:hover .course-arrow {
     opacity: 1;
     transform: translateX(0);
+}
+
+/* Modules section specific styles */
+.contents-section .contents-link {
+    width: 100%;
 }
 
 /* Footer for Contents Page */

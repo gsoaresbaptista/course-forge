@@ -62,6 +62,18 @@
         <div class="mobile-menu-overlay"></div>
 
         <main class="main-content">
+            {% if breadcrumbs %}
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                {% for crumb in breadcrumbs %}
+                {% if not loop.last %}
+                <a href="{{ crumb.url }}" class="breadcrumb-link">{{ crumb.name }}</a>
+                <span class="breadcrumb-separator">›</span>
+                {% else %}
+                <span class="breadcrumb-current">{{ crumb.name }}</span>
+                {% endif %}
+                {% endfor %}
+            </nav>
+            {% endif %}
             <article class="article">
                 <header class="article-header">
                     <h1 class="article-title">
