@@ -268,7 +268,6 @@ a:hover {
 
 .breadcrumb-link {
     color: var(--text-muted);
-    text-decoration: none;
     transition: color .15s
 }
 
@@ -276,6 +275,11 @@ a:hover {
 a {
     color: var(--link);
     text-decoration: underline
+}
+
+.breadcrumb-link,
+a {
+    text-decoration: none
 }
 
 .breadcrumb-separator {
@@ -393,10 +397,6 @@ a {
     margin-bottom: 1rem;
     text-align: justify;
     hyphens: auto
-}
-
-a {
-    text-decoration: none
 }
 
 .article-body ol,
@@ -989,7 +989,7 @@ p:has(>.download-link)+p:has(>.download-link) .download-link:first-child {
 
 td .download-link,
 th .download-link {
-    border: none;
+    border: 0;
     padding: 0;
     display: inline
 }
@@ -997,5 +997,56 @@ th .download-link {
 .downloads .download-link {
     display: block;
     padding: .4rem 0;
-    border: none
+    border: 0
+}
+
+.svg-graph.ast-plot-img .ast-op path,
+.svg-graph.ast-plot-img .ast-op polygon {
+    fill: #f5ede4 !important;
+    stroke: var(--course-accent) !important;
+    stroke-width: 1.5 !important
+}
+
+.svg-graph.ast-plot-img .ast-op text {
+    fill: var(--course-accent) !important;
+    font-weight: 600 !important;
+    font-size: 14px !important
+}
+
+.svg-graph.ast-plot-img .ast-leaf path,
+.svg-graph.ast-plot-img .ast-leaf polygon {
+    fill: #e8ebe6 !important;
+    stroke: #7a8a6f !important;
+    stroke-width: 1.5 !important
+}
+
+.svg-graph.ast-plot-img .ast-leaf text,
+.svg-graph text {
+    fill: #4a5a3f !important;
+    font-weight: 500 !important;
+    font-size: 13px !important
+}
+
+.svg-graph.ast-plot-img .ast-edge path,
+.svg-graph.ast-plot-img .ast-edge polygon {
+    stroke: var(--text-muted) !important;
+    stroke-width: 1.5 !important;
+    opacity: .6
+}
+
+.svg-graph circle,
+.svg-graph path,
+.svg-graph polygon {
+    stroke: var(--course-accent) !important;
+    stroke-width: 1.5 !important
+}
+
+.svg-graph .gate {
+    fill: #f5ede4 !important;
+    filter: drop-shadow(0 1px 3px rgba(136, 68, 34, .15))
+}
+
+.svg-graph .wire {
+    stroke: var(--text-muted) !important;
+    stroke-width: 2 !important
 }

@@ -1,48 +1,34 @@
 import html
-import re
 import uuid
-from typing import Any
 
 import graphviz  # type: ignore
 
 from course_forge.domain.entities import ContentNode
 
-from .base import Processor
+from .svg_processor_base import SVGProcessorBase
 
 
-class ASTProcessor(Processor):
-    pattern = re.compile(
-        r"```ast\.plot"
-        r"(?:\s+(?:width=(?P<width>\d+)|height=(?P<height>\d+)|(?P<centered>centered)))*"
-        r"\s+(?P<ast_data>.+?)```",
-        re.DOTALL,
-    )
+class ASTProcessor(SVGProcessorBase):
+    pattern = SVGProcessorBase.create_pattern("ast.plot", r"(?P<ast_data>.+?)")
 
     def execute(self, node: ContentNode, content: str) -> str:
         matches = list(self.pattern.finditer(content))
 
         for match in matches:
             ast = match.group("ast_data").strip()
-            width = match.group("width")
-            height = match.group("height")
-            centered = match.group("centered")
+            attrs = self.parse_svg_attributes(match)
 
             svg_data = self._render_ast(ast)
-            attach_name = f"{node.name}_{node.number_of_attachments}.svg"
-
-            data: dict[str, Any] = {
-                "type": "image",
-                "data": svg_data,
-                "name": attach_name,
-            }
-
-            node.attach(data)
-            img_attrs = f"{f'width="{width}"' if width else ''} {f'height="{height}"' if height else ''}"
-            img_code = (
-                f'<img src="static/{attach_name}" {img_attrs} class="ast-plot-img" />'
+            svg_html = self.generate_inline_svg(
+                svg_data,
+                attrs["width"],
+                attrs["height"],
+                attrs["centered"],
+                attrs["sketch"],
+                css_class="svg-graph ast-plot-img",
             )
-            img_code = f'<div class="{"centered" if centered else ""}">{img_code}</div>'
-            content = content.replace(match.group(0), img_code)
+
+            content = content.replace(match.group(0), svg_html)
 
         return content
 
@@ -55,7 +41,11 @@ class ASTProcessor(Processor):
                 "fontsize": "14",
                 "fontname": "Comic Sans MS, sans-serif",
             },
-            edge_attr={"penwidth": "2", "arrowsize": "0.8", "class": "ast-edge"},
+            edge_attr={
+                "penwidth": "2",
+                "arrowsize": "0.8",
+                "class": "ast-edge",
+            },
         )
 
         tokens = expr.replace("(", " ( ").replace(")", " ) ").split()
@@ -66,9 +56,8 @@ class ASTProcessor(Processor):
     def _create_styled_node(self, g: graphviz.Digraph, node_id: str, label: str):
         safe_label = html.escape(label)
         html_label = (
-            f'<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">'
-            f'<TR><TD BORDER="1" SIDES="LRT" CELLPADDING="10">{safe_label}</TD></TR>'
-            f'<TR><TD BORDER="1" SIDES="LRB" BGCOLOR="black" HEIGHT="4"></TD></TR>'
+            f'<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10">'
+            f"<TR><TD>{safe_label}</TD></TR>"
             f"</TABLE>>"
         )
         g.node(node_id, label=html_label, shape="plain", **{"class": "ast-op"})  # type: ignore
@@ -100,6 +89,12 @@ class ASTProcessor(Processor):
             return None
 
         node_id = str(uuid.uuid4())
-        g.node(node_id, label=token, shape="plaintext", **{"class": "ast-leaf"})  # type: ignore
+        safe_token = html.escape(token)
+        html_label = (
+            f'<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="8">'
+            f"<TR><TD>{safe_token}</TD></TR>"
+            f"</TABLE>>"
+        )
+        g.node(node_id, label=html_label, shape="plain", **{"class": "ast-leaf"})  # type: ignore
 
         return node_id
