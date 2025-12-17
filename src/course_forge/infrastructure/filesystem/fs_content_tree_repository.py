@@ -23,6 +23,8 @@ class FileSystemContentTreeRepository(ContentTreeRepository):
 
         if node.is_dir:
             for entry in sorted(os.listdir(path)):
+                if entry == "config.yaml":
+                    continue
                 full = os.path.join(path, entry)
                 child = self._build_node(full, is_root=False)
                 node.add_child(child)
