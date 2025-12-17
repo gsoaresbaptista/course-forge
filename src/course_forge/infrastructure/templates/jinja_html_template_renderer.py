@@ -138,6 +138,28 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
             }
         )
 
+    def render_slide(
+        self,
+        content: str,
+        node: ContentNode,
+        metadata: dict | None = None,
+        config: dict | None = None,
+    ) -> str:
+        """Render content using the Reveal.js slide template."""
+        if metadata is None:
+            metadata = {}
+        if config is None:
+            config = {}
+
+        template_context = config.copy()
+        template_context.update(metadata)
+
+        template_context["content"] = content
+        template_context["title"] = metadata.get("title", node.name)
+
+        template = self.env.get_template("reveal.html")
+        return template.render(**template_context)
+
     def _build_breadcrumbs(
         self, node: ContentNode, config: dict | None, current_title: str
     ) -> list[dict]:

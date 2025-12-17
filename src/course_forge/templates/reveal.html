@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title>{{ title }}</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reset.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/theme/serif.min.css" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/highlight/monokai.min.css" />
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            {{ content }}
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/notes/notes.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/markdown/markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/highlight/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/math/math.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
+        });
+    </script>
+    <script src="/js/rough.min.js"></script>
+    <script src="/js/apply_sketch.js"></script>
+    <style>
+        /* Adjust base font size */
+        .reveal {
+            font-size: 20px;
+        }
+
+        .reveal h1 {
+            font-size: 2em;
+        }
+
+        .reveal h2 {
+            font-size: 1.5em;
+        }
+
+        .reveal h3 {
+            font-size: 1.25em;
+        }
+
+        .reveal p,
+        .reveal ul,
+        .reveal ol {
+            line-height: 1.4;
+        }
+
+        /* Previous AST styles */
+        .svg-graph.ast-plot-img .ast-op path,
+        .svg-graph.ast-plot-img .ast-op polygon {
+            fill: #f5ede4 !important;
+            stroke: #884422 !important;
+            stroke-width: 1.5 !important
+        }
+
+        .svg-graph.ast-plot-img .ast-op text {
+            fill: #884422 !important;
+            font-weight: 600 !important;
+            font-size: 14px !important
+        }
+
+        .svg-graph.ast-plot-img .ast-leaf path,
+        .svg-graph.ast-plot-img .ast-leaf polygon {
+            fill: #e8ebe6 !important;
+            stroke: #7a8a6f !important;
+            stroke-width: 1.5 !important
+        }
+
+        .svg-graph.ast-plot-img .ast-leaf text,
+        .svg-graph text {
+            fill: #4a5a3f !important;
+            font-weight: 500 !important;
+            font-size: 13px !important
+        }
+
+        .svg-graph.ast-plot-img .ast-edge path,
+        .svg-graph.ast-plot-img .ast-edge polygon {
+            stroke: var(--text-muted) !important;
+            stroke-width: 1.5 !important;
+            opacity: .6
+        }
+
+        .svg-graph circle,
+        .svg-graph path,
+        .svg-graph polygon {
+            stroke: #884422 !important;
+            stroke-width: 1.5 !important
+        }
+
+        .svg-graph .gate {
+            fill: #f5ede4 !important;
+            filter: drop-shadow(0 1px 3px rgba(136, 68, 34, .15))
+        }
+
+        .svg-graph .wire {
+            stroke: var(--text-muted) !important;
+            stroke-width: 2 !important
+        }
+    </style>
+</body>
+
+</html>

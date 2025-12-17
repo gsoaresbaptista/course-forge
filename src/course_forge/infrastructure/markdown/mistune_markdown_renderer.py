@@ -57,6 +57,14 @@ class HeadingRenderer(mistune.HTMLRenderer):
         return f'<h{level} id="{slug}">{clean_text}</h{level}>\n'
 
 
+class SlideRenderer(mistune.HTMLRenderer):
+    """Renderer for Reveal.js slides."""
+
+    def thematic_break(self) -> str:
+        """Use horizontal rules as slide separators."""
+        return "</section>\n<section>"
+
+
 class MistuneMarkdownRenderer(MarkdownRenderer):
     COMMENT_PATTERN = re.compile(r"%%[\s\S]*?%%", re.MULTILINE)
 
@@ -69,6 +77,23 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
             renderer=renderer, plugins=["table", "strikethrough"]
         )
         html = str(markdown(text))
+
+        html = self._restore_latex(html, placeholders)
+        return html
+
+    def render_slide(self, text: str) -> str:
+        """Render markdown content as Reveal.js slides."""
+        text = self._strip_comments(text)
+        text, placeholders = self._protect_latex(text)
+
+        renderer = SlideRenderer(escape=False)
+        markdown = mistune.create_markdown(
+            renderer=renderer, plugins=["table", "strikethrough"]
+        )
+        html = str(markdown(text))
+
+        # Wrap in initial section tags
+        html = f"<section>{html}</section>"
 
         html = self._restore_latex(html, placeholders)
         return html

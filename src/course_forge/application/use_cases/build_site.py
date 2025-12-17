@@ -173,15 +173,35 @@ class BuildSiteUseCase:
                 if match:
                     chapter = int(match.group(1))
 
-                content = self.markdown_renderer.render(content, chapter=chapter)
-
                 render_config = (global_config or {}).copy()
                 if current_config:
                     render_config.update(current_config)
 
-                html = self.html_renderer.render(
-                    content, node, metadata=metadata, config=render_config
-                )
+                if metadata.get("type") == "slide":
+                    # Render as Reveal.js slides
+                    if hasattr(self.markdown_renderer, "render_slide"):
+                        content = self.markdown_renderer.render_slide(content)
+                    else:
+                        # Fallback if method missing (should not happen with correct setup)
+                        content = self.markdown_renderer.render(
+                            content, chapter=chapter
+                        )
+
+                    if hasattr(self.html_renderer, "render_slide"):
+                        html = self.html_renderer.render_slide(
+                            content, node, metadata=metadata, config=render_config
+                        )
+                    else:
+                        html = self.html_renderer.render(
+                            content, node, metadata=metadata, config=render_config
+                        )
+                else:
+                    # Standard page render
+                    content = self.markdown_renderer.render(content, chapter=chapter)
+
+                    html = self.html_renderer.render(
+                        content, node, metadata=metadata, config=render_config
+                    )
 
                 for processor in post_processors:
                     html = processor.execute(node, html)

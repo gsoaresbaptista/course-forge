@@ -1,4 +1,3 @@
-
 from course_forge.application.processors import (
     ASTProcessor,
     DigitalCircuitProcessor,
