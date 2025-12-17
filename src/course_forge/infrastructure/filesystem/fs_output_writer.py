@@ -96,7 +96,7 @@ class FileSystemOutputWriter(OutputWriter):
         if ext == ".css":
             return csscompressor.compress(content)
         elif ext == ".js":
-            return jsmin.jsmin(content)
+            return jsmin.jsmin(content, quote_chars="'\"`")
         elif ext == ".svg":
             # Simple SVG minification: remove newlines and extra spaces
             minified = re.sub(r">\s+<", "><", content)
