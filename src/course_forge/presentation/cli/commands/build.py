@@ -63,11 +63,10 @@ class DependencyContainer:
 def build(content_path: str, output_path: str, template_dir: str | None = None) -> None:
     print(f'Starting site build from content: "{content_path}"...')
 
-    # Remove output directory if exists to avoid old artifacts
-    if os.path.exists(output_path):
-        shutil.rmtree(output_path)
-
     container = DependencyContainer(output_path, template_dir=template_dir)
+    
+    cache_dir = container._writer.get_cache_dir()
+    print(f"Using global checksum cache at: {cache_dir}")
 
     print("Processing content and applying pre-processors...")
     container.build_use_case.execute(

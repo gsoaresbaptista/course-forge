@@ -1,3 +1,5 @@
+import hashlib
+import json
 import os
 import re
 import shutil
@@ -14,6 +16,56 @@ class FileSystemOutputWriter(OutputWriter):
     def __init__(self, root_path: str) -> None:
         super().__init__()
         self._root_path = root_path
+
+    def get_cache_dir(self) -> Path:
+        """Returns the global cache directory for the application."""
+        # Linux: ~/.local/share/course-forge/cache
+        base_dir = Path(os.path.expanduser("~/.local/share/course-forge"))
+        cache_dir = base_dir / "cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        return cache_dir
+
+    def get_checksum_file(self, source_path: str) -> Path:
+        """Returns the path to the checksum file for a specific project source."""
+        # Create a unique hash for the project path to avoid collisions
+        project_hash = hashlib.md5(str(Path(source_path).resolve()).encode()).hexdigest()
+        return self.get_cache_dir() / f"{project_hash}.json"
+
+    def load_checksums(self, source_path: str) -> dict[str, str]:
+        """Loads checksums for the given project source path."""
+        checksum_file = self.get_checksum_file(source_path)
+        if checksum_file.exists():
+            try:
+                with open(checksum_file, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                print(f"Warning: Failed to load checksums from {checksum_file}: {e}")
+        return {}
+
+    def save_checksums(self, source_path: str, checksums: dict[str, str]) -> None:
+        """Saves checksums for the given project source path."""
+        checksum_file = self.get_checksum_file(source_path)
+        try:
+            with open(checksum_file, "w", encoding="utf-8") as f:
+                json.dump(checksums, f, indent=2)
+        except Exception as e:
+            print(f"Warning: Failed to save checksums to {checksum_file}: {e}")
+
+    def exists(self, node: ContentNode) -> bool:
+        """Check if the output file for a given node already exists."""
+        if node.is_file:
+            path = self._get_node_output_path(node)
+            return os.path.exists(path)
+        return False
+
+    def _get_node_output_path(self, node: ContentNode) -> str:
+        dst_folder = os.path.join(self._root_path, *node.slugs_path)
+        if node.file_extension == ".md":
+            # For markdown, it's usually slug.html, but let's be consistent with write()
+            out_dir = os.path.join(self._root_path, *node.slugs_path)
+            return os.path.join(out_dir, node.slug + ".html")
+        else:
+            return os.path.join(dst_folder, node.slug + node.file_extension)
 
     def write(self, node: ContentNode, text: str) -> None:
         out_dir = os.path.join(self._root_path, *node.slugs_path)

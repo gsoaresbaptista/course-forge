@@ -1,6 +1,10 @@
 import os
 import re
 
+import hashlib
+import os
+import re
+
 from course_forge.application.loaders import MarkdownLoader
 from course_forge.application.processors import Processor
 from course_forge.application.renders import HTMLTemplateRenderer, MarkdownRenderer
@@ -46,11 +50,24 @@ class BuildSiteUseCase:
             if hasattr(processor, "set_root"):
                 processor.set_root(tree.root)
 
+        existing_checksums = {}
+        if hasattr(self.writer, "load_checksums"):
+            existing_checksums = self.writer.load_checksums(root_path)
+
+        new_checksums = {}
+
         self._process_node(
-            tree.root, pre_processors, post_processors, global_config=config
+            tree.root,
+            pre_processors,
+            post_processors,
+            global_config=config,
+            existing_checksums=existing_checksums,
+            new_checksums=new_checksums,
         )
 
-        # Only collect top-level courses for the main index
+        if hasattr(self.writer, "save_checksums"):
+            self.writer.save_checksums(root_path, new_checksums)
+
         courses = self._collect_top_level_courses(tree.root)
 
         if courses:
@@ -116,8 +133,12 @@ class BuildSiteUseCase:
         post_processors: list[Processor],
         global_config: dict | None = None,
         parent_course_config: dict | None = None,
+        existing_checksums: dict | None = None,
+        new_checksums: dict | None = None,
     ) -> None:
         current_config = parent_course_config
+        existing_checksums = existing_checksums or {}
+        new_checksums = new_checksums if new_checksums is not None else {}
 
         # Check for config.yaml in this directory if it's a directory
         if not node.is_file and node.src_path:
@@ -131,6 +152,19 @@ class BuildSiteUseCase:
             if node.file_extension == ".md":
                 markdown = self.loader.load(node.src_path)
                 content = markdown["content"]
+
+                current_checksum = hashlib.md5(content.encode("utf-8")).hexdigest()
+                new_checksums[node.src_path] = current_checksum
+                is_changed = existing_checksums.get(node.src_path) != current_checksum
+                
+                output_exists = True
+                if hasattr(self.writer, "exists"):
+                    output_exists = self.writer.exists(node)
+
+                if not is_changed and output_exists:
+                    print(f"Skipping unchanged: {node.slug}")
+                    return
+
                 metadata = markdown.get("metadata", {})
                 node.metadata = metadata
 
@@ -183,5 +217,11 @@ class BuildSiteUseCase:
 
         for child in node.children:
             self._process_node(
-                child, pre_processors, post_processors, global_config, current_config
+                child,
+                pre_processors,
+                post_processors,
+                global_config,
+                current_config,
+                existing_checksums,
+                new_checksums,
             )
