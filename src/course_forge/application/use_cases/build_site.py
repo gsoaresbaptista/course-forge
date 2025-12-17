@@ -1,6 +1,3 @@
-import os
-import re
-
 import hashlib
 import os
 import re
@@ -156,7 +153,7 @@ class BuildSiteUseCase:
                 current_checksum = hashlib.md5(content.encode("utf-8")).hexdigest()
                 new_checksums[node.src_path] = current_checksum
                 is_changed = existing_checksums.get(node.src_path) != current_checksum
-                
+
                 output_exists = True
                 if hasattr(self.writer, "exists"):
                     output_exists = self.writer.exists(node)

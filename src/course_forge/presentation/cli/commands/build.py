@@ -1,5 +1,3 @@
-import os
-import shutil
 
 from course_forge.application.processors import (
     ASTProcessor,
@@ -64,7 +62,7 @@ def build(content_path: str, output_path: str, template_dir: str | None = None) 
     print(f'Starting site build from content: "{content_path}"...')
 
     container = DependencyContainer(output_path, template_dir=template_dir)
-    
+
     cache_dir = container._writer.get_cache_dir()
     print(f"Using global checksum cache at: {cache_dir}")
 

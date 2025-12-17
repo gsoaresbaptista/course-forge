@@ -28,7 +28,9 @@ class FileSystemOutputWriter(OutputWriter):
     def get_checksum_file(self, source_path: str) -> Path:
         """Returns the path to the checksum file for a specific project source."""
         # Create a unique hash for the project path to avoid collisions
-        project_hash = hashlib.md5(str(Path(source_path).resolve()).encode()).hexdigest()
+        project_hash = hashlib.md5(
+            str(Path(source_path).resolve()).encode()
+        ).hexdigest()
         return self.get_cache_dir() / f"{project_hash}.json"
 
     def load_checksums(self, source_path: str) -> dict[str, str]:
