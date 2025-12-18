@@ -54,9 +54,11 @@
         </nav>
 
         <button class="mobile-menu-toggle" aria-label="Menu">
-            <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 12h18M3 6h18M3 18h18" />
-            </svg>
+            <div class="hamburger-container">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </div>
         </button>
 
         <div class="mobile-menu-overlay"></div>
@@ -150,17 +152,19 @@
     <script src="/js/navigation.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const isSubcourse = {{ is_subcourse | tojson }};
-            const courseName = {{ course_name | tojson }};
+            const isSubcourse = {{ is_subcourse | tojson
+        }};
+        const courseName = {{ course_name | tojson }};
 
-            // Apply dynamic breadcrumbs
-            CourseForgeNav.applyDynamicBreadcrumbs('.breadcrumb', isSubcourse);
+        // Apply dynamic breadcrumbs
+        CourseForgeNav.applyDynamicBreadcrumbs('.breadcrumb', isSubcourse);
         });
 
         function handleBackNavigation() {
-            const isSubcourse = {{ is_subcourse | tojson }};
-            const dynamic = CourseForgeNav.getBackLink('contents.html', 'Voltar', isSubcourse);
-            window.location.href = dynamic.url;
+            const isSubcourse = {{ is_subcourse | tojson
+        }};
+        const dynamic = CourseForgeNav.getBackLink('contents.html', 'Voltar', isSubcourse);
+        window.location.href = dynamic.url;
         }
     </script>
 </body>
