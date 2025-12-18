@@ -13,6 +13,7 @@
         href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;600&family=Fira+Code&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="/css/base.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
@@ -27,23 +28,6 @@
         </header>
 
         <main class="contents-main">
-            {% if modules %}
-            <section class="contents-section">
-                <h2 class="section-title">{{ modules_title or 'Módulos' }}</h2>
-                <ul class="contents-list">
-                    {% for module in modules %}
-                    <li class="contents-item">
-                        <a href="{{ module.slug }}" class="contents-link">
-                            <span class="contents-name">{{ module.name }}</span>
-                            <span class="course-arrow">→</span>
-                        </a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </section>
-
-            {% endif %}
-
             <p class="contents-subtitle">Tabela de Conteúdos</p>
 
             <div class="parts-container {% if parts|length == 1 %}parts-container--single{% endif %}">
@@ -69,6 +53,24 @@
                 </div>
                 {% endfor %}
             </div>
+
+            {% if appendices %}
+            <section class="contents-section appendices-section">
+                <h2 class="section-title">{{ appendices_title or 'Apêndices' }}</h2>
+                <ul class="contents-list appendices-list">
+                    {% for appendix in appendices %}
+                    <li class="contents-item">
+                        <a href="{{ appendix.slug }}" class="contents-link">
+                            <i data-lucide="paperclip" class="appendix-icon"></i>
+                            <span class="contents-name">{{ appendix.name }}</span>
+                            <span class="course-arrow">→</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            {% endif %}
         </main>
 
         <footer class="footer">
@@ -79,6 +81,9 @@
     <script src="/js/navigation.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Lucide icons
+            lucide.createIcons();
+
             const isSubcourse = {{ is_subcourse | tojson
         }};
         const courseName = {{ course_name | tojson }};

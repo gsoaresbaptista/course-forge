@@ -334,8 +334,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         else:
             parts.append({"title": None, "roman": None, "chapters": chapters})
 
-        # Sub-courses / Modules
-        modules = []
+        appendices = []
         for c in course_node.children:
             if not c.is_file:
                 has_md = any(
@@ -361,7 +360,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                     if c.alias_to:
                         url = self._get_relative_node_url(course_node, c)
 
-                    modules.append(
+                    appendices.append(
                         {
                             "name": module_name,
                             "slug": url,
@@ -384,8 +383,8 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
             {
                 "course_name": course_name,
                 "parts": parts,
-                "modules": modules,
-                "modules_title": config.get("modules_title"),
+                "appendices": appendices,
+                "appendices_title": config.get("appendices_title") or config.get("modules_title"),
                 "site_name": self.config.get("site_name", "Course Forge"),
                 "author": self.config.get("author", "Course Forge"),
                 "year": config.get("year"),

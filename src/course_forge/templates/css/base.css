@@ -636,7 +636,7 @@ figcaption {
 
 .contents-page {
     max-width: 800px;
-    margin: 4rem auto;
+    margin: 2rem auto;
     padding: 0 1.5rem;
     min-height: 100vh;
     display: flex;
@@ -647,7 +647,6 @@ figcaption {
 
 .contents-header {
     text-align: center;
-    margin-bottom: 4rem
 }
 
 .contents-ornament {
@@ -675,11 +674,11 @@ figcaption {
 }
 
 .contents-subtitle {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-style: italic;
-    margin-top: 2.5rem;
+    margin-top: 2rem;
     text-align: center;
-    margin-bottom: 2rem
+    margin-bottom: 1.5rem
 }
 
 .back-link {
@@ -740,7 +739,7 @@ figcaption {
 
 .contents-main {
     flex: 1;
-    margin-bottom: 6rem
+    margin-bottom: 3rem
 }
 
 .contents-list {
@@ -762,7 +761,7 @@ figcaption {
     text-decoration: none;
     color: var(--heading);
     transition: background-color .15s, color .15s;
-    font-size: 1.25rem
+    font-size: 1.15rem
 }
 
 .contents-link:hover {
@@ -855,6 +854,38 @@ figcaption {
     width: 100%
 }
 
+.appendices-section {
+    margin-top: 3rem;
+}
+
+.appendices-section .section-title {
+    margin-bottom: 2rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: .1em
+}
+
+.appendices-list .contents-link::before {
+    display: none;
+}
+
+.appendix-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-right: .75rem;
+    color: var(--course-accent);
+    flex-shrink: 0;
+}
+
+.appendices-list .contents-item {
+    border-bottom: 1px dashed var(--border)
+}
+
+.appendices-list .contents-item:last-child {
+    border-bottom: none
+}
+
 .contents-page .footer,
 .sidebar-nav-link.back {
     border-top: 1px solid var(--border);
@@ -863,9 +894,9 @@ figcaption {
 }
 
 .contents-page .footer {
-    font-size: .9rem;
-    padding-top: 2rem;
-    margin-top: 4rem
+    font-size: .85rem;
+    padding-top: 1.5rem;
+    margin-top: 3rem
 }
 
 .contents-year,
@@ -881,9 +912,9 @@ figcaption {
 }
 
 .section-title {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     color: var(--text-primary);
-    margin-bottom: 1rem;
+    margin-bottom: .75rem;
     text-align: center;
     font-weight: 600
 }
