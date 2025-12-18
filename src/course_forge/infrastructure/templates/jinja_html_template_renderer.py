@@ -48,7 +48,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         metadata: dict | None = None,
         config: dict | None = None,
     ) -> str:
-        template = self.env.get_template("base.html")
+        template = self.env.get_template("base.html.jinja")
         metadata = metadata or {}
         config = config or self.config
 
@@ -160,7 +160,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         template_context["content"] = content
         template_context["title"] = metadata.get("title", node.name)
 
-        template = self.env.get_template("reveal.html")
+        template = self.env.get_template("reveal.html.jinja")
         return template.render(**template_context)
 
     def _get_relative_node_url(
@@ -269,7 +269,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         self, course_node: ContentNode, config: dict | None = None
     ) -> str:
         """Render contents.html for a course directory."""
-        template = self.env.get_template("contents.html")
+        template = self.env.get_template("contents.html.jinja")
         config = (
             config or self.config
         )  # Merge logic happened in build_site, but here we fallback to global
@@ -384,7 +384,8 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "course_name": course_name,
                 "parts": parts,
                 "appendices": appendices,
-                "appendices_title": config.get("appendices_title") or config.get("modules_title"),
+                "appendices_title": config.get("appendices_title")
+                or config.get("modules_title"),
                 "site_name": self.config.get("site_name", "Course Forge"),
                 "author": self.config.get("author", "Course Forge"),
                 "year": config.get("year"),
@@ -401,7 +402,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
 
     def render_index(self, courses: list[dict]) -> str:
         """Render index.html listing available courses."""
-        template = self.env.get_template("index.html")
+        template = self.env.get_template("index.html.jinja")
 
         processed_courses = []
         for course in courses:

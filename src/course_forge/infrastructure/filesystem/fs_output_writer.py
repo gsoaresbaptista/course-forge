@@ -101,7 +101,7 @@ class FileSystemOutputWriter(OutputWriter):
 
     def copy_assets(self, template_dir: str, filters: list[str] | None = None) -> None:
         if filters is None:
-            filters = [".html", ".md", ".yaml"]
+            filters = [".html", ".md", ".yaml", ".jinja"]
 
         for item in os.listdir(template_dir):
             if any([item.endswith(ext) for ext in filters]):
