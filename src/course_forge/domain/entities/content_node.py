@@ -25,6 +25,8 @@ class ContentNode:
         self._file_extension: str = file_extension
         self._parent: ContentNode | None = parent
         self._metadata: dict = metadata or {}
+        self._discovery_path: str | None = None
+        self._alias_to: ContentNode | None = None
 
     @property
     def file_extension(self) -> str:
@@ -107,6 +109,22 @@ class ContentNode:
             base += f"\n{entry.__str__(level + 1)}"
 
         return base
+
+    @property
+    def discovery_path(self) -> str | None:
+        return self._discovery_path
+
+    @discovery_path.setter
+    def discovery_path(self, path: str) -> None:
+        self._discovery_path = path
+
+    @property
+    def alias_to(self) -> ContentNode | None:
+        return self._alias_to
+
+    @alias_to.setter
+    def alias_to(self, node: ContentNode) -> None:
+        self._alias_to = node
 
     def attach(self, data: Any) -> int:
         self._attachments[self._number_of_attachments] = data

@@ -147,9 +147,13 @@
     </script>
     <script src="/js/rough.min.js"></script>
     <script src="/js/apply_sketch.js"></script>
+    <script src="/js/navigation.js"></script>
     <script>
         function handleBackNavigation() {
-            window.location.href = 'contents.html';
+            const isSubcourse = {{ is_subcourse | tojson
+        }};
+        const dynamic = CourseForgeNav.getBackLink('contents.html', 'Voltar', isSubcourse);
+        window.location.href = dynamic.url;
         }
     </script>
 </body>

@@ -75,6 +75,26 @@
             <p>© 2025 · <a href="#">{{ author }}</a></p>
         </footer>
     </div>
+
+    <script src="/js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isSubcourse = {{ is_subcourse | tojson
+        }};
+        const courseName = {{ course_name | tojson }};
+
+        // Store context if it's a main course
+        CourseForgeNav.storeContext(courseName, window.location.href, isSubcourse);
+
+        // Apply dynamic back link to the header back link
+        CourseForgeNav.applyDynamicBackLink(
+            '.back-link',
+            '{{ back_link_url }}',
+            '{{ back_link_text }}',
+            isSubcourse
+        );
+        });
+    </script>
 </body>
 
 </html>

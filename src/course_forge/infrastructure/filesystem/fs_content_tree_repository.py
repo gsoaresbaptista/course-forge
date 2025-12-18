@@ -4,8 +4,6 @@ from pathlib import Path
 from course_forge.domain.entities.content_node import ContentNode
 from course_forge.domain.entities.content_tree import ContentTree
 from course_forge.domain.repositories import ContentTreeRepository
-
-
 from course_forge.infrastructure.config.config_loader import ConfigLoader
 
 
@@ -37,6 +35,8 @@ class FileSystemContentTreeRepository(ContentTreeRepository):
                 if config and config.get("source"):
                     source_rel = config.get("source")
                     discovery_path = os.path.normpath(os.path.join(path, source_rel))
+
+            node.discovery_path = os.path.abspath(discovery_path)
 
             for entry in sorted(os.listdir(discovery_path)):
                 if entry == "config.yaml":

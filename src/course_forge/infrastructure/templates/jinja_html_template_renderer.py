@@ -135,6 +135,9 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "back_link_url": back_link_url,
                 "back_link_text": back_link_text,
                 "breadcrumbs": self._build_breadcrumbs(node, config, title),
+                "is_subcourse": len(node.slugs_path) > 1
+                or (config.get("hidden") if config else False),
+                "course_slug": node.slugs_path[0] if node.slugs_path else None,
             }
         )
 
@@ -159,6 +162,38 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
 
         template = self.env.get_template("reveal.html")
         return template.render(**template_context)
+
+    def _get_relative_node_url(
+        self, from_node: ContentNode, to_node: ContentNode
+    ) -> str:
+        """Compute relative URL from from_node's output directory to to_node's output."""
+        target = to_node.alias_to if to_node.alias_to else to_node
+
+        # Canonical path for target
+        target_slugs = target.slugs_path + [target.slug]
+
+        # Current path for from_node (assumed to be a directory node for contents.html)
+        current_slugs = from_node.slugs_path + [from_node.slug]
+
+        # Find common prefix
+        i = 0
+        while (
+            i < len(current_slugs)
+            and i < len(target_slugs)
+            and current_slugs[i] == target_slugs[i]
+        ):
+            i += 1
+
+        # Steps up from current_node's directory
+        up_steps = len(current_slugs) - i
+        # Steps down to target
+        down_steps = target_slugs[i:]
+
+        path_parts = [".."] * up_steps + down_steps
+        if not path_parts:
+            return "contents.html"
+
+        return "/".join(path_parts) + "/contents.html"
 
     def _build_breadcrumbs(
         self, node: ContentNode, config: dict | None, current_title: str
@@ -322,10 +357,14 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                             if module_config.get("name"):
                                 module_name = module_config["name"]
 
+                    url = f"{c.slug}/contents.html"
+                    if c.alias_to:
+                        url = self._get_relative_node_url(course_node, c)
+
                     modules.append(
                         {
                             "name": module_name,
-                            "slug": f"{c.slug}/contents.html",
+                            "slug": url,
                         }
                     )
 
@@ -353,6 +392,11 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "courses_title": courses_title,
                 "back_link_url": back_link_url,
                 "back_link_text": back_link_text,
+                "is_subcourse": len(course_node.slugs_path) > 0
+                or (config.get("hidden") if config else False),
+                "course_slug": course_node.slugs_path[0]
+                if course_node.slugs_path
+                else course_node.slug,
             }
         )
 
@@ -360,9 +404,28 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         """Render index.html listing available courses."""
         template = self.env.get_template("index.html")
 
+        processed_courses = []
+        for course in courses:
+            node = course.get("node")
+            slug = course["slug"]
+            url = f"{slug}/contents.html"
+
+            if node and node.alias_to:
+                # For top-level redirections in index.html, we need to point to the canonical course
+                # Since index.html is at root, relative path is just the canonical slug path
+                target = node.alias_to
+                url = "/".join(target.slugs_path + [target.slug]) + "/contents.html"
+
+            processed_courses.append(
+                {
+                    "name": course["name"],
+                    "slug": url,
+                }
+            )
+
         return template.render(
             {
-                "courses": courses,
+                "courses": processed_courses,
                 "site_name": self.config.get("site_name", "Course Forge"),
                 "courses_title": self.config.get("courses_title", "Cursos Disponíveis"),
             }

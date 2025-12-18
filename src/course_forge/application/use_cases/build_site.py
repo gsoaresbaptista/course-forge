@@ -42,6 +42,8 @@ class BuildSiteUseCase:
 
         tree = self.repository.load(root_path)
 
+        self._detect_aliases(tree.root)
+
         # Inject root node into processors that need it
         for processor in pre_processors + post_processors:
             if hasattr(processor, "set_root"):
@@ -121,6 +123,48 @@ class BuildSiteUseCase:
                     )
         return courses
 
+    def _detect_aliases(self, root: ContentNode) -> None:
+        """Traverse the tree and detect nodes that point to the same physical location.
+        The canonical node is the one with the shallowest depth.
+        """
+        all_nodes: list[ContentNode] = []
+
+        def collect(node: ContentNode):
+            if not node.is_file and node.discovery_path:
+                all_nodes.append(node)
+            for child in node.children:
+                collect(child)
+
+        collect(root)
+
+        # Group by discovery_path
+        groups: dict[str, list[ContentNode]] = {}
+        for node in all_nodes:
+            path = node.discovery_path
+            if path not in groups:
+                groups[path] = []
+            groups[path].append(node)
+
+        for path, nodes in groups.items():
+            if len(nodes) <= 1:
+                continue
+
+            # Sort to pick the best canonical node
+            # Criteria 1: Depth (len of slugs_path) - shallowest first
+            # Criteria 2: src_path == discovery_path (is it the actual location?)
+            def canonical_sort_key(n: ContentNode):
+                depth = len(n.slugs_path)
+                # If it's a root-level course, depth is 0.
+                # If it's a module inside a course, depth is 1.
+                is_original = 0 if n.src_path == n.discovery_path else 1
+                return (depth, is_original)
+
+            nodes.sort(key=canonical_sort_key)
+            canonical = nodes[0]
+
+            for other in nodes[1:]:
+                other.alias_to = canonical
+
     def _clean_name(self, name: str) -> str:
         cleaned = re.sub(r"^[\d]+[-_.\s]*", "", name)
         return cleaned.replace("-", " ").replace("_", " ").title() if cleaned else name
@@ -146,6 +190,10 @@ class BuildSiteUseCase:
                 local_config = ConfigLoader().load(local_config_path)
                 # Merge with parent config or override? Usually override for specific fields.
                 current_config = local_config
+
+        if node.alias_to:
+            print(f"Skipping alias: {node.slug} (points to {node.alias_to.slug})")
+            return
 
         if node.is_file:
             if node.file_extension == ".md":
