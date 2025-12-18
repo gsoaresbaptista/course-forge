@@ -81,12 +81,14 @@ class BuildSiteUseCase:
         for child in node.children:
             course_name = self._clean_name(child.name)
 
-            # Check for config.yaml to get custom name
+            # Check for config.yaml to get custom name and visibility
             if not child.is_file and child.src_path:
                 local_config_path = os.path.join(child.src_path, "config.yaml")
                 if os.path.exists(local_config_path):
                     local_config = ConfigLoader().load(local_config_path)
-                    if local_config and local_config.get("name"):
+                    if local_config.get("hidden"):
+                        continue
+                    if local_config.get("name"):
                         course_name = local_config.get("name")
 
             if not child.is_file:
