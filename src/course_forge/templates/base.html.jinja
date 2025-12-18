@@ -149,11 +149,18 @@
     <script src="/js/apply_sketch.js"></script>
     <script src="/js/navigation.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isSubcourse = {{ is_subcourse | tojson }};
+            const courseName = {{ course_name | tojson }};
+
+            // Apply dynamic breadcrumbs
+            CourseForgeNav.applyDynamicBreadcrumbs('.breadcrumb', isSubcourse);
+        });
+
         function handleBackNavigation() {
-            const isSubcourse = {{ is_subcourse | tojson
-        }};
-        const dynamic = CourseForgeNav.getBackLink('contents.html', 'Voltar', isSubcourse);
-        window.location.href = dynamic.url;
+            const isSubcourse = {{ is_subcourse | tojson }};
+            const dynamic = CourseForgeNav.getBackLink('contents.html', 'Voltar', isSubcourse);
+            window.location.href = dynamic.url;
         }
     </script>
 </body>

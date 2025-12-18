@@ -55,6 +55,39 @@ window.CourseForgeNav = (function () {
             } else {
                 link.textContent = dynamic.text;
             }
+        },
+
+        /**
+         * Prepend parent course to breadcrumbs if in a sub-course context.
+         */
+        applyDynamicBreadcrumbs: function (selector, isSubcourse) {
+            const container = document.querySelector(selector);
+            if (!container || !isSubcourse) return;
+
+            const lastUrl = sessionStorage.getItem(STORAGE_KEY_URL);
+            const lastName = sessionStorage.getItem(STORAGE_KEY_NAME);
+
+            if (lastUrl && lastName) {
+                // Check if already present as first crumb to avoid duplicates
+                const firstCrumb = container.querySelector('.breadcrumb-link, .breadcrumb-part');
+                if (firstCrumb && firstCrumb.textContent.trim().toLowerCase() === lastName.trim().toLowerCase()) {
+                    return;
+                }
+
+                // Create the new crumb
+                const crumb = document.createElement('a');
+                crumb.href = lastUrl;
+                crumb.className = 'breadcrumb-link';
+                crumb.textContent = lastName;
+
+                const separator = document.createElement('span');
+                separator.className = 'breadcrumb-separator';
+                separator.textContent = ' › ';
+
+                // Insert at the beginning
+                container.insertBefore(separator, container.firstChild);
+                container.insertBefore(crumb, container.firstChild);
+            }
         }
     };
 })();

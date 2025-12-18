@@ -135,8 +135,10 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "back_link_url": back_link_url,
                 "back_link_text": back_link_text,
                 "breadcrumbs": self._build_breadcrumbs(node, config, title),
-                "is_subcourse": len(node.slugs_path) > 1
-                or (config.get("hidden") if config else False),
+                "is_subcourse": bool(
+                    len(node.slugs_path) > 1
+                    or (config.get("hidden") if config else False)
+                ),
                 "course_slug": node.slugs_path[0] if node.slugs_path else None,
             }
         )
@@ -392,8 +394,10 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "courses_title": courses_title,
                 "back_link_url": back_link_url,
                 "back_link_text": back_link_text,
-                "is_subcourse": len(course_node.slugs_path) > 0
-                or (config.get("hidden") if config else False),
+                "is_subcourse": bool(
+                    len(course_node.slugs_path) > 0
+                    or (config.get("hidden") if config else False)
+                ),
                 "course_slug": course_node.slugs_path[0]
                 if course_node.slugs_path
                 else course_node.slug,
