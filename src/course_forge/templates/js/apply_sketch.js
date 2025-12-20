@@ -31,6 +31,18 @@
                 const styleContainsWidth = imgStyle && imgStyle.includes('width');
 
                 if (styleContainsWidth || (widthAttr && widthAttr.includes('%'))) {
+                    // Ensure viewBox exists before removing width/height to preserve aspect ratio
+                    if (!svgElement.getAttribute('viewBox')) {
+                        const origWidth = svgElement.getAttribute('width');
+                        const origHeight = svgElement.getAttribute('height');
+                        if (origWidth && origHeight) {
+                            const w = parseFloat(origWidth);
+                            const h = parseFloat(origHeight);
+                            if (!isNaN(w) && !isNaN(h) && w > 0 && h > 0) {
+                                svgElement.setAttribute('viewBox', `0 0 ${w} ${h}`);
+                            }
+                        }
+                    }
                     svgElement.removeAttribute('width');
                     svgElement.removeAttribute('height');
                 }
