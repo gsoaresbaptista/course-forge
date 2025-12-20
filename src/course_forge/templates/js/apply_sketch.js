@@ -1,15 +1,65 @@
 (function () {
     'use strict';
 
+    async function inlineSVGs() {
+        const images = document.querySelectorAll('img[src$=".svg"]');
+        const promises = Array.from(images).map(async (img) => {
+            try {
+                const response = await fetch(img.src);
+                if (!response.ok) return;
+                const svgText = await response.text();
+
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(svgText, "image/svg+xml");
+                const svgElement = xmlDoc.querySelector('svg');
+
+                if (!svgElement) return;
+
+                const imgStyle = img.getAttribute('style');
+
+                Array.from(img.attributes).forEach(attr => {
+                    if (attr.name !== 'src' && attr.name !== 'alt') {
+                        svgElement.setAttribute(attr.name, attr.value);
+                    }
+                });
+
+                if (imgStyle) {
+                    svgElement.setAttribute('style', imgStyle);
+                }
+
+                const widthAttr = img.getAttribute('width');
+                const styleContainsWidth = imgStyle && imgStyle.includes('width');
+
+                if (styleContainsWidth || (widthAttr && widthAttr.includes('%'))) {
+                    svgElement.removeAttribute('width');
+                    svgElement.removeAttribute('height');
+                }
+
+                if (!svgElement.style.display) {
+                    svgElement.style.display = 'block';
+                }
+
+                img.parentNode.replaceChild(svgElement, img);
+            } catch (error) {
+                console.error('Error inlining SVG:', error);
+            }
+        });
+        await Promise.all(promises);
+    }
+
     function applySketchEffect() {
         const svgs = document.querySelectorAll('svg[data-sketch="true"]');
+        console.log('Found SVGs with data-sketch:', svgs.length);
 
         svgs.forEach(svg => {
             const rc = rough.svg(svg);
             const elements = svg.querySelectorAll('path, line, circle, rect, ellipse, polygon, polyline');
+            console.log('Found elements to process:', elements.length);
 
             elements.forEach(element => {
                 const tag = element.tagName.toLowerCase();
+                console.log('Processing element:', tag, element);
+
                 const cs = getComputedStyle(element);
 
                 const stroke = element.getAttribute('stroke') || cs.stroke;
@@ -19,14 +69,22 @@
                 const options = {
                     roughness: 1.2,
                     bowing: 1.2,
-                    seed: 42
+                    seed: 42,
+                    stroke: stroke !== 'none' ? stroke : undefined,
+                    strokeWidth: strokeWidth,
+                    fill: fill !== 'none' ? fill : undefined
                 };
 
                 let sketch = null;
 
                 try {
                     if (tag === 'path') {
-                        sketch = rc.path(element.getAttribute('d'), options);
+                        const d = element.getAttribute('d');
+                        if (!d) {
+                            console.warn('Path element has no d attribute:', element);
+                            return;
+                        }
+                        sketch = rc.path(d, options);
                     } else if (tag === 'line') {
                         sketch = rc.line(
                             parseFloat(element.getAttribute('x1') || 0),
@@ -43,13 +101,16 @@
                             options
                         );
                     } else if (tag === 'rect') {
-                        sketch = rc.rectangle(
-                            parseFloat(element.getAttribute('x') || 0),
-                            parseFloat(element.getAttribute('y') || 0),
-                            parseFloat(element.getAttribute('width') || 0),
-                            parseFloat(element.getAttribute('height') || 0),
-                            options
-                        );
+                        const x = parseFloat(element.getAttribute('x') || 0);
+                        const y = parseFloat(element.getAttribute('y') || 0);
+                        const w = parseFloat(element.getAttribute('width') || 0);
+                        const h = parseFloat(element.getAttribute('height') || 0);
+                        console.log('Rect dimensions:', { x, y, w, h });
+                        if (w === 0 || h === 0) {
+                            console.warn('Rect has zero dimensions:', element);
+                            return;
+                        }
+                        sketch = rc.rectangle(x, y, w, h, options);
                     } else if (tag === 'ellipse') {
                         sketch = rc.ellipse(
                             parseFloat(element.getAttribute('cx') || 0),
@@ -72,7 +133,12 @@
                         }
                     }
 
-                    if (!sketch) return;
+                    if (!sketch) {
+                        console.warn('No sketch created for:', tag, element);
+                        return;
+                    }
+
+                    console.log('Created sketch for:', tag);
 
                     const transform = element.getAttribute('transform');
                     if (transform) sketch.setAttribute('transform', transform);
@@ -85,31 +151,24 @@
 
                     sketch.classList.add('rough-sketch');
 
-                    const applyStyle = n => {
-                        if (n.tagName && n.tagName.toLowerCase() === 'path') {
-                            n.style.setProperty('stroke', options.stroke, 'important');
-                            n.style.setProperty('stroke-width', options.strokeWidth + 'px', 'important');
-                            n.style.setProperty('fill', options.fill, 'important');
-                            n.style.setProperty('stroke-linecap', 'round', 'important');
-                            n.style.setProperty('stroke-linejoin', 'round', 'important');
-                        }
-                        Array.from(n.children || []).forEach(applyStyle);
-                    };
-                    applyStyle(sketch);
-
                     element.parentNode.insertBefore(sketch, element);
                     element.setAttribute('visibility', 'hidden');
 
                 } catch (e) {
-                    console.warn(e);
+                    console.error('Error processing element:', tag, element, e);
                 }
             });
         });
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', applySketchEffect);
-    } else {
+    async function init() {
+        await inlineSVGs();
         applySketchEffect();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
 })();

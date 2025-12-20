@@ -477,12 +477,7 @@ a {
 
 .article-body ol,
 .article-body ul {
-    margin-bottom: 1rem;
     padding-left: 1.5rem
-}
-
-.article-body li {
-    margin-bottom: .25rem
 }
 
 .article-body blockquote {
@@ -540,7 +535,8 @@ pre code {
 }
 
 table {
-    width: 100%;
+    width: 75%;
+    margin: 0 auto;
     border-collapse: collapse;
     font-size: .9rem
 }
@@ -721,7 +717,7 @@ figcaption {
 }
 
 .contents-page {
-    max-width: 800px;
+    max-width: 850px;
     margin: 2rem auto;
     padding: 0 1.5rem;
     min-height: 100vh;
@@ -847,7 +843,6 @@ figcaption {
     text-decoration: none;
     color: var(--heading);
     transition: background-color .15s, color .15s;
-    font-size: 1.15rem
 }
 
 .contents-link:hover {
