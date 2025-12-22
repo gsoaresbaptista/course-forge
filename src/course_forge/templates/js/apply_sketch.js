@@ -84,7 +84,8 @@
                     seed: 42,
                     stroke: stroke !== 'none' ? stroke : undefined,
                     strokeWidth: strokeWidth,
-                    fill: fill !== 'none' ? fill : undefined
+                    fill: fill !== 'none' ? fill : undefined,
+                    fillWeight: 3,
                 };
 
                 let sketch = null;
