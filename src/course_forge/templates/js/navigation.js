@@ -117,6 +117,9 @@ window.CourseForgeNav = (function () {
             if (tocLinks.length === 0) return;
 
             const sections = [];
+            let isScrollingFromClick = false;
+            let scrollEndTimer = null;
+
             tocLinks.forEach(link => {
                 const id = link.getAttribute('href').substring(1);
                 const element = document.getElementById(id);
@@ -126,6 +129,8 @@ window.CourseForgeNav = (function () {
             });
 
             function updateActive() {
+                if (isScrollingFromClick) return;
+
                 const scrollPos = window.scrollY;
                 const windowHeight = window.innerHeight;
                 const bodyHeight = document.body.offsetHeight;
@@ -174,8 +179,16 @@ window.CourseForgeNav = (function () {
             // Handle clicks for immediate feedback
             tocLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
+                    isScrollingFromClick = true;
+                    if (scrollEndTimer) clearTimeout(scrollEndTimer);
+
                     sections.forEach(s => s.link.classList.remove('active'));
                     link.parentElement.classList.add('active');
+
+                    // Resume ScrollSpy after smooth scroll finishes (approx 1s)
+                    scrollEndTimer = setTimeout(() => {
+                        isScrollingFromClick = false;
+                    }, 1000);
                 });
             });
 
