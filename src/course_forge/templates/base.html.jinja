@@ -168,26 +168,20 @@
     <script src="/js/ui.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const isSubcourse = {{ is_subcourse | tojson }};
-            const courseName = {{ course_name | tojson }};
-
-            // Apply dynamic breadcrumbs
-            CourseForgeNav.applyDynamicBreadcrumbs('.breadcrumb', isSubcourse);
-
-            // Initialize sidebar state
-            CourseForgeNav.initSidebar();
-
-            // Initialize ScrollSpy
-            CourseForgeNav.initScrollSpy();
-
-            // Initialize UI elements (icons and copy buttons)
-            CourseForgeUI.initCopyButtons();
+            const isSubcourse = {{ is_subcourse | tojson
+        }};
+        const courseName = {{ course_name | tojson }};
+        CourseForgeNav.applyDynamicBreadcrumbs('.breadcrumb', isSubcourse);
+        CourseForgeNav.initSidebar();
+        CourseForgeNav.initScrollSpy();
+        CourseForgeUI.initCopyButtons();
         });
 
         function handleBackNavigation() {
-            const isSubcourse = {{ is_subcourse | tojson }};
-            const dynamic = CourseForgeNav.getBackLink('contents.html', 'Voltar', isSubcourse);
-            window.location.href = dynamic.url;
+            const isSubcourse = {{ is_subcourse | tojson
+        }};
+        const dynamic = CourseForgeNav.getBackLink('contents.html', 'Voltar', isSubcourse);
+        window.location.href = dynamic.url;
         }
     </script>
 </body>
