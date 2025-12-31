@@ -79,10 +79,11 @@
     </div>
 
     <script src="/js/navigation.js"></script>
+    <script src="/js/ui.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Initialize Lucide icons
-            lucide.createIcons();
+            CourseForgeUI.initIcons();
 
             const isSubcourse = {{ is_subcourse | tojson
         }};

@@ -165,33 +165,29 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <script src="/js/navigation.js"></script>
+    <script src="/js/ui.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const isSubcourse = {{ is_subcourse | tojson
-        }};
-        const courseName = {{ course_name | tojson }};
+            const isSubcourse = {{ is_subcourse | tojson }};
+            const courseName = {{ course_name | tojson }};
 
-        // Apply dynamic breadcrumbs
-        CourseForgeNav.applyDynamicBreadcrumbs('.breadcrumb', isSubcourse);
+            // Apply dynamic breadcrumbs
+            CourseForgeNav.applyDynamicBreadcrumbs('.breadcrumb', isSubcourse);
 
-        // Initialize Lucide icons
-        lucide.createIcons();
+            // Initialize sidebar state
+            CourseForgeNav.initSidebar();
 
-        // Initialize sidebar state
-        CourseForgeNav.initSidebar();
+            // Initialize ScrollSpy
+            CourseForgeNav.initScrollSpy();
 
-        // Initialize ScrollSpy
-        CourseForgeNav.initScrollSpy();
-
-        // Initialize Copy Buttons
-        CourseForgeNav.initCopyButtons();
+            // Initialize UI elements (icons and copy buttons)
+            CourseForgeUI.initCopyButtons();
         });
 
         function handleBackNavigation() {
-            const isSubcourse = {{ is_subcourse | tojson
-        }};
-        const dynamic = CourseForgeNav.getBackLink('contents.html', 'Voltar', isSubcourse);
-        window.location.href = dynamic.url;
+            const isSubcourse = {{ is_subcourse | tojson }};
+            const dynamic = CourseForgeNav.getBackLink('contents.html', 'Voltar', isSubcourse);
+            window.location.href = dynamic.url;
         }
     </script>
 </body>
