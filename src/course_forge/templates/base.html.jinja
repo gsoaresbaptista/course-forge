@@ -13,6 +13,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="/css/katex.min.css">
     <link rel="stylesheet" href="/css/base.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
@@ -59,6 +60,10 @@
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
             </div>
+        </button>
+
+        <button class="sidebar-toggle" onclick="CourseForgeNav.toggleSidebar()" aria-label="Alternar Barra Lateral">
+            <i data-lucide="chevron-left" class="toggle-icon"></i>
         </button>
 
         <div class="mobile-menu-overlay"></div>
@@ -158,6 +163,12 @@
 
         // Apply dynamic breadcrumbs
         CourseForgeNav.applyDynamicBreadcrumbs('.breadcrumb', isSubcourse);
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Initialize sidebar state
+        CourseForgeNav.initSidebar();
         });
 
         function handleBackNavigation() {

@@ -88,6 +88,25 @@ window.CourseForgeNav = (function () {
                 container.insertBefore(separator, container.firstChild);
                 container.insertBefore(crumb, container.firstChild);
             }
+        },
+
+        /**
+         * Toggle sidebar visibility and store state.
+         */
+        toggleSidebar: function () {
+            const body = document.body;
+            const isHidden = body.classList.toggle('sidebar-hidden');
+            localStorage.setItem('cf_sidebar_hidden', isHidden);
+        },
+
+        /**
+         * Initialize sidebar state from localStorage.
+         */
+        initSidebar: function () {
+            const isHidden = localStorage.getItem('cf_sidebar_hidden') === 'true';
+            if (isHidden) {
+                document.body.classList.add('sidebar-hidden');
+            }
         }
     };
 })();
