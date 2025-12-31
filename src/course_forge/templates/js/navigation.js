@@ -194,6 +194,46 @@ window.CourseForgeNav = (function () {
 
             // Initial run
             updateActive();
+        },
+
+        /**
+         * Initialize copy buttons for code blocks.
+         */
+        initCopyButtons: function () {
+            const preBlocks = document.querySelectorAll('pre[class*="language-"]');
+            preBlocks.forEach(pre => {
+                const button = document.createElement('button');
+                button.className = 'copy-button';
+                button.setAttribute('aria-label', 'Copiar código');
+                button.innerHTML = '<i data-lucide="copy"></i>';
+
+                pre.appendChild(button);
+
+                button.addEventListener('click', async () => {
+                    const code = pre.querySelector('code');
+                    if (!code) return;
+
+                    try {
+                        await navigator.clipboard.writeText(code.innerText);
+
+                        // Visual feedback
+                        button.innerHTML = '<i data-lucide="check" style="color: #4ade80;"></i>';
+                        lucide.createIcons();
+
+                        setTimeout(() => {
+                            button.innerHTML = '<i data-lucide="copy"></i>';
+                            lucide.createIcons();
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy: ', err);
+                    }
+                });
+            });
+
+            // Initial Lucide pass for injected buttons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         }
     };
 })();

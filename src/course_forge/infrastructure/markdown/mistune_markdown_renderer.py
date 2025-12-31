@@ -54,7 +54,22 @@ class HeadingRenderer(mistune.HTMLRenderer):
                 f"</h{html_level}>\n"
             )
 
-        return f'<h{level} id="{slug}">{clean_text}</h{level}>\n'
+    def block_code(self, code: str, info: str | None = None) -> str:
+        lang = ""
+        if info:
+            lang = info.strip().split(None, 1)[0]
+
+        classes = ["line-numbers"]
+        if lang:
+            classes.append(f"language-{lang}")
+
+        class_str = " ".join(classes)
+        data_lang = f' data-lang="{lang.upper()}"' if lang else ""
+        return (
+            f'<pre class="{class_str}"{data_lang}><code class="language-{lang or "none"}">'
+            f"{mistune.escape(code)}"
+            f"</code></pre>\n"
+        )
 
 
 class SlideRenderer(mistune.HTMLRenderer):
