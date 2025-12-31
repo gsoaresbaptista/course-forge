@@ -46,7 +46,8 @@
 }
 
 html {
-    font-size: 19px
+    font-size: 19px;
+    scroll-behavior: smooth;
 }
 
 .article-body {
@@ -184,8 +185,16 @@ body {
     transition: color .15s
 }
 
-.toc-item a:hover {
-    color: var(--link)
+.toc-item a:hover,
+.toc-item.active a {
+    color: var(--link);
+}
+
+.toc-item.active a {
+    font-weight: 600;
+    border-left: 3px solid var(--course-accent);
+    padding-left: .5rem;
+    background: var(--active-bg);
 }
 
 .toc-item.level-3 {
