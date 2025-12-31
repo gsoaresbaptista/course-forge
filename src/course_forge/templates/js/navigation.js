@@ -213,17 +213,44 @@ window.CourseForgeNav = (function () {
                     const code = pre.querySelector('code');
                     if (!code) return;
 
+                    const text = code.innerText;
+                    let success = false;
+
                     try {
-                        await navigator.clipboard.writeText(code.innerText);
+                        // Try modern API first
+                        if (navigator.clipboard && window.isSecureContext) {
+                            await navigator.clipboard.writeText(text);
+                            success = true;
+                        } else {
+                            // Fallback for insecure contexts or older browsers
+                            const textArea = document.createElement('textarea');
+                            textArea.value = text;
+                            textArea.style.position = 'fixed';
+                            textArea.style.left = '-9999px';
+                            textArea.style.top = '0';
+                            document.body.appendChild(textArea);
+                            textArea.focus();
+                            textArea.select();
 
-                        // Visual feedback
-                        button.innerHTML = '<i data-lucide="check" style="color: #4ade80;"></i>';
-                        lucide.createIcons();
+                            try {
+                                success = document.execCommand('copy');
+                            } catch (err) {
+                                console.error('Fallback copy failed', err);
+                            }
 
-                        setTimeout(() => {
-                            button.innerHTML = '<i data-lucide="copy"></i>';
-                            lucide.createIcons();
-                        }, 2000);
+                            document.body.removeChild(textArea);
+                        }
+
+                        if (success) {
+                            // Visual feedback
+                            button.innerHTML = '<i data-lucide="check" style="color: #4ade80;"></i>';
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+                            setTimeout(() => {
+                                button.innerHTML = '<i data-lucide="copy"></i>';
+                                if (typeof lucide !== 'undefined') lucide.createIcons();
+                            }, 2000);
+                        }
                     } catch (err) {
                         console.error('Failed to copy: ', err);
                     }

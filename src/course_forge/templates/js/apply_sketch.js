@@ -61,16 +61,13 @@
 
     function applySketchEffect() {
         const svgs = document.querySelectorAll('svg[data-sketch="true"]');
-        console.log('Found SVGs with data-sketch:', svgs.length);
 
         svgs.forEach(svg => {
             const rc = rough.svg(svg);
             const elements = svg.querySelectorAll('path, line, circle, rect, ellipse, polygon, polyline');
-            console.log('Found elements to process:', elements.length);
 
             elements.forEach(element => {
                 const tag = element.tagName.toLowerCase();
-                console.log('Processing element:', tag, element);
 
                 const cs = getComputedStyle(element);
 
@@ -118,7 +115,6 @@
                         const y = parseFloat(element.getAttribute('y') || 0);
                         const w = parseFloat(element.getAttribute('width') || 0);
                         const h = parseFloat(element.getAttribute('height') || 0);
-                        console.log('Rect dimensions:', { x, y, w, h });
                         if (w === 0 || h === 0) {
                             console.warn('Rect has zero dimensions:', element);
                             return;
@@ -150,8 +146,6 @@
                         console.warn('No sketch created for:', tag, element);
                         return;
                     }
-
-                    console.log('Created sketch for:', tag);
 
                     const transform = element.getAttribute('transform');
                     if (transform) sketch.setAttribute('transform', transform);
