@@ -55,6 +55,8 @@ class BuildSiteUseCase:
 
         new_checksums = {}
 
+        self.writer.copy_assets(self.html_renderer.template_dir, skip_bundled=True)
+
         self._process_node(
             tree.root,
             pre_processors,
@@ -74,8 +76,6 @@ class BuildSiteUseCase:
             for processor in post_processors:
                 index_html = processor.execute(tree.root, index_html)
             self.writer.write_index(index_html)
-
-        self.writer.copy_assets(self.html_renderer.template_dir)
 
     def _collect_top_level_courses(self, node: ContentNode) -> list[dict]:
         courses = []

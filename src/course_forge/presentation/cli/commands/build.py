@@ -1,4 +1,5 @@
 from course_forge.application.processors import (
+    AssetBundleProcessor,
     ASTProcessor,
     DigitalCircuitProcessor,
     DownloadLinkMarkerProcessor,
@@ -33,6 +34,7 @@ class DependencyContainer:
         ]
         self._post_processors: list[Processor] = [
             DownloadLinkProcessor(),
+            AssetBundleProcessor(self._html_renderer.template_dir, output_path),
             HTMLMinifyProcessor(),
         ]
 

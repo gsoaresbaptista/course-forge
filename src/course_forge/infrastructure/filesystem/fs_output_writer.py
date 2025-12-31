@@ -99,9 +99,18 @@ class FileSystemOutputWriter(OutputWriter):
         with open(html_path, "w", encoding="utf-8") as f:
             f.write(text)
 
-    def copy_assets(self, template_dir: str, filters: list[str] | None = None) -> None:
+    def copy_assets(
+        self,
+        template_dir: str,
+        filters: list[str] | None = None,
+        skip_bundled: bool = False,
+    ) -> None:
         if filters is None:
             filters = [".html", ".md", ".yaml", ".jinja"]
+
+        ignore_func = None
+        if skip_bundled:
+            ignore_func = shutil.ignore_patterns("*.js", "*.css")
 
         for item in os.listdir(template_dir):
             if any([item.endswith(ext) for ext in filters]):
@@ -111,11 +120,16 @@ class FileSystemOutputWriter(OutputWriter):
             dst_path = os.path.join(self._root_path, item)
 
             if os.path.isdir(src_path):
+                # Clean destination folder first to ensure only fresh assets exist
+                if os.path.exists(dst_path):
+                    shutil.rmtree(dst_path)
+
                 shutil.copytree(
                     src_path,
                     dst_path,
                     dirs_exist_ok=True,
                     copy_function=self._smart_copy,
+                    ignore=ignore_func,
                 )
             else:
                 self._smart_copy(src_path, dst_path)

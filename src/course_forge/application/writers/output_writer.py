@@ -9,7 +9,12 @@ class OutputWriter(ABC):
         pass
 
     @abstractmethod
-    def copy_assets(self, template_dir: str, filters: list[str] | None = None) -> None:
+    def copy_assets(
+        self,
+        template_dir: str,
+        filters: list[str] | None = None,
+        skip_bundled: bool = False,
+    ) -> None:
         pass
 
     @abstractmethod
