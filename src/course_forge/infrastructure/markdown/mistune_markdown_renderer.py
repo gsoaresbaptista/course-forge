@@ -191,20 +191,30 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         return self.COMMENT_PATTERN.sub("", text)
 
     def _protect_latex(self, text: str) -> tuple[str, dict[str, str]]:
-        """Replace LaTeX blocks with placeholders to prevent markdown processing."""
+        """Replace LaTeX blocks with placeholders to prevent markdown processing, skipping code blocks/inline."""
         placeholders: dict[str, str] = {}
         counter = 0
 
-        def replace_block(match: re.Match) -> str:
+        # Pattern to match code blocks, inline code, and LaTeX blocks/inline
+        pattern = re.compile(
+            r"(?P<code_block>^ {0,3}```[\s\S]*?^ {0,3}```)|"
+            r"(?P<inline_code>`+[\s\S]*?`+)|"
+            r"(?P<latex_block>\$\$[\s\S]+?\$\$)|"
+            r"(?P<latex_inline>(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$))",
+            re.MULTILINE,
+        )
+
+        def replace_fn(match: re.Match) -> str:
             nonlocal counter
-            placeholder = f"<!--LATEXBLOCK{counter}-->"
-            placeholders[placeholder] = match.group(0)
-            counter += 1
-            return placeholder
+            if match.group("latex_block") or match.group("latex_inline"):
+                placeholder = f"<!--LATEXBLOCK{counter}-->"
+                placeholders[placeholder] = match.group(0)
+                counter += 1
+                return placeholder
+            # If it's a code block or inline code, return it as is (no protection)
+            return match.group(0)
 
-        text = re.sub(r"\$\$[\s\S]+?\$\$", replace_block, text)
-        text = re.sub(r"(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)", replace_block, text)
-
+        text = pattern.sub(replace_fn, text)
         return text, placeholders
 
     def _restore_latex(self, html: str, placeholders: dict[str, str]) -> str:
