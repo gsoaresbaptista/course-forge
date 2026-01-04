@@ -1455,3 +1455,7 @@ th .download-link {
     stroke: var(--text-muted) !important;
     stroke-width: 2 !important
 }
+
+svg {
+    margin-bottom: 1rem !important;
+}
