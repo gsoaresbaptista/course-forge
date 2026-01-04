@@ -1,4 +1,5 @@
 import re
+import uuid
 
 import mistune
 
@@ -77,15 +78,19 @@ class HeadingRenderer(mistune.HTMLRenderer):
             return f"<blockquote>{text}</blockquote>\n"
 
         # Match [!type] at the beginning, possibly after <p>
-        match = re.search(r"^<p>\[!([\w-]+)\][ \t]*(.*)", content_text, re.IGNORECASE | re.DOTALL)
+        match = re.search(
+            r"^<p>\[!([\w-]+)\][ \t]*(.*)", content_text, re.IGNORECASE | re.DOTALL
+        )
         if not match:
             # Fallback for non-wrapped content (just in case)
-            match = re.search(r"^\[!([\w-]+)\][ \t]*(.*)", content_text, re.IGNORECASE | re.DOTALL)
+            match = re.search(
+                r"^\[!([\w-]+)\][ \t]*(.*)", content_text, re.IGNORECASE | re.DOTALL
+            )
 
         if match:
             callout_type = match.group(1).lower()
             remainder = match.group(2)
-            
+
             # Split remainder into title (first line) and body
             # Title ends at the first newline OR first </p>
             if "\n" in remainder:
@@ -118,9 +123,9 @@ class HeadingRenderer(mistune.HTMLRenderer):
                 f'  <div class="callout-title">\n'
                 f'    <span class="callout-icon">{icon}</span>\n'
                 f'    <span class="callout-title-inner">{title if title else ""}</span>\n'
-                f'  </div>\n'
+                f"  </div>\n"
                 f'  <div class="callout-content">\n{body_rest}\n  </div>\n'
-                f'</div>\n'  # FIXED: Added the final closing div
+                f"</div>\n"  # FIXED: Added the final closing div
             )
 
         return f"<blockquote>{text}</blockquote>\n"
@@ -199,15 +204,16 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         pattern = re.compile(
             r"(?P<code_block>^ {0,3}```[\s\S]*?^ {0,3}```)|"
             r"(?P<inline_code>`+[\s\S]*?`+)|"
-            r"(?P<latex_block>\$\$[\s\S]+?\$\$)|"
-            r"(?P<latex_inline>(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$))",
+            r"(?P<latex_block>\$\$[\s\S]*?\$\$)|"
+            r"(?P<latex_inline>(?<!\\)(?<!\$)\$(?!\$)(?P<content>[^$]+?)(?<!\\)(?<!\$)\$(?!\$))",
             re.MULTILINE,
         )
 
         def replace_fn(match: re.Match) -> str:
             nonlocal counter
             if match.group("latex_block") or match.group("latex_inline"):
-                placeholder = f"<!--LATEXBLOCK{counter}-->"
+                # Use a non-comment placeholder to prevent issues with HTML minifiers/processors
+                placeholder = f"LATEX_PLACEHOLDER_{uuid.uuid4().hex}_{counter}"
                 placeholders[placeholder] = match.group(0)
                 counter += 1
                 return placeholder

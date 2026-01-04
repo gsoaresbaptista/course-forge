@@ -23,10 +23,22 @@ class AssetBundleProcessor(Processor):
 
     def _prepare_bundles(self):
         """Bundle all local JS and CSS files found in the template directory."""
+        js_priority = {
+            "katex.min.js": 0,
+            "auto-render.min.js": 1,
+            "rough.min.js": 2,
+            "navigation.js": 3,
+            "ui.js": 4,
+        }
+
+        def js_sort_key(f: Path):
+            return js_priority.get(f.name, 100), f.name
+
         js_dir = self.template_dir / "js"
         if js_dir.exists():
             files = sorted(
-                [f for f in js_dir.iterdir() if f.is_file() and f.suffix == ".js"]
+                [f for f in js_dir.iterdir() if f.is_file() and f.suffix == ".js"],
+                key=js_sort_key,
             )
             for f in files:
                 try:
@@ -37,10 +49,19 @@ class AssetBundleProcessor(Processor):
                 except Exception as e:
                     print(f"Warning: Failed to read {f} for bundling: {e}")
 
+        css_priority = {
+            "katex.min.css": 0,
+            "base.css": 1,
+        }
+
+        def css_sort_key(f: Path):
+            return css_priority.get(f.name, 100), f.name
+
         css_dir = self.template_dir / "css"
         if css_dir.exists():
             files = sorted(
-                [f for f in css_dir.iterdir() if f.is_file() and f.suffix == ".css"]
+                [f for f in css_dir.iterdir() if f.is_file() and f.suffix == ".css"],
+                key=css_sort_key,
             )
             for f in files:
                 try:

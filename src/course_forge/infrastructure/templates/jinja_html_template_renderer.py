@@ -15,7 +15,7 @@ def extract_toc(html_content: str) -> list[dict]:
     def clean(s):
         return s.strip()
 
-    heading_pattern = r'<h([23])[^>]*id="([^"]+)"[^>]*>.*?<span class="heading-text">([^<]+)</span>.*?<span class="heading-arabic">([^<]+)</span>'
+    heading_pattern = r'<h([2-6])[^>]*id="([^"]+)"[^>]*>.*?<span class="heading-text">([^<]+)</span>.*?<span class="heading-arabic">([^<]+)</span>'
 
     for match in re.finditer(heading_pattern, html_content, re.IGNORECASE | re.DOTALL):
         level, id_attr, text, number = match.groups()
