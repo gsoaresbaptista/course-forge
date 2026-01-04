@@ -822,7 +822,10 @@ figcaption {
 .asset-svg,
 .centered {
     display: flex;
-    justify-content: center
+    width: 100%;
+    height: auto;
+    justify-content: center;
+    margin: 0 0 1.5rem 0
 }
 
 .no-break {
