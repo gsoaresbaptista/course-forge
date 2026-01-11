@@ -6,6 +6,7 @@ from course_forge.application.processors import (
     DownloadLinkProcessor,
     HTMLMinifyProcessor,
     InternalLinkProcessor,
+    MermaidProcessor,
     Processor,
 )
 from course_forge.application.use_cases.build_site import BuildSiteUseCase
@@ -31,6 +32,7 @@ class DependencyContainer:
             DownloadLinkMarkerProcessor(),
             DigitalCircuitProcessor(),
             ASTProcessor(),
+            MermaidProcessor(),
         ]
         self._post_processors: list[Processor] = [
             DownloadLinkProcessor(),

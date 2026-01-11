@@ -162,48 +162,50 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
     COMMENT_PATTERN = re.compile(r"%%[\s\S]*?%%", re.MULTILINE)
 
     def render(self, text: str, chapter: int | None = None) -> str:
-        text = self._strip_comments(text)
-        text, placeholders = self._protect_latex(text)
+        text, latex_placeholders = self._preprocess_latex(text)
 
         renderer = HeadingRenderer(chapter=chapter)
         markdown = mistune.create_markdown(
-            renderer=renderer, plugins=["table", "strikethrough"]
+            renderer=renderer,
+            plugins=["table", "strikethrough", self._obsidian_comments_plugin],
         )
         html = str(markdown(text))
 
-        html = self._restore_latex(html, placeholders)
+        # Restore LaTeX after markdown processing
+        html = self._restore_placeholders(html, latex_placeholders)
         return html
 
     def render_slide(self, text: str) -> str:
         """Render markdown content as Reveal.js slides."""
-        text = self._strip_comments(text)
-        text, placeholders = self._protect_latex(text)
+        text, latex_placeholders = self._preprocess_latex(text)
 
         renderer = SlideRenderer(escape=False)
         markdown = mistune.create_markdown(
-            renderer=renderer, plugins=["table", "strikethrough"]
+            renderer=renderer,
+            plugins=["table", "strikethrough", self._obsidian_comments_plugin],
         )
         html = str(markdown(text))
 
         # Wrap in initial section tags
         html = f"<section>{html}</section>"
 
-        html = self._restore_latex(html, placeholders)
+        html = self._restore_placeholders(html, latex_placeholders)
         return html
 
     def _strip_comments(self, text: str) -> str:
-        """Remove Obsidian-style comments (%% ... %%)."""
-        return self.COMMENT_PATTERN.sub("", text)
+        """Deprecated: Comments are now handled by Mistune plugin."""
+        return text
 
-    def _protect_latex(self, text: str) -> tuple[str, dict[str, str]]:
-        """Replace LaTeX blocks with placeholders to prevent markdown processing, skipping code blocks/inline."""
-        placeholders: dict[str, str] = {}
+    # Remove the old _preprocess_content that tried to be too smart
+    def _preprocess_latex(self, text: str) -> tuple[str, dict[str, str]]:
+        """
+        Protect LaTeX from modification.
+        """
+        latex_placeholders: dict[str, str] = {}
         counter = 0
 
-        # Pattern to match code blocks, inline code, and LaTeX blocks/inline
+        # Pattern to match LaTeX blocks/inline
         pattern = re.compile(
-            r"(?P<code_block>^ {0,3}```[\s\S]*?^ {0,3}```)|"
-            r"(?P<inline_code>`+[\s\S]*?`+)|"
             r"(?P<latex_block>\$\$[\s\S]*?\$\$)|"
             r"(?P<latex_inline>(?<!\\)(?<!\$)\$(?!\$)(?P<content>[^$]+?)(?<!\\)(?<!\$)\$(?!\$))",
             re.MULTILINE,
@@ -211,20 +213,30 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
 
         def replace_fn(match: re.Match) -> str:
             nonlocal counter
-            if match.group("latex_block") or match.group("latex_inline"):
-                # Use a non-comment placeholder to prevent issues with HTML minifiers/processors
-                placeholder = f"LATEX_PLACEHOLDER_{uuid.uuid4().hex}_{counter}"
-                placeholders[placeholder] = match.group(0)
-                counter += 1
-                return placeholder
-            # If it's a code block or inline code, return it as is (no protection)
-            return match.group(0)
+            # Create a unique placeholder
+            placeholder = f"LATEX_PLACEHOLDER_{uuid.uuid4().hex}_{counter}"
+            latex_placeholders[placeholder] = match.group(0)
+            counter += 1
+            return placeholder
 
+        # Replace all LaTeX content with placeholders
         text = pattern.sub(replace_fn, text)
-        return text, placeholders
+        return text, latex_placeholders
 
-    def _restore_latex(self, html: str, placeholders: dict[str, str]) -> str:
-        """Restore LaTeX blocks from placeholders."""
+    def _restore_placeholders(self, text: str, placeholders: dict[str, str]) -> str:
+        """Restore protected blocks from placeholders."""
         for placeholder, original in placeholders.items():
-            html = html.replace(placeholder, original)
-        return html
+            text = text.replace(placeholder, original)
+        return text
+
+    @staticmethod
+    def _obsidian_comments_plugin(markdown):
+        """Mistune plugin to strip Obsidian comments (%% ... %%)."""
+        COMMENT_PATTERN = r"%%[\s\S]*?%%"
+
+        def parse_comment(inline, m, state):
+            # Return ('comment', '') to indicate successful parsing but empty content
+            return "comment", ""
+
+        # Mistune v3 syntax: register(name, pattern, func)
+        markdown.inline.register("obsidian_comment", COMMENT_PATTERN, parse_comment)

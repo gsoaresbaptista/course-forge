@@ -759,6 +759,20 @@ table {
     font-size: .9rem
 }
 
+.mermaid {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    background: transparent !important;
+    border: none !important;
+    overflow-x: auto;
+}
+
+.mermaid svg {
+    max-width: 100%;
+    height: auto;
+}
+
 thead {
     border-bottom: 2px solid var(--border)
 }
