@@ -27,8 +27,9 @@ class AssetBundleProcessor(Processor):
             "katex.min.js": 0,
             "auto-render.min.js": 1,
             "rough.min.js": 2,
-            "navigation.js": 3,
-            "ui.js": 4,
+            "apply_sketch.js": 3,
+            "navigation.js": 4,
+            "ui.js": 5,
         }
 
         def js_sort_key(f: Path):

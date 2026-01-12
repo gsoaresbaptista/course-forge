@@ -59,10 +59,14 @@
         await Promise.all(promises);
     }
 
-    function applySketchEffect() {
-        const svgs = document.querySelectorAll('svg[data-sketch="true"]');
+    window.applySketchEffect = function () {
+        // Select direct data-sketch SVGs and SVGs inside sketched mermaid containers
+        const svgs = document.querySelectorAll('svg[data-sketch="true"], .mermaid-sketch-container[data-sketch="true"] svg');
 
         svgs.forEach(svg => {
+            // Avoid double processing
+            if (svg.classList.contains('rough-processed')) return;
+
             const rc = rough.svg(svg);
             const elements = svg.querySelectorAll('path, line, circle, rect, ellipse, polygon, polyline');
 
@@ -165,12 +169,14 @@
                     console.error('Error processing element:', tag, element, e);
                 }
             });
+
+            svg.classList.add('rough-processed');
         });
     }
 
     async function init() {
         await inlineSVGs();
-        applySketchEffect();
+        window.applySketchEffect();
     }
 
     if (document.readyState === 'loading') {
