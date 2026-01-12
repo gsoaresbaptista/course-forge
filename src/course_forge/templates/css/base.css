@@ -1448,3 +1448,11 @@ th .download-link {
     stroke: var(--text-muted) !important;
     stroke-width: 2 !important
 }
+
+.mermaid-note {
+    margin: 0 auto 1rem auto;
+    border: 1px solid rgba(0,0,0,0.25);
+    width: fit-content;
+    padding: 5px 12px;
+    background: #ffffde;
+}
