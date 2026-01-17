@@ -95,15 +95,41 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
             prev_slug = metadata["prev"]
             prev_chapter = next(
                 (s for s in siblings if s["slug"] == prev_slug),
-                {"name": strip_leading_number(prev_slug), "slug": prev_slug},
+                None,
             )
+            if prev_chapter is None:
+                # Try to find the sibling node and read its title
+                prev_name = strip_leading_number(prev_slug)
+                for s in node.siblings:
+                    if s.slug == prev_slug:
+                        if s.metadata and s.metadata.get("title"):
+                            prev_name = s.metadata["title"]
+                        elif s.src_path:
+                            title = self._read_title_from_file(s.src_path)
+                            if title:
+                                prev_name = title
+                        break
+                prev_chapter = {"name": prev_name, "slug": prev_slug}
 
         if metadata.get("next"):
             next_slug = metadata["next"]
             next_chapter = next(
                 (s for s in siblings if s["slug"] == next_slug),
-                {"name": strip_leading_number(next_slug), "slug": next_slug},
+                None,
             )
+            if next_chapter is None:
+                # Try to find the sibling node and read its title
+                next_name = strip_leading_number(next_slug)
+                for s in node.siblings:
+                    if s.slug == next_slug:
+                        if s.metadata and s.metadata.get("title"):
+                            next_name = s.metadata["title"]
+                        elif s.src_path:
+                            title = self._read_title_from_file(s.src_path)
+                            if title:
+                                next_name = title
+                        break
+                next_chapter = {"name": next_name, "slug": next_slug}
 
         title = metadata.get("title") or strip_leading_number(node.name)
         date = metadata.get("date")
