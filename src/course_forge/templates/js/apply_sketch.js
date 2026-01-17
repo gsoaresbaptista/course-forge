@@ -75,17 +75,39 @@
 
                 const cs = getComputedStyle(element);
 
-                const stroke = element.getAttribute('stroke') || cs.stroke;
-                const strokeWidth = parseFloat(element.getAttribute('stroke-width') || cs.strokeWidth || 1);
-                const fill = element.getAttribute('fill') || cs.fill;
+                // Parse inline style attribute for fill/stroke in case they're defined there
+                const inlineStyle = element.getAttribute('style') || '';
+                const getStyleValue = (prop) => {
+                    const match = inlineStyle.match(new RegExp(prop + '\\s*:\\s*([^;!]+)'));
+                    return match ? match[1].trim() : null;
+                };
+
+                // Also check parent elements for fill (Mermaid stadium shapes inherit from container)
+                const getParentFill = () => {
+                    let parent = element.parentElement;
+                    while (parent && parent !== svg) {
+                        const parentStyle = parent.getAttribute('style') || '';
+                        const fillMatch = parentStyle.match(/fill\s*:\s*([^;!]+)/);
+                        if (fillMatch) return fillMatch[1].trim();
+                        const parentFillAttr = parent.getAttribute('fill');
+                        if (parentFillAttr && parentFillAttr !== 'none') return parentFillAttr;
+                        parent = parent.parentElement;
+                    }
+                    return null;
+                };
+
+                const stroke = element.getAttribute('stroke') || getStyleValue('stroke') || cs.stroke;
+                const strokeWidth = parseFloat(element.getAttribute('stroke-width') || getStyleValue('stroke-width') || cs.strokeWidth || 1);
+                const fill = element.getAttribute('fill') || getStyleValue('fill') || getParentFill() || cs.fill;
 
                 const options = {
-                    roughness: 1.2,
-                    bowing: 1.2,
+                    roughness: 0.4,
+                    bowing: 0.8,
                     seed: 42,
                     stroke: stroke !== 'none' ? stroke : undefined,
                     strokeWidth: strokeWidth,
                     fill: fill !== 'none' ? fill : undefined,
+                    fillStyle: 'hachure',
                     fillWeight: 3,
                 };
 
@@ -93,10 +115,14 @@
 
                 try {
                     if (tag === 'path') {
-                        const d = element.getAttribute('d');
+                        let d = element.getAttribute('d');
                         if (!d) {
                             console.warn('Path element has no d attribute:', element);
                             return;
+                        }
+                        // Force close path if fill is present ensures rough.js renders the fill
+                        if (options.fill && !d.trim().toLowerCase().endsWith('z')) {
+                            d += 'z';
                         }
                         sketch = rc.path(d, options);
                     } else if (tag === 'line') {

@@ -211,6 +211,30 @@ body {
     font-size: .85rem
 }
 
+.toc-item.level-4 {
+    margin-left: 2.5rem
+}
+
+.toc-item.level-4 a {
+    font-size: .8rem
+}
+
+.toc-item.level-5 {
+    margin-left: 3.75rem
+}
+
+.toc-item.level-5 a {
+    font-size: .75rem
+}
+
+.toc-item.level-6 {
+    margin-left: 5rem
+}
+
+.toc-item.level-6 a {
+    font-size: .7rem
+}
+
 .sidebar-nav-section {
     padding: 1rem 1.5rem;
     border-top: 1px solid var(--border);
@@ -488,9 +512,17 @@ a {
 }
 
 .article-body p {
-    margin-bottom: 1rem;
+    margin: 1.5rem 0;
     text-align: justify;
     hyphens: auto
+}
+
+.article-body p:first-child {
+    margin-top: 0
+}
+
+.article-body p:last-child {
+    margin-bottom: 0
 }
 
 .article-body ol,
@@ -669,7 +701,7 @@ pre[class*=language-] {
     box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
     font-family: "Fira Code", "Consolas", monospace;
     font-size: .8rem !important;
-    position: relative
+    position: relative;
 }
 
 .copy-button,
@@ -728,7 +760,8 @@ pre code[class*=language-] {
 
 .line-numbers .line-numbers-rows {
     border-right: 1px solid #444 !important;
-    padding-right: .5rem !important
+    padding-right: .5rem !important;
+    margin-bottom: 1.5rem;
 }
 
 .line-numbers-rows>span:before {
@@ -839,7 +872,7 @@ figcaption {
     width: 100%;
     height: auto;
     justify-content: center;
-    margin: 0 0 1.5rem 0
+    margin: 0
 }
 
 .no-break {
@@ -1451,7 +1484,7 @@ th .download-link {
 
 .mermaid-note {
     margin: 0 auto 1rem auto;
-    border: 1px solid rgba(0,0,0,0.25);
+    border: 1px solid rgba(0, 0, 0, 0.25);
     width: fit-content;
     padding: 5px 12px;
     background: #ffffde;
