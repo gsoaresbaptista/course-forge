@@ -167,7 +167,7 @@ class BuildSiteUseCase:
 
     def _clean_name(self, name: str) -> str:
         cleaned = re.sub(r"^[\d]+[-_.\s]*", "", name)
-        return cleaned.replace("-", " ").replace("_", " ").title() if cleaned else name
+        return cleaned.replace("-", " ").replace("_", " ") if cleaned else name
 
     def _process_node(
         self,

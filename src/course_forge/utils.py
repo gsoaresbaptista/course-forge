@@ -16,6 +16,6 @@ def to_roman(num: int) -> str:
 
 
 def strip_leading_number(name: str) -> str:
-    """Remove leading numbers and separators, format as title."""
+    """Remove leading numbers and separators, preserving original capitalization."""
     cleaned = re.sub(r"^[\d]+[-_.\s]*", "", name)
-    return cleaned.replace("-", " ").replace("_", " ").title() if cleaned else name
+    return cleaned.replace("-", " ").replace("_", " ") if cleaned else name
