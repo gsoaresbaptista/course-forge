@@ -8,6 +8,7 @@ from course_forge.application.processors import (
     InternalLinkProcessor,
     MermaidProcessor,
     Processor,
+    SchemdrawProcessor,
 )
 from course_forge.application.use_cases.build_site import BuildSiteUseCase
 from course_forge.infrastructure.filesystem import (
@@ -31,6 +32,7 @@ class DependencyContainer:
             InternalLinkProcessor(),
             DownloadLinkMarkerProcessor(),
             DigitalCircuitProcessor(),
+            SchemdrawProcessor(),
             ASTProcessor(),
             MermaidProcessor(),
         ]

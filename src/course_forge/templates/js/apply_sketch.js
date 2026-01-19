@@ -101,7 +101,7 @@
                 const fill = element.getAttribute('fill') || getStyleValue('fill') || getParentFill() || cs.fill;
 
                 const options = {
-                    roughness: 0.4,
+                    roughness: 1.0,
                     bowing: 0.8,
                     seed: 42,
                     stroke: stroke !== 'none' ? stroke : undefined,
