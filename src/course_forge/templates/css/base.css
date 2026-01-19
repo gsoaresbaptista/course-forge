@@ -525,6 +525,26 @@ a {
     margin-bottom: 0
 }
 
+/* Remove top margin from paragraphs immediately following headings */
+.article-body h1+p,
+.article-body h2+p,
+.article-body h3+p,
+.article-body h4+p,
+.article-body h5+p,
+.article-body h6+p {
+    margin-top: 0
+}
+
+/* Also handle cases where there might be wrapper elements or other content between heading and paragraph */
+.article-body h1:not(:first-child)~p:first-of-type,
+.article-body h2:not(:first-child)~p:first-of-type,
+.article-body h3:not(:first-child)~p:first-of-type,
+.article-body h4:not(:first-child)~p:first-of-type,
+.article-body h5:not(:first-child)~p:first-of-type,
+.article-body h6:not(:first-child)~p:first-of-type {
+    margin-top: 0
+}
+
 .article-body ol,
 .article-body ul {
     padding-left: 1.5rem
