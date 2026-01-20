@@ -145,6 +145,47 @@ Space-separated tokens. Use parenthesis `(` and `)` to create branches.
 
 ---
 
+## 6. Karnaugh Maps
+
+**Processor:** `karnaugh.map`
+
+Visualize boolean logic simplification using Karnaugh maps.
+
+### Syntax
+```karnaugh.map centered
+names: Variables
+outputs: TruthTableBits
+```
+
+### Parameters
+
+| Parameter | Description | Example |
+| :--- | :--- | :--- |
+| `names` | String of variable names (2-4 variables supported). | `AB` or `ABCD` |
+| `grid` | Visual 2D grid block. 2-4 variables supported. Follows Gray code order (00, 01, 11, 10). | See example below |
+| `groups` | List of groups to highlight. Format: List of cells + optional params. | See example below |
+
+### Styling
+- **Auto-Styling**: Providing `color=<name>` applies a predefined **pastel fill** and a matching **darker border**.
+- **Supported Colors**: `red`, `blue`, `green`, `yellow`, `orange`, `purple`, `cyan`, `magenta`, `teal`, `pink`, `lime`, `indigo`, `violet`, `gray`.
+- **Overrides**: You can specify `fill` explicitly to override the auto-color (e.g. `color=red, fill=#ffffff`).
+
+### Example
+
+```karnaugh.map centered width=250
+names: ABCD
+grid:
+  0 0 1 1
+  0 0 1 1
+  1 1 0 0
+  1 1 0 0
+groups:
+  - 0011 0010 0111 0110 : color=red
+  - 1100 1101 1000 1001 : color=blue
+```
+
+---
+
 ## Common Attributes
 
 These attributes apply to most chart types (added after the language class identifier):

@@ -1486,9 +1486,13 @@ th .download-link {
 
 .svg-graph circle,
 .svg-graph path,
-.svg-graph polygon {
+.svg-graph svg:not(.kmap-graph) polygon {
     stroke: var(--course-accent) !important;
     stroke-width: 1.5 !important
+}
+
+.kmap-img polygon {
+    opacity: 0.8;
 }
 
 .svg-graph .gate {

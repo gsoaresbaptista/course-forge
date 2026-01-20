@@ -6,6 +6,7 @@ from course_forge.application.processors import (
     DownloadLinkProcessor,
     HTMLMinifyProcessor,
     InternalLinkProcessor,
+    KarnaughMapProcessor,
     MermaidProcessor,
     Processor,
     PulseWaveformProcessor,
@@ -34,10 +35,10 @@ class DependencyContainer:
             DownloadLinkMarkerProcessor(),
             DigitalCircuitProcessor(),
             SchemdrawProcessor(),
+            KarnaughMapProcessor(),
             ASTProcessor(),
             MermaidProcessor(),
             PulseWaveformProcessor(),
-            SchemdrawProcessor(),
         ]
         self._post_processors: list[Processor] = [
             DownloadLinkProcessor(),
