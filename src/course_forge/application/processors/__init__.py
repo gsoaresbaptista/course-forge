@@ -7,6 +7,7 @@ from .download_link_processor import DownloadLinkProcessor
 from .html_minify_processor import HTMLMinifyProcessor
 from .internal_link_processor import InternalLinkProcessor
 from .mermaid_processor import MermaidProcessor
+from .pulse_waveform_processor import PulseWaveformProcessor
 from .schemdraw_processor import SchemdrawProcessor
 
 __all__ = [
@@ -14,6 +15,7 @@ __all__ = [
     "DigitalCircuitProcessor",
     "ASTProcessor",
     "MermaidProcessor",
+    "PulseWaveformProcessor",
     "SchemdrawProcessor",
     "AssetBundleProcessor",
     "HTMLMinifyProcessor",
@@ -21,3 +23,4 @@ __all__ = [
     "DownloadLinkProcessor",
     "DownloadLinkMarkerProcessor",
 ]
+

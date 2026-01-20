@@ -1475,7 +1475,6 @@ th .download-link {
 .svg-graph.ast-plot-img .ast-leaf text {
     fill: #4a5a3f !important;
     font-weight: 500 !important;
-    font-size: 13px !important
 }
 
 .svg-graph.ast-plot-img .ast-edge path,

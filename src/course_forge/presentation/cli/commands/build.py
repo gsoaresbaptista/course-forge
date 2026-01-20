@@ -8,6 +8,7 @@ from course_forge.application.processors import (
     InternalLinkProcessor,
     MermaidProcessor,
     Processor,
+    PulseWaveformProcessor,
     SchemdrawProcessor,
 )
 from course_forge.application.use_cases.build_site import BuildSiteUseCase
@@ -35,6 +36,8 @@ class DependencyContainer:
             SchemdrawProcessor(),
             ASTProcessor(),
             MermaidProcessor(),
+            PulseWaveformProcessor(),
+            SchemdrawProcessor(),
         ]
         self._post_processors: list[Processor] = [
             DownloadLinkProcessor(),
