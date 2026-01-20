@@ -152,15 +152,39 @@ class PulseWaveformProcessor(SVGProcessorBase):
     def _estimate_text_width(self, text: str, font_size: float) -> float:
         """Estimate the width of text in pixels.
         
-        Using a safer factor of 0.7 to ensure we don't underestimate width
-        for variable width fonts, preventing clipping.
+        Uses a heuristic based on character type to provide a tighter bound
+        than a fixed multiplier, reducing unnecessary whitespace while
+        still avoiding clipping.
         """
         if not text:
             return 0
+        
         lines = text.split("\n")
-        # Safety factor 0.7 to prevent clipping
-        avg_char_width = font_size * 0.7 
-        return max(len(line) * avg_char_width for line in lines)
+        max_width = 0
+        
+        for line in lines:
+            line_width = 0
+            for char in line:
+                if char in "il1|.,:;!'I":
+                    line_width += font_size * 0.25
+                elif char in "trfj ":  # Narrow items including space
+                    line_width += font_size * 0.35
+                elif char in "mwMW@%":
+                    line_width += font_size * 0.9
+                elif char.isupper():
+                     line_width += font_size * 0.65
+                elif char.islower():
+                     line_width += font_size * 0.5
+                else:
+                     # Numbers and others
+                     line_width += font_size * 0.55
+            
+            # Add a tiny buffer for safety (1px)
+            if line_width > 0:
+                line_width += 1
+            max_width = max(max_width, line_width)
+            
+        return max_width
     
     def _calculate_left_padding(self, y_axis_high: str, y_axis_low: str) -> float:
         """Calculate left padding based on Y-axis labels."""
