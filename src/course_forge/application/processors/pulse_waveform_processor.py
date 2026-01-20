@@ -35,13 +35,14 @@ class PulseWaveformProcessor(SVGProcessorBase):
     TOP_PADDING = 30
     BOTTOM_PADDING = 50
     CHANNEL_GAP = 30 # Gap between stacked waveforms
-    ARROW_SIZE = 5  # Smaller arrows
+    ARROW_SIZE = 5  
     
-    # Colors (adjusted to orange/brown theme)
-    PULSE_COLOR = "#92400e"  # Dark orange/brown (amber-800)
-    AXIS_COLOR = "#92400e"   # Same as pulse for consistency
-    TEXT_COLOR = "#431407"   # Very dark brown
-    BASELINE_COLOR = "#d6d3d1"  # Warm gray
+    # Colors 
+    PULSE_COLOR = "#92400e"  # Dark orange/brown
+    AXIS_COLOR = "#92400e"   
+    TEXT_COLOR = "#431407"   
+    BASELINE_COLOR = "#d6d3d1" 
+    GRID_COLOR = "#a8a29e"   # Darker warm gray for better visibility
 
     def execute(self, node: ContentNode, content: str) -> str:
         matches = list(self.pattern.finditer(content))
@@ -49,15 +50,10 @@ class PulseWaveformProcessor(SVGProcessorBase):
         for match in matches:
             code = match.group("code").strip()
             attrs = self.parse_svg_attributes(match)
-            
-            # Check for explicitly declared "group" mode in attributes
-            # We can override this logic inside _parse_waveform_config too
-            is_group = "group" in match.group(0).split('\n')[0] 
 
             try:
                 config = self._parse_waveform_config(code)
                 
-                # Determine render mode based on config structure
                 if "channels" in config and config["channels"]:
                      svg_data = self._render_group_waveform(config)
                 else:
@@ -80,20 +76,15 @@ class PulseWaveformProcessor(SVGProcessorBase):
         return content
 
     def _parse_waveform_config(self, code: str) -> dict:
-        """Parse the declarative waveform configuration.
-        
-        Supports two modes:
-        1. Single waveform (legacy): define y-axis labels and pulses
-        2. Group/Multi waveform: define multiple named channels
-        """
+        """Parse the declarative waveform configuration."""
         config = {
             "x_axis": "Time",
-            # Single mode specific
             "y_axis_high": "High",
             "y_axis_low": "Low",
             "pulses": [],
-            # Group mode specific
-            "channels": [] # List of {"name": str, "pulses": list}
+            "channels": [],
+            "ticks": [], # List of tick labels
+            "grid": False # Default no grid lines
         }
         
         has_group_channels = False
@@ -104,7 +95,6 @@ class PulseWaveformProcessor(SVGProcessorBase):
                 continue
                 
             if line.startswith("y-axis:"):
-                # Single mode: Parse "y-axis: "High label" | "Low label""
                 value = line[7:].strip()
                 parts = value.split("|")
                 if len(parts) >= 1:
@@ -115,66 +105,63 @@ class PulseWaveformProcessor(SVGProcessorBase):
             elif line.startswith("x-axis:"):
                 value = line[7:].strip()
                 config["x_axis"] = self._clean_label(value)
+
+            elif line.startswith("ticks:"):
+                value = line[6:].strip()
+                config["ticks"] = value.split()
+                
+            elif line.startswith("grid:"):
+                value = line[5:].strip().lower()
+                config["grid"] = value == "true"
                 
             elif line.startswith("pulses:"):
-                # Single mode pulse definition
                 value = line[7:].strip()
                 config["pulses"] = self._parse_pulses(value)
                 
             elif ":" in line:
-                # Potential channel definition: "Name": pulses...
                 key, value = line.split(":", 1)
                 key = self._clean_label(key)
                 
-                # If key is NOT a reserved keyword, assume it's a channel name
-                if key not in ["y-axis", "x-axis", "pulses", "width", "height", "centered"]:
+                if key not in ["y-axis", "x-axis", "pulses", "width", "height", "centered", "ticks", "grid"]:
                     has_group_channels = True
                     config["channels"].append({
                         "name": key,
                         "pulses": self._parse_pulses(value.strip())
                     })
         
-        # If we detected channels but no single pulses, clean up standard config
         if has_group_channels:
-            config["pulses"] = [] # Clear single mode pulses to force group render
+            config["pulses"] = [] 
             
         return config
 
     def _clean_label(self, text: str) -> str:
-        """Remove surrounding quotes and clean up label text."""
         text = text.strip()
         if (text.startswith('"') and text.endswith('"')) or \
            (text.startswith("'") and text.endswith("'")):
             text = text[1:-1]
-        # Handle escaped newlines
         text = text.replace("\\n", "\n")
         return text
 
     def _parse_pulses(self, pulse_str: str) -> list:
-        """Parse pulse string into list of pulse definitions.
-        
-        Returns list of tuples: (type, width)
-        where type is 'pulse' or 'gap'
-        """
+        """Parse pulse string into list of pulse definitions."""
         pulses = []
         i = 0
         pulse_str = pulse_str.strip()
         
         while i < len(pulse_str):
+            # Check for marker (|)
+            if pulse_str[i] == '|':
+                pulses.append(('marker', 0))
+                i += 1
+                continue
+
             # Skip whitespace (normal gap)
             if pulse_str[i] == ' ':
-                # Count consecutive spaces
                 space_count = 0
                 while i < len(pulse_str) and pulse_str[i] == ' ':
                     space_count += 1
                     i += 1
-                # Only add gap if we have pulses already
                 if pulses:
-                    # If previous was pulse, add gap. If gap, extend it?
-                    # Standard behavior: space = gap.
-                    # If we just finished a pulse, add a gap.
-                    # If we just finished a gap (from ...), extend it or add new?
-                    # Let's keep specific logic: space always adds NORMAL_GAP * count
                     pulses.append(('gap', self.NORMAL_GAP * max(1, space_count)))
                 continue
             
@@ -196,23 +183,30 @@ class PulseWaveformProcessor(SVGProcessorBase):
                 i += 1
                 continue
             
-            # Unknown character, skip
             i += 1
         
         return pulses
 
+    def _collect_markers(self, pulses) -> list:
+        """Calculate X positions of all markers in a pulse sequence."""
+        markers = []
+        current_x = self.AXIS_PADDING
+        for p_type, width in pulses:
+            if p_type == 'marker':
+                markers.append(current_x)
+            else:
+                current_x += width
+        return markers
+
     def _render_single_waveform(self, config: dict) -> bytes:
-        """Generate SVG for a single waveform (legacy mode)."""
         pulses = config["pulses"]
-        
-        # Calculate total width needed for pulses
         pulse_width = sum(p[1] for p in pulses) if pulses else 0
         
-        # SVG dimensions
+        markers = self._collect_markers(pulses)
+
         svg_width = self.AXIS_PADDING + pulse_width + self.RIGHT_PADDING
         svg_height = self.TOP_PADDING + self.PULSE_HEIGHT + self.BOTTOM_PADDING
         
-        # Starting positions
         start_x = self.AXIS_PADDING
         baseline_y = self.TOP_PADDING + self.PULSE_HEIGHT
         high_y = self.TOP_PADDING
@@ -220,40 +214,45 @@ class PulseWaveformProcessor(SVGProcessorBase):
         svg_parts = []
         svg_parts.extend(self._generate_svg_header(svg_width, svg_height))
         
-        # Draw single axis system
+        # Grid lines and Ticks
+        svg_parts.extend(self._draw_grid_and_ticks(markers, config.get("ticks", []), self.TOP_PADDING, baseline_y + 15, show_grid=config.get("grid", False)))
+
+        # Axis
         svg_parts.extend(self._draw_axis_lines(start_x, baseline_y, high_y, svg_width))
         svg_parts.append(f'<line x1="{start_x}" y1="{baseline_y}" x2="{start_x + pulse_width}" y2="{baseline_y}" stroke="{self.BASELINE_COLOR}" stroke-width="1" stroke-dasharray="4,2"/>')
         
-        # Draw waveform
         path_d = self._generate_waveform_path(pulses, start_x, baseline_y, high_y)
         svg_parts.append(f'<path d="{path_d}" fill="none" stroke="{self.PULSE_COLOR}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>')
         
         # Labels
         svg_parts.append('<!-- Labels -->')
-        # Y labels
         svg_parts.extend(self._generate_text(config["y_axis_high"], start_x - 10, high_y + 5, 9, "end"))
         svg_parts.extend(self._generate_text(config["y_axis_low"], start_x - 10, baseline_y + 5, 9, "end"))
-        # X label
         svg_parts.extend(self._generate_text(config["x_axis"], svg_width - 15, baseline_y + 20, 10, "end"))
         
         svg_parts.append('</svg>')
         return ''.join(part for part in svg_parts if part).encode('utf-8')
 
     def _render_group_waveform(self, config: dict) -> bytes:
-        """Render multiple stacked waveforms."""
         channels = config["channels"]
         num_channels = len(channels)
         
-        # Calculate width (max of all channels)
+        # Calculate width and collect ALL unique marker positions across all channels
         max_pulse_width = 0
+        all_markers = set()
+        
         for ch in channels:
             w = sum(p[1] for p in ch["pulses"])
             if w > max_pulse_width:
                 max_pulse_width = w
+            
+            # Collect markers for this channel
+            ch_markers = self._collect_markers(ch["pulses"])
+            all_markers.update(ch_markers)
                 
-        # Dimensions
+        sorted_markers = sorted(list(all_markers))
+
         svg_width = self.AXIS_PADDING + max_pulse_width + self.RIGHT_PADDING
-        # Height: Top padding + (Pulse height * N) + (Gap * N-1) + Bottom padding
         svg_height = self.TOP_PADDING + (num_channels * self.PULSE_HEIGHT) + ((num_channels - 1) * self.CHANNEL_GAP) + self.BOTTOM_PADDING
         
         svg_parts = []
@@ -261,38 +260,53 @@ class PulseWaveformProcessor(SVGProcessorBase):
         
         current_y_top = self.TOP_PADDING
         start_x = self.AXIS_PADDING
-        
-        # X-axis label at the very bottom
         bottom_y = svg_height - 20
-        svg_parts.extend(self._generate_text(config["x_axis"], svg_width - 15, bottom_y, 10, "end"))
+        
+        # Draw Grid and Ticks (spanning full height)
+        # Grid goes from top padding to bottom axis
+        svg_parts.extend(self._draw_grid_and_ticks(sorted_markers, config.get("ticks", []), self.TOP_PADDING, bottom_y, grid_bottom_y=bottom_y - 15, show_grid=config.get("grid", False)))
 
-        # Draw axis line at bottom
+        # Draw X-axis label and line
+        svg_parts.extend(self._generate_text(config["x_axis"], svg_width - 15, bottom_y, 10, "end"))
         svg_parts.append(f'<line x1="{start_x}" y1="{bottom_y - 15}" x2="{svg_width - 10}" y2="{bottom_y - 15}" stroke="{self.AXIS_COLOR}" stroke-width="1.5" marker-end="url(#arrowhead)"/>')
 
         for i, channel in enumerate(channels):
             baseline_y = current_y_top + self.PULSE_HEIGHT
             high_y = current_y_top
             
-            # Channel Label (Name)
-            # Center vertically relative to the pulse height
             label_y = current_y_top + (self.PULSE_HEIGHT / 2) + 4
             svg_parts.extend(self._generate_text(channel["name"], start_x - 10, label_y, 11, "end"))
             
-            # Baseline dotted line
             svg_parts.append(f'<line x1="{start_x}" y1="{baseline_y}" x2="{start_x + max_pulse_width}" y2="{baseline_y}" stroke="{self.BASELINE_COLOR}" stroke-width="1" stroke-dasharray="4,2"/>')
             
-            # Vertical axis for this channel (optional, simplistic)
-            # svg_parts.append(f'<line x1="{start_x}" y1="{baseline_y}" x2="{start_x}" y2="{high_y}" stroke="{self.BASELINE_COLOR}" stroke-width="1"/>')
-
-            # Draw waveform
             path_d = self._generate_waveform_path(channel["pulses"], start_x, baseline_y, high_y)
             svg_parts.append(f'<path d="{path_d}" fill="none" stroke="{self.PULSE_COLOR}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>')
             
-            # Move to next slot
             current_y_top += self.PULSE_HEIGHT + self.CHANNEL_GAP
             
         svg_parts.append('</svg>')
         return ''.join(part for part in svg_parts if part).encode('utf-8')
+
+    def _draw_grid_and_ticks(self, markers, tick_labels, top_y, label_y, grid_bottom_y=None, show_grid=False) -> list:
+        parts = []
+        if grid_bottom_y is None:
+            grid_bottom_y = label_y - 15 # Default for single waveform
+            
+        axis_y = grid_bottom_y
+            
+        for i, x_pos in enumerate(markers):
+            # Draw optional vertical grid line (full height)
+            if show_grid:
+                parts.append(f'<line x1="{x_pos}" y1="{top_y}" x2="{x_pos}" y2="{axis_y}" stroke="{self.GRID_COLOR}" stroke-width="1" stroke-dasharray="2,2"/>')
+            
+            # Draw small tick mark on X axis (always)
+            parts.append(f'<line x1="{x_pos}" y1="{axis_y}" x2="{x_pos}" y2="{axis_y + 4}" stroke="{self.AXIS_COLOR}" stroke-width="1.5"/>')
+            
+            # Draw tick label if available
+            if i < len(tick_labels):
+                parts.append(f'<text x="{x_pos}" y="{label_y}" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="9" fill="{self.TEXT_COLOR}">{self._escape_xml(tick_labels[i])}</text>')
+                
+        return parts
 
     def _generate_svg_header(self, width: float, height: float) -> list:
         return [
@@ -357,6 +371,9 @@ class PulseWaveformProcessor(SVGProcessorBase):
         # as the user was happy with it. Visual refactoring can be a later request.
         
         for pulse_type, width in pulses:
+            if pulse_type == 'marker':
+                continue
+                
             if pulse_type == 'gap':
                 # Stay at baseline
                 current_x += width
