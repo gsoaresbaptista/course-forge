@@ -169,6 +169,100 @@ class BuildSiteUseCase:
         cleaned = re.sub(r"^[\d]+[-_.\s]*", "", name)
         return cleaned.replace("-", " ").replace("_", " ") if cleaned else name
 
+    def _process_slides_folder(
+        self,
+        course_node: ContentNode,
+        slides_node: ContentNode,
+        pre_processors: list[Processor],
+        post_processors: list[Processor],
+        global_config: dict | None = None,
+        course_config: dict | None = None,
+    ) -> None:
+        """Process slides folder and generate slides.html."""
+        slides = []
+        
+        # We need to process the files inside slides folder so they are written to output
+        # Use a temporary list to avoid modification during iteration if that were an issue
+        slide_children = [c for c in slides_node.children]
+        
+        for slide_file in slide_children:
+            if slide_file.is_file and slide_file.file_extension == ".md":
+                # Process the slide file to generate the actual slide HTML
+                # This logic mimics _process_node but for slides specifically
+                
+                # Load content
+                markdown = self.loader.load(slide_file.src_path)
+                content = markdown["content"]
+                metadata = markdown.get("metadata", {})
+                slide_file.metadata = metadata
+                
+                # Apply processors
+                for processor in pre_processors:
+                    content = processor.execute(slide_file, content)
+                
+                # Ensure type is set to slide so render logic knows what to do
+                metadata["type"] = "slide"
+                
+                # Render slide content
+                if hasattr(self.markdown_renderer, "render_slide"):
+                    content = self.markdown_renderer.render_slide(content)
+                else:
+                    content = self.markdown_renderer.render(content)
+
+                render_config = (global_config or {}).copy()
+                if course_config:
+                    render_config.update(course_config)
+
+                if hasattr(self.html_renderer, "render_slide"):
+                    html = self.html_renderer.render_slide(
+                        content, slide_file, metadata=metadata, config=render_config
+                    )
+                else:
+                    html = self.html_renderer.render(
+                        content, slide_file, metadata=metadata, config=render_config
+                    )
+
+                for processor in post_processors:
+                    html = processor.execute(slide_file, html)
+
+                # Write the slide file
+                self.writer.write(slide_file, html)
+
+                # Collect metadata for listing
+                slide_name = self._clean_name(slide_file.name)
+                if metadata.get("title"):
+                    slide_name = metadata["title"]
+                
+                slides.append({
+                    "name": slide_name,
+                    "slug": slide_file.slug,
+                })
+            
+            # Copy non-markdown files (images, etc)
+            elif slide_file.is_file:
+                self.writer.copy_file(slide_file)
+
+        # Sort slides by numeric prefix if present
+        def sort_key(s):
+            match = re.search(r"^(\d+)", s["slug"])
+            return int(match.group(1)) if match else 9999
+        
+        slides.sort(key=sort_key)
+        
+        # Render slides page
+        render_config = (global_config or {}).copy()
+        if course_config:
+            render_config.update(course_config)
+        
+        slides_html = self.html_renderer.render_slides(
+            course_node, slides, config=render_config
+        )
+        
+        for processor in post_processors:
+            slides_html = processor.execute(slides_node, slides_html)
+        
+        self.writer.write_slides(course_node, slides_html)
+
     def _process_node(
         self,
         node: ContentNode,
@@ -283,6 +377,10 @@ class BuildSiteUseCase:
                 self.writer.write_contents(node, contents_html)
 
         for child in node.children:
+            # Skip slides folder from normal processing
+            if not child.is_file and child.name.lower() == "slides":
+                continue
+                
             self._process_node(
                 child,
                 pre_processors,
@@ -292,3 +390,17 @@ class BuildSiteUseCase:
                 existing_checksums,
                 new_checksums,
             )
+
+        # Process slides folder separately if it exists
+        if not node.is_file and node.parent is not None:
+            for child in node.children:
+                if not child.is_file and child.name.lower() == "slides":
+                    # Check if slides folder has markdown files
+                    has_md = any(
+                        gc.is_file and gc.file_extension == ".md" for gc in child.children
+                    )
+                    if has_md:
+                        self._process_slides_folder(
+                            node, child, pre_processors, post_processors, global_config, current_config
+                        )
+                    break

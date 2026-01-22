@@ -34,3 +34,9 @@ class HTMLTemplateRenderer(ABC):
     @abstractmethod
     def render_index(self, courses: list[dict]) -> str:
         pass
+
+    @abstractmethod
+    def render_slides(
+        self, course_node: ContentNode, slides: list[dict], config: dict | None = None
+    ) -> str:
+        pass

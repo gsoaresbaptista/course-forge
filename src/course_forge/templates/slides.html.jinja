@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ site_name }} - {{ course_name }} - Slides</title>
+    <link rel="icon" href="/img/dark-favicon.svg" media="(prefers-color-scheme: light)">
+    <link rel="icon" href="/img/light-favicon.svg" media="(prefers-color-scheme: dark)">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;600&family=Fira+Code&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/bundle.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="contents-page">
+        <header class="contents-header">
+            <a href="contents.html" class="back-link">← Voltar para {{ course_name }}</a>
+            <div class="contents-ornament">❧</div>
+            <h1 class="contents-title">{{ course_name }}</h1>
+            {% if year %}
+            <p class="contents-year">{{ year }}</p>
+            {% endif %}
+        </header>
+
+        <main class="contents-main">
+            <p class="contents-subtitle">Slides Disponíveis</p>
+
+            <div class="parts-container parts-container--single">
+                <div class="part-block single-part">
+                    <ol class="contents-list">
+                        {% for slide in slides %}
+                        <li class="contents-item">
+                            <a href="slides/{{ slide.slug }}.html" class="contents-link">
+                                <span class="contents-name">{{ slide.name }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 · <a href="#">{{ author }}</a></p>
+        </footer>
+    </div>
+
+    <script src="/js/bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Lucide icons
+            CourseForgeUI.initIcons();
+        });
+    </script>
+</body>
+
+</html>

@@ -364,6 +364,10 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
 
         appendices = []
         for c in course_node.children:
+            # Skip slides folder - it has its own dedicated link
+            if not c.is_file and c.name.lower() == "slides":
+                continue
+                
             if not c.is_file:
                 has_md = any(
                     gc.is_file and gc.file_extension == ".md" for gc in c.children
@@ -407,6 +411,18 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
             parent_name = strip_leading_number(course_node.parent.name)
             back_link_text = f"Voltar para {parent_name}"
 
+        # Check if there's a slides folder
+        has_slides = False
+        for child in course_node.children:
+            if not child.is_file and child.name.lower() == "slides":
+                # Check if it has markdown files
+                has_md = any(
+                    gc.is_file and gc.file_extension == ".md" for gc in child.children
+                )
+                if has_md:
+                    has_slides = True
+                    break
+
         return template.render(
             {
                 "course_name": course_name,
@@ -420,6 +436,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "courses_title": courses_title,
                 "back_link_url": back_link_url,
                 "back_link_text": back_link_text,
+                "has_slides": has_slides,
                 "is_subcourse": bool(
                     len(course_node.slugs_path) > 0
                     or (config.get("hidden") if config else False)
@@ -477,3 +494,24 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         except Exception:
             pass
         return None
+
+    def render_slides(
+        self, course_node: ContentNode, slides: list[dict], config: dict | None = None
+    ) -> str:
+        """Render slides.html for a course's slides directory."""
+        template = self.env.get_template("slides.html.jinja")
+        config = config or self.config
+
+        course_name = config.get("name") if config else None
+        if not course_name:
+            course_name = strip_leading_number(course_node.name)
+
+        return template.render(
+            {
+                "course_name": course_name,
+                "slides": slides,
+                "site_name": self.config.get("site_name", "Course Forge"),
+                "author": self.config.get("author", "Course Forge"),
+                "year": config.get("year") if config else None,
+            }
+        )

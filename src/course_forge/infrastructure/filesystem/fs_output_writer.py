@@ -192,3 +192,11 @@ class FileSystemOutputWriter(OutputWriter):
         html_path = os.path.join(self._root_path, "index.html")
         with open(html_path, "w", encoding="utf-8") as f:
             f.write(text)
+
+    def write_slides(self, node: ContentNode, text: str) -> None:
+        """Write slides.html for a course directory."""
+        out_dir = os.path.join(self._root_path, *node.slugs_path, node.slug)
+        os.makedirs(out_dir, exist_ok=True)
+        html_path = os.path.join(out_dir, "slides.html")
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(text)

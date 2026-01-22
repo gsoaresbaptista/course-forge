@@ -1302,7 +1302,28 @@ body.sidebar-hidden .toggle-icon {
 .contents-page .footer {
     font-size: .85rem;
     padding-top: 1.5rem;
-    margin-top: 3rem
+    margin-top: 3rem;
+    position: relative
+}
+
+.slides-handle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 999;
+    display: inline-block;
+    font-size: .9rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: var(--bg);
+    padding: .5rem;
+    border-radius: 4px;
+    color: var(--text-muted);
+    transition: color .2s
+}
+
+.slides-handle:hover {
+    color: var(--course-accent)
 }
 
 .contents-year,

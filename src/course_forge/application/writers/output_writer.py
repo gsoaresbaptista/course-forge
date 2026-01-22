@@ -28,3 +28,7 @@ class OutputWriter(ABC):
     @abstractmethod
     def write_index(self, text: str) -> None:
         pass
+
+    @abstractmethod
+    def write_slides(self, node: ContentNode, text: str) -> None:
+        pass

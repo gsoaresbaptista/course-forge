@@ -76,6 +76,10 @@
         <footer class="footer">
             <p>© 2025 · <a href="#">{{ author }}</a></p>
         </footer>
+
+        {% if has_slides %}
+        <a href="slides.html" class="slides-handle">Ver Slides →</a>
+        {% endif %}
     </div>
 
     <script src="/js/navigation.js"></script>
