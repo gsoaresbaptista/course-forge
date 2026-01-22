@@ -41,21 +41,68 @@
         }
 
         .reveal h1 {
-            font-size: 2em;
+            font-size: 2.2em;
+            margin-bottom: 40px !important;
         }
 
         .reveal h2 {
-            font-size: 1.5em;
+            font-size: 1.6em;
+            margin-top: 30px !important;
+            margin-bottom: 20px !important;
         }
 
         .reveal h3 {
-            font-size: 1.25em;
+            font-size: 1.3em;
+            margin-top: 20px !important;
+            margin-bottom: 15px !important;
         }
 
         .reveal p,
         .reveal ul,
         .reveal ol {
-            line-height: 1.4;
+            line-height: 1.5;
+            margin-top: 20px !important;
+        }
+
+        /* Slide padding and layout */
+        .reveal .slides section {
+            padding: 40px !important;
+            box-sizing: border-box;
+        }
+
+        /* Full screen slide fix */
+        .reveal .slides section:has(.full-screen-image) {
+            padding: 0 !important;
+        }
+
+        /* Full screen slide fix - Garantindo que o fundo do Reveal fique visível e a imagem carregada */
+        .reveal:has(section.present .full-screen-image) {
+            background-image: url('../../slide_end_background.png') !important;
+            background-size: cover !important;
+            background-position: center !important;
+        }
+
+        /* Torna o slide e o container de slides transparentes para mostrar o fundo da .reveal */
+        .reveal:has(section.present .full-screen-image) .slides,
+        .reveal:has(section.present .full-screen-image) .slides section.present {
+            background: transparent !important;
+        }
+
+        .full-screen-image {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 !important;
+            /* Se houver texto, ele centraliza aqui */
+        }
+
+        /* Spacing for diagrams */
+        .reveal .svg-graph {
+            margin-top: 3em !important;
+            margin-bottom: 3em !important;
+            overflow: visible !important; /* Prevent labels from being cut off */
         }
 
         /* Previous AST styles */
