@@ -82,33 +82,7 @@ with schemdraw.Drawing() as d:
 
 ---
 
-## 3. Mermaid Diagrams
-
-**Processor:** `mermaid.plot`
-
-Render flowcharts, sequence diagrams, Gantt charts, etc., using Mermaid.js.
-
-### Syntax
-Standard Mermaid syntax.
-
-### Parameters
-- `sketch`: Enable "hand-drawn" look (if supported by the updated Mermaid version).
-- `width`: Max width of the container.
-- `height`: Fixed height.
-
-### Example
-
-```mermaid.plot centered
-graph TD
-    A[Start] --> B{Is it working?}
-    B -- Yes --> C[Great!]
-    B -- No --> D[Debug]
-    D --> B
-```
-
----
-
-## 4. Digital Logic Circuits
+## 3. Digital Logic Circuits
 
 **Processor:** `digital-circuit.plot`
 
@@ -128,7 +102,7 @@ Q = not (A and B) or C
 
 ---
 
-## 5. Abstract Syntax Trees (AST)
+## 4. Abstract Syntax Trees (AST)
 
 **Processor:** `ast.plot`
 
@@ -145,7 +119,7 @@ Space-separated tokens. Use parenthesis `(` and `)` to create branches.
 
 ---
 
-## 6. Karnaugh Maps
+## 5. Karnaugh Maps
 
 **Processor:** `karnaugh.map`
 

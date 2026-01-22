@@ -4,10 +4,10 @@ from course_forge.application.processors import (
     DigitalCircuitProcessor,
     DownloadLinkMarkerProcessor,
     DownloadLinkProcessor,
+    GraphvizProcessor,
     HTMLMinifyProcessor,
     InternalLinkProcessor,
     KarnaughMapProcessor,
-    MermaidProcessor,
     Processor,
     PulseWaveformProcessor,
     SchemdrawProcessor,
@@ -33,11 +33,11 @@ class DependencyContainer:
         self._pre_processors: list[Processor] = [
             InternalLinkProcessor(),
             DownloadLinkMarkerProcessor(),
+            GraphvizProcessor(),
             DigitalCircuitProcessor(),
             SchemdrawProcessor(),
             KarnaughMapProcessor(),
             ASTProcessor(),
-            MermaidProcessor(),
             PulseWaveformProcessor(),
         ]
         self._post_processors: list[Processor] = [

@@ -166,42 +166,6 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <script src="/js/navigation.js"></script>
     <script src="/js/ui.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-    <script>
-        mermaid.initialize({
-            startOnLoad: false,
-            theme: 'default',
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            // Restore mermaid content from base64 data-source if available
-            // We use 'mermaid-hidden' to prevent premature rendering or auto-detection
-            document.querySelectorAll('.mermaid-hidden').forEach(el => {
-                if (el.dataset.source) {
-                    try {
-                        // decodeURIComponent(escape(atob(str))) handles UTF-8 characters correctly
-                        const decoded = decodeURIComponent(escape(atob(el.dataset.source)));
-                        el.textContent = decoded;
-                        el.removeAttribute('data-source'); // Cleanup
-                    } catch (e) {
-                        console.error('Failed to decode mermaid source:', e);
-                    }
-                }
-                // Now enable it for mermaid to find
-                el.className = el.className.replace('mermaid-hidden', 'mermaid');
-            });
-
-            mermaid.run({
-                querySelector: '.mermaid',
-                postRenderCallback: (id) => {
-                    // Apply sketch effect after mermaid renders
-                    if (window.applySketchEffect) {
-                        window.applySketchEffect();
-                    }
-                }
-            });
-        });
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const isSubcourse = {{ is_subcourse | tojson

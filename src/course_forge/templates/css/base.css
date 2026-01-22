@@ -812,20 +812,6 @@ table {
     font-size: .9rem
 }
 
-.mermaid {
-    display: block;
-    margin: 0 auto;
-    text-align: center;
-    background: transparent !important;
-    border: none !important;
-    overflow-x: auto;
-}
-
-.mermaid svg {
-    max-width: 100%;
-    height: auto;
-}
-
 thead {
     border-bottom: 2px solid var(--border)
 }
@@ -1451,46 +1437,6 @@ th .download-link {
     border: 0
 }
 
-.svg-graph.ast-plot-img .ast-op path,
-.svg-graph.ast-plot-img .ast-op polygon {
-    fill: #f5ede4 !important;
-    stroke: var(--course-accent) !important;
-    stroke-width: 1.5 !important
-}
-
-.svg-graph.ast-plot-img .ast-op text {
-    fill: var(--course-accent) !important;
-    font-weight: 600 !important;
-    font-size: 14px !important
-}
-
-.svg-graph.ast-plot-img .ast-leaf path,
-.svg-graph.ast-plot-img .ast-leaf polygon {
-    fill: #e8ebe6 !important;
-    stroke: #7a8a6f !important;
-    stroke-width: 1.5 !important
-}
-
-.svg-graph text,
-.svg-graph.ast-plot-img .ast-leaf text {
-    fill: #4a5a3f !important;
-    font-weight: 500 !important;
-}
-
-.svg-graph.ast-plot-img .ast-edge path,
-.svg-graph.ast-plot-img .ast-edge polygon {
-    stroke: var(--text-muted) !important;
-    stroke-width: 1.5 !important;
-    opacity: .6
-}
-
-.svg-graph circle,
-.svg-graph path,
-.svg-graph svg:not(.kmap-graph) polygon {
-    stroke: var(--course-accent) !important;
-    stroke-width: 1.5 !important
-}
-
 .kmap-img polygon {
     opacity: 0.8;
 }
@@ -1503,12 +1449,4 @@ th .download-link {
 .svg-graph .wire {
     stroke: var(--text-muted) !important;
     stroke-width: 2 !important
-}
-
-.mermaid-note {
-    margin: 0 auto 1rem auto;
-    border: 1px solid rgba(0, 0, 0, 0.25);
-    width: fit-content;
-    padding: 5px 12px;
-    background: #ffffde;
 }
