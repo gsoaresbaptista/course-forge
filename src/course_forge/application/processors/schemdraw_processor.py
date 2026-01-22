@@ -162,6 +162,9 @@ class SchemdrawProcessor(SVGProcessorBase):
             # Fallback if use() is not available or fails
             pass
 
+        # Set default color to #333
+        schemdraw.config(color='#333')
+
         # Setup context with common schemdraw imports
         # We use the same dict for globals and locals to ensure 
         # names are accessible within functions defined in the code block.

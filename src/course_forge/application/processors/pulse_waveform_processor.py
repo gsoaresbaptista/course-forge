@@ -36,12 +36,12 @@ class PulseWaveformProcessor(SVGProcessorBase):
     ARROW_TEXT_GAP = 5
     
     # Colors 
-    PULSE_COLOR = "#92400e"  # Dark orange/brown
-    AXIS_COLOR = "#92400e"   
-    TEXT_COLOR = "#431407"   
-    BASELINE_COLOR = "#d6d3d1" 
-    GRID_COLOR = "#a8a29e"
-    ZEBRA_COLOR = "#f5f5f4"
+    PULSE_COLOR = "#333"
+    AXIS_COLOR = "#333"   
+    TEXT_COLOR = "#333"   
+    BASELINE_COLOR = "#333" 
+    GRID_COLOR = "#333"
+    ZEBRA_COLOR = "#333"
 
     def execute(self, node: ContentNode, content: str) -> str:
         matches = list(self.pattern.finditer(content))

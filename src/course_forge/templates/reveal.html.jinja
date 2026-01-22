@@ -29,6 +29,7 @@
     <script>
         Reveal.initialize({
             hash: true,
+            slideNumber: true,
             plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
         });
     </script>
@@ -105,56 +106,16 @@
             overflow: visible !important; /* Prevent labels from being cut off */
         }
 
-        /* Previous AST styles */
-        .svg-graph.ast-plot-img .ast-op path,
-        .svg-graph.ast-plot-img .ast-op polygon {
-            fill: #f5ede4 !important;
-            stroke: #884422 !important;
-            stroke-width: 1.5 !important
-        }
 
-        .svg-graph.ast-plot-img .ast-op text {
-            fill: #884422 !important;
-            font-weight: 600 !important;
-            font-size: 14px !important
-        }
-
-        .svg-graph.ast-plot-img .ast-leaf path,
-        .svg-graph.ast-plot-img .ast-leaf polygon {
-            fill: #e8ebe6 !important;
-            stroke: #7a8a6f !important;
-            stroke-width: 1.5 !important
-        }
-
-        .svg-graph.ast-plot-img .ast-leaf text,
-        .svg-graph text {
-            fill: #4a5a3f !important;
-            font-weight: 500 !important;
-            font-size: 13px !important
-        }
-
-        .svg-graph.ast-plot-img .ast-edge path,
-        .svg-graph.ast-plot-img .ast-edge polygon {
-            stroke: var(--text-muted) !important;
-            stroke-width: 1.5 !important;
-            opacity: .6
-        }
-
-        .svg-graph circle,
-        .svg-graph path,
-        .svg-graph polygon {
-            stroke: #884422 !important;
-            stroke-width: 1.5 !important
-        }
-
-        .svg-graph .gate {
-            fill: #f5ede4 !important;
-            filter: drop-shadow(0 1px 3px rgba(136, 68, 34, .15))
-        }
-
-        .svg-graph .wire {
-            stroke: var(--text-muted) !important;
-            stroke-width: 2 !important
+        .reveal blockquote {
+            display: block;
+            position: relative;
+            width: 70%;
+            margin: var(--r-block-margin) auto;
+            padding: 5px;
+            font-style: italic;
+            background: rgba(255, 170, 73, 0.2);
+            box-shadow: 0 0 2px rgba(0,0,0,.2);
         }
     </style>
 </body>

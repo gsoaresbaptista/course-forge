@@ -512,7 +512,7 @@ a {
 }
 
 .article-body p {
-    margin: 1.5rem 0;
+    margin: 1rem 0;
     text-align: justify;
     hyphens: auto
 }
@@ -565,7 +565,7 @@ a {
 }
 
 .callout {
-    margin: 1.5rem 0;
+    margin: 1rem 0;
     border: 1px solid var(--border);
     border-left: 4px solid var(--callout-note);
     border-radius: 4px;
@@ -833,7 +833,7 @@ td {
 hr {
     border: 0;
     text-align: center;
-    margin: 1.5rem 0
+    margin: 1rem 0
 }
 
 hr::before {
