@@ -110,7 +110,7 @@ Drawing.show = lambda *args, **kwargs: None
 
 # Use SVG backend
 try:
-    schemdraw.use('svg')
+    schemdraw.use('matplotlib')
 except Exception:
     pass
 
@@ -160,13 +160,18 @@ class SchemdrawProcessor(SVGProcessorBase):
         """Execute schemdraw code and return SVG bytes."""
         # Force SVG backend to avoid popup windows and Tkinter issues
         try:
-            schemdraw.use("svg")
+            schemdraw.use("matplotlib")
         except Exception:
             # Fallback if use() is not available or fails
             pass
 
         # Set default color to #333
         schemdraw.config(color='#333')
+        
+        # Configure matplotlib for SVG output
+        # Ensure transparent background and use text elements instead of paths
+        plt.rcParams['savefig.transparent'] = True
+        plt.rcParams['svg.fonttype'] = 'none'
 
         # Setup context with common schemdraw imports
         # We use the same dict for globals and locals to ensure 
@@ -233,5 +238,8 @@ class SchemdrawProcessor(SVGProcessorBase):
                 new_height = height + (padding * 2)
                 new_viewbox = f"{new_min_x} {new_min_y} {new_width} {new_height}"
                 svg_str = svg_str.replace(f'viewBox="{viewbox}"', f'viewBox="{new_viewbox}"')
+        
+        # Strip all newlines to prevent Markdown parser from interpreting indented lines as code blocks
+        svg_str = svg_str.replace('\n', '').replace('\r', '')
         
         return svg_str.encode('utf-8')
