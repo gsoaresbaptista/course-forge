@@ -3,6 +3,9 @@ import subprocess as original_subprocess
 import schemdraw
 from schemdraw import Drawing
 import schemdraw.elements as elm
+import schemdraw.logic as logic
+import schemdraw.dsp as dsp
+import schemdraw.flow as flow
 import matplotlib
 import matplotlib.pyplot as plt
 import webbrowser
@@ -172,6 +175,9 @@ class SchemdrawProcessor(SVGProcessorBase):
             "schemdraw": schemdraw,
             "Drawing": Drawing,
             "elm": elm,
+            "logic": logic,
+            "dsp": dsp,
+            "flow": flow,
         }
 
         # Execute the code block
