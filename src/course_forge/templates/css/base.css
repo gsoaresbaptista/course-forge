@@ -806,7 +806,6 @@ pre::-webkit-scrollbar-thumb:hover {
 }
 
 table {
-    width: 75%;
     margin: 0 auto;
     border-collapse: collapse;
     font-size: .9rem
@@ -1470,4 +1469,17 @@ th .download-link {
 .svg-graph .wire {
     stroke: var(--text-muted) !important;
     stroke-width: 2 !important
+}
+
+.col1 {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.col2 {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 90%;
+    margin: 0 auto;
 }
