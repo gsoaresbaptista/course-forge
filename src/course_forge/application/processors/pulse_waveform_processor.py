@@ -413,18 +413,41 @@ class PulseWaveformProcessor(SVGProcessorBase):
         parts = []
         axis_y = grid_bottom_y
         
+        # Zebra striping (Background rects)
+        # First interval (0) is empty (no color).
+        # Second interval (1) is colored (zebra).
+        # Alternating...
         if zebra and len(markers) > 1:
             for i in range(len(markers) - 1):
-                if i % 2 == 0:
+                if i % 2 != 0: # Odd intervals are colored
                     x_start = markers[i]
                     x_end = markers[i+1]
                     width = x_end - x_start
                     if width > 0:
-                        parts.append(f'<rect x="{x_start}" y="{top_y}" width="{width}" height="{axis_y - top_y}" fill="{self.ZEBRA_COLOR}" stroke="none"/>')
+                        parts.append(f'<rect x="{x_start}" y="{top_y}" width="{width}" height="{axis_y - top_y}" fill="{self.ZEBRA_COLOR}" opacity="0.1" stroke="none"/>')
             
+        # Grid Lines and Ticks
         for i, x_pos in enumerate(markers):
-            if show_grid and ticks_mode == "manual":
-                parts.append(f'<line x1="{x_pos}" y1="{top_y}" x2="{x_pos}" y2="{axis_y}" stroke="{self.GRID_COLOR}" stroke-width="1" stroke-dasharray="2,2"/>')
+            # Draw dashed grid line if:
+            # 1. Grid is enabled
+            # 2. This marker bounds a colored interval
+            if show_grid:
+                should_draw_line = False
+                is_odd = (i % 2 != 0)
+                is_last = (i == len(markers) - 1)
+                
+                if is_odd:
+                    # Odd marker: Starts a colored interval?
+                    if not is_last:
+                        should_draw_line = True
+                else: 
+                    # Even marker: Ends a colored interval?
+                    # Interval (i-1) was odd (colored)
+                    if i > 0:
+                        should_draw_line = True
+                
+                if should_draw_line:
+                    parts.append(f'<line x1="{x_pos}" y1="{top_y}" x2="{x_pos}" y2="{axis_y}" stroke="{self.GRID_COLOR}" stroke-width="1" stroke-dasharray="2,2"/>')
 
             parts.append(f'<line x1="{x_pos}" y1="{axis_y}" x2="{x_pos}" y2="{axis_y + 4}" stroke="{self.AXIS_COLOR}" stroke-width="1.5"/>')
             
