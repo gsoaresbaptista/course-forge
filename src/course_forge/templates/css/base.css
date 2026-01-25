@@ -1483,3 +1483,15 @@ th .download-link {
     width: 90%;
     margin: 0 auto;
 }
+
+.svg-graph,
+.schemdraw-plot-img {
+    line-height: normal !important;
+}
+
+.svg-graph svg,
+.schemdraw-plot-img svg,
+.svg-graph text,
+.schemdraw-plot-img text {
+    line-height: normal !important;
+}
