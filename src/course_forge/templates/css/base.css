@@ -447,7 +447,7 @@ a {
 }
 
 .title-text {
-    flex: none
+    width: 100%;
 }
 
 .article-date {
