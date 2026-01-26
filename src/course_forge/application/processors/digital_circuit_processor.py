@@ -16,6 +16,23 @@ class DigitalCircuitProcessor(SVGProcessorBase):
         for match in matches:
             left = match.group("left").strip()
             right = match.group("right").strip() if match.group("right") else ""
+            
+            # If right-hand side logic is a python string literal (e.g. r'...' or "..."),
+            # extract the inner string content to allow LaTeX usage without quotes being rendered.
+            if right:
+                # Check for r'...' or r"..."
+                if (right.startswith("r'") and right.endswith("'")) or \
+                   (right.startswith('r"') and right.endswith('"')):
+                    right = right[2:-1]
+                # Check for '...' or "..."
+                elif (right.startswith("'") and right.endswith("'")) or \
+                     (right.startswith('"') and right.endswith('"')):
+                    right = right[1:-1]
+                
+                # Check for LaTeX syntax (backslashes) and wrap in $ if needed
+                if "\\" in right and not (right.startswith("$") and right.endswith("$")):
+                    right = f"${right}$"
+
             attrs = self.parse_svg_attributes(match)
 
             svg_data = self._render_circuit(left, right)
@@ -36,5 +53,15 @@ class DigitalCircuitProcessor(SVGProcessorBase):
         return content
 
     def _render_circuit(self, expr: str, outlabel: str) -> bytes:
+        # Configure matplotlib for SVG output (similar to schemdraw processor)
+        try:
+            import schemdraw
+            schemdraw.use("matplotlib")
+            import matplotlib.pyplot as plt
+            plt.rcParams['savefig.transparent'] = True
+            plt.rcParams['svg.fonttype'] = 'none'
+        except ImportError:
+            pass
+
         d = logicparse(expr, outlabel=outlabel)
         return d.get_imagedata("svg")

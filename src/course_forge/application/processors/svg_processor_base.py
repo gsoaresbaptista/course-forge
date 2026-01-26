@@ -23,6 +23,7 @@ class SVGProcessorBase(Processor):
             Compiled regex pattern with width, height, centered, and sketch groups
         """
         pattern_str = (
+            r"(?P<indent>[ \t]*)"
             rf"```{re.escape(block_type)}"
             r"(?:\s+(?:width=(?P<width>\d+)|height=(?P<height>\d+)|(?P<centered>centered)|(?P<sketch>sketch)))*"
             rf"\s+{content_pattern}```"
@@ -139,6 +140,11 @@ class SVGProcessorBase(Processor):
             del root.attrib["height"]
 
         svg_html = ET.tostring(root, encoding="unicode")
+        
+        # Flatten the SVG to a single line to prevent Markdown parsers 
+        # from interpreting indented lines as code blocks
+        svg_html = svg_html.replace('\n', '').replace('\r', '')
+        
         wrapper_class = "centered" if centered else ""
 
         return f'<div class="{wrapper_class}">{svg_html}</div>'
