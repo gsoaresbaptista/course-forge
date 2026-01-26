@@ -71,6 +71,9 @@
             const elements = svg.querySelectorAll('path, line, circle, rect, ellipse, polygon, polyline');
 
             elements.forEach(element => {
+                // Skip elements inside defs (like clipPaths, masks, gradients)
+                if (element.closest('defs')) return;
+
                 const tag = element.tagName.toLowerCase();
 
                 const cs = getComputedStyle(element);
@@ -96,20 +99,32 @@
                     return null;
                 };
 
-                const stroke = element.getAttribute('stroke') || getStyleValue('stroke') || cs.stroke;
+                let stroke = element.getAttribute('stroke') || getStyleValue('stroke') || cs.stroke;
+                if (stroke === 'none' || stroke === 'undefined' || !stroke) stroke = undefined;
+
                 const strokeWidth = parseFloat(element.getAttribute('stroke-width') || getStyleValue('stroke-width') || cs.strokeWidth || 1);
-                const fill = element.getAttribute('fill') || getStyleValue('fill') || getParentFill() || cs.fill;
+
+                let fill = element.getAttribute('fill') || getStyleValue('fill') || getParentFill() || cs.fill;
+                if (fill === 'none' || fill === 'undefined' || !fill) fill = undefined;
 
                 const options = {
                     roughness: 1.2,
                     bowing: 0.8,
                     seed: 42,
-                    stroke: stroke !== 'none' ? stroke : undefined,
                     strokeWidth: strokeWidth,
-                    fill: fill !== 'none' ? fill : undefined,
                     fillStyle: 'hachure',
                     fillWeight: 3,
                 };
+
+                if (stroke && stroke !== 'none' && stroke !== 'undefined') {
+                    options.stroke = stroke;
+                }
+                if (fill && fill !== 'none' && fill !== 'undefined') {
+                    options.fill = fill;
+                }
+
+                // If element has neither stroke nor fill, it's invisible - don't sketch it
+                if (!options.stroke && !options.fill) return;
 
                 let sketch = null;
 
