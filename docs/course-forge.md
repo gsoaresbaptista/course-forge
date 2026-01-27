@@ -482,3 +482,119 @@ These attributes apply to most chart types (added after the language class ident
 | `width=N` | Sets the width of the output (units depend on processor, usually pixels or default SVG units). |
 | `height=N` | Sets the height of the output. |
 | `sketch` | Enables a rough/sketchy visual style (where supported). |
+
+---
+
+# Callouts
+
+Use callouts to highlight important information. The syntax is based on the GitHub/Obsidian standard.
+
+**Syntax:**
+```markdown
+> [!type] Title
+> Content...
+```
+
+**Supported Types:**
+All types support a custom title. The icon is determined by the type.
+
+| Type | Icon | Meaning |
+| :--- | :--- | :--- |
+| `note` | 📝 | General notes (default) |
+| `abstract` | 📋 | Summary or abstract |
+| `info` | ℹ️ | Information |
+| `todo` | 📅 | To-do items |
+| `tip` | 💡 | Tips and tricks |
+| `success` | ✅ | Success or completion |
+| `question` | ❓ | Questions or FAQ |
+| `warning` | ⚠️ | Warnings |
+| `failure` | ❌ | Failure or error |
+| `danger` | ⚡ | Critical danger |
+| `bug` | 🐞 | Bug reports |
+| `example` | 🔬 | Examples |
+| `quote` | ❝ | Quotations |
+
+# Slides
+
+Turn any Markdown file into a Reveal.js presentation instantly.
+
+**Usage:**
+Add `type: slide` to your Frontmatter.
+
+```yaml
+---
+title: My Presentation
+type: slide
+---
+```
+
+**Creating Slides:**
+Use `---` (horizontal rule) to separate slides.
+
+```markdown
+# Slide 1
+Content...
+
+---
+
+# Slide 2
+Content...
+```
+
+# Automatic Features
+
+## Download Links
+Links to binary files (archives, documents, executables) are automatically detected and styled as download buttons.
+
+**Supported Extensions:**
+`.zip`, `.rar`, `.tar`, `.gz`, `.7z`, `.pdf`, `.exe`, `.dmg`, `.bin`, `.deb`, `.rpm`, `.appimage`
+
+**Example:**
+`[Download PDF](notes.pdf)` renders as a button.
+
+## Internal Smart Links
+Course Forge uses intelligent link resolution to handle symbolic modules and shared content.
+
+- **Markdown Resolution**: Links to `.md` files (`[Link](page.md)`) are automatically converted to `.html` links.
+- **Symbolic Resolution**: When a module is included via `source:`, internal links within that module are correctly resolved relative to the new location.
+
+# Project Structure & Configuration
+
+## Recommended Structure
+
+```text
+content/
+├── config.yaml          # Global site configuration
+├── shared/              # Central location for shared modules
+│   └── logic-intro/
+│       ├── config.yaml  # Set 'hidden: true' to hide from main index
+│       └── topic1.md
+└── discipline-a/
+    └── intro/
+        └── config.yaml  # Set 'source: ../../shared/logic-intro'
+```
+
+## Configuration
+
+### Global Config (`config.yaml` at root)
+
+```yaml
+site_name: My Academic Portal
+courses_title: Disciplinas
+author: Prof. John Doe
+```
+
+### Module Config (`config.yaml` in module folders)
+
+-   `name`: Custom display name for the module.
+-   `hidden`: (boolean) If `true`, the module won't appear in the main index list.
+-   `source`: (string) Path to another directory to load content from (Symbolic Module).
+
+### Markdown Frontmatter
+
+```markdown
+---
+title: My Great Topic
+type: slide  # Optional: renders as Reveal.js slides
+---
+```
