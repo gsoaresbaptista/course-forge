@@ -41,6 +41,38 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
 
         self.env = Environment(loader=ChoiceLoader(loaders))
 
+    def _get_config_allowed_slugs(self, config: dict | None) -> list[str] | None:
+        """Get list of allowed item identifiers from config parts.
+        
+        Returns None if no parts are defined (meaning all chapters should be shown).
+        Returns a list of item strings from config parts if defined.
+        """
+        if not config:
+            return None
+        
+        config_parts = config.get("parts") or config.get("groups")
+        if not config_parts:
+            return None
+        
+        allowed = []
+        for part_config in config_parts:
+            items = part_config.get("items") or []
+            allowed.extend(items)
+        return allowed
+
+    def _is_slug_in_config(self, slug: str, original_name: str, allowed_items: list[str]) -> bool:
+        """Check if a slug matches any of the allowed config items."""
+        for item in allowed_items:
+            if (
+                slug == item
+                or slug.startswith(item + "-")
+                or original_name == item
+                or original_name.startswith(item + " ")
+                or original_name.startswith(item + "-")
+            ):
+                return True
+        return False
+
     def render(
         self,
         content: str,
@@ -64,8 +96,15 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         if node.parent:
             course_name = strip_leading_number(node.parent.name)
 
+        # Get allowed slugs from config if parts exist
+        allowed_slugs = self._get_config_allowed_slugs(config)
+
         siblings = []
         for s in node.siblings:
+            # If config defines parts, filter siblings to only include allowed slugs
+            if allowed_slugs is not None and not self._is_slug_in_config(s.slug, s.name, allowed_slugs):
+                continue
+
             sibling_name = strip_leading_number(s.name)
             if s.metadata and s.metadata.get("title"):
                 sibling_name = s.metadata["title"]
