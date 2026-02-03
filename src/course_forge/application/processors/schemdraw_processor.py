@@ -15,6 +15,8 @@ matplotlib.use('Agg')
 
 # Silence matplotlib show
 plt.show = lambda *args, **kwargs: None
+from matplotlib.figure import Figure
+Figure.show = lambda *args, **kwargs: None
 
 # Silence webbrowser
 webbrowser.open = lambda *args, **kwargs: True
@@ -208,6 +210,14 @@ class SchemdrawProcessor(SVGProcessorBase):
             )
 
         svg_data = drawing.get_imagedata("svg")
+        
+        # Explicitly close all figures to prevent "More than 20 figures have been opened" warning
+        # and memory leaks.
+        try:
+            plt.close('all')
+        except Exception:
+            pass
+
         return self._add_viewbox_padding(svg_data)
 
     def _add_viewbox_padding(self, svg_bytes: bytes, padding: float = 10.0) -> bytes:

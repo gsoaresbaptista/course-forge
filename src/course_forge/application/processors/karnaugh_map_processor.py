@@ -304,6 +304,13 @@ class KarnaughMapProcessor(SVGProcessorBase):
         
         svg_bytes = d.get_imagedata("svg")
         
+        # Explicitly close all figures to prevent "More than 20 figures have been opened" warning
+        try:
+            import matplotlib.pyplot as plt
+            plt.close('all')
+        except Exception:
+            pass
+
         # Inject custom class to allow CSS exclusion
         try:
              svg_str = svg_bytes.decode("utf-8")

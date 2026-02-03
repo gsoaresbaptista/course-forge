@@ -64,4 +64,13 @@ class DigitalCircuitProcessor(SVGProcessorBase):
             pass
 
         d = logicparse(expr, outlabel=outlabel)
-        return d.get_imagedata("svg")
+        svg_data = d.get_imagedata("svg")
+        
+        # Explicitly close all figures to prevent "More than 20 figures have been opened" warning
+        try:
+            import matplotlib.pyplot as plt
+            plt.close('all')
+        except Exception:
+            pass
+
+        return svg_data
