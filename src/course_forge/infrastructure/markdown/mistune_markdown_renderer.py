@@ -2,6 +2,7 @@ import re
 import uuid
 
 import mistune
+from mistune.plugins.table import table_in_quote
 
 from course_forge.application.renders import MarkdownRenderer
 
@@ -167,7 +168,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         renderer = HeadingRenderer(chapter=chapter)
         markdown = mistune.create_markdown(
             renderer=renderer,
-            plugins=["table", "strikethrough", self._obsidian_comments_plugin],
+            plugins=["table", table_in_quote, "strikethrough", self._obsidian_comments_plugin],
         )
         html = str(markdown(text))
 
@@ -182,7 +183,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         renderer = SlideRenderer(escape=False)
         markdown = mistune.create_markdown(
             renderer=renderer,
-            plugins=["table", "strikethrough", self._obsidian_comments_plugin],
+            plugins=["table", table_in_quote, "strikethrough", self._obsidian_comments_plugin],
         )
         html = str(markdown(text))
 
