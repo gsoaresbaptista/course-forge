@@ -197,30 +197,40 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         """Deprecated: Comments are now handled by Mistune plugin."""
         return text
 
-    # Remove the old _preprocess_content that tried to be too smart
     def _preprocess_latex(self, text: str) -> tuple[str, dict[str, str]]:
         """
-        Protect LaTeX from modification.
+        Protect LaTeX from modification and handle escaped dollar signs.
         """
         latex_placeholders: dict[str, str] = {}
         counter = 0
 
-        # Pattern to match LaTeX blocks/inline
+        # Pattern to match code blocks (to ignore), LaTeX blocks/inline, and escaped dollars
         pattern = re.compile(
+            r"(?P<code>(?:^|(?<=\s))```[\s\S]*?```|`[^`\n]+`)|"
             r"(?P<latex_block>\$\$[\s\S]*?\$\$)|"
-            r"(?P<latex_inline>(?<!\\)(?<!\$)\$(?!\$)(?P<content>[^$]+?)(?<!\\)(?<!\$)\$(?!\$))",
+            r"(?P<latex_inline>(?<!\\)(?<!\$)\$(?!\$)(?P<content>[^$]+?)(?<!\\)(?<!\$)\$(?!\$))|"
+            r"(?P<escaped_dollar>\\\$)",
             re.MULTILINE,
         )
 
         def replace_fn(match: re.Match) -> str:
             nonlocal counter
-            # Create a unique placeholder
+
+            # If it's code, return it as is
+            if match.groupdict().get("code"):
+                return match.group(0)
+
+            # If it's an escaped dollar, convert to span to avoid KaTeX
+            if match.groupdict().get("escaped_dollar"):
+                return "<span>$</span>"
+
+            # Create a unique placeholder for LaTeX
             placeholder = f"LATEX_PLACEHOLDER_{uuid.uuid4().hex}_{counter}"
             latex_placeholders[placeholder] = match.group(0)
             counter += 1
             return placeholder
 
-        # Replace all LaTeX content with placeholders
+        # Replace all matches
         text = pattern.sub(replace_fn, text)
         return text, latex_placeholders
 
