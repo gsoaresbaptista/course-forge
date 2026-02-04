@@ -208,7 +208,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         pattern = re.compile(
             r"(?P<code>(?:^|(?<=\s))```[\s\S]*?```|`[^`\n]+`)|"
             r"(?P<latex_block>\$\$[\s\S]*?\$\$)|"
-            r"(?P<latex_inline>(?<!\\)(?<!\$)\$(?!\$)(?P<content>[^$]+?)(?<!\\)(?<!\$)\$(?!\$))|"
+            r"(?P<latex_inline>(?<!\\)(?<!\$)\$(?!\$)(?P<content>[^$\n]+?)(?<!\\)(?<!\$)\$(?!\$))|"
             r"(?P<escaped_dollar>\\\$)",
             re.MULTILINE,
         )
