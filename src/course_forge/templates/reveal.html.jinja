@@ -105,9 +105,10 @@
             text-align: left !important;
         }
 
-        /* Centering for Title slides (h1 ONLY or h1 + h2 ONLY) */
+        /* Centering for Title slides (h1 ONLY, h1 + h2 ONLY, or h1 + h2 + p ONLY) */
         .reveal .slides section:not(.stack):has(> h1:only-child),
-        .reveal .slides section:not(.stack):has(> h1:first-child + h2:last-child) {
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2:last-child),
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2 + p:last-child) {
             display: flex !important;
             flex-direction: column !important;
             justify-content: center !important;
@@ -119,7 +120,10 @@
 
         .reveal .slides section:not(.stack):has(> h1:only-child) h1,
         .reveal .slides section:not(.stack):has(> h1:first-child + h2:last-child) h1,
-        .reveal .slides section:not(.stack):has(> h1:first-child + h2:last-child) h2 {
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2:last-child) h2,
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2 + p:last-child) h1,
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2 + p:last-child) h2,
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2 + p:last-child) p {
             justify-content: center !important;
             text-align: center !important;
             margin: 0 !important;
@@ -127,8 +131,18 @@
             width: 100% !important;
         }
 
-        .reveal .slides section:not(.stack):has(> h1:first-child + h2:last-child) h1 {
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2:last-child) h1,
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2 + p:last-child) h1 {
             margin-bottom: 0.5em !important;
+        }
+
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2 + p:last-child) h2 {
+            margin-bottom: 0.3em !important;
+        }
+
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2 + p:last-child) p {
+            font-size: 0.9em;
+            color: #666;
         }
 
         /* Full screen slide fix */
@@ -169,7 +183,7 @@
         .reveal blockquote {
             display: block;
             position: relative;
-            margin: var(--r-block-margin) 0 !important;
+            margin: var(--r-block-margin) auto !important;
             padding: 5px;
             font-style: italic;
             background: rgba(255, 170, 73, 0.2);
@@ -210,14 +224,14 @@
         }
 
         .reveal .callout {
-            margin: 1rem 0 !important;
+            margin: 1rem auto !important;
             border: 1px solid var(--border);
             border-left: 6px solid var(--callout-note);
             border-radius: 4px;
             overflow: hidden;
             text-align: left !important;
             font-size: 0.8em;
-            width: 100% !important;
+            width: 75% !important;
             max-width: 100% !important;
         }
 

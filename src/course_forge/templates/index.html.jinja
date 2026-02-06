@@ -29,7 +29,7 @@
                 <li class="contents-item">
                     <a href="{{ course.slug }}" class="contents-link">
                         <span class="contents-name">{{ course.name }}</span>
-                        <span class="course-arrow">→</span>
+                        <span class="course-arrow"><i data-lucide="arrow-right" class="nav-icon"></i></span>
                     </a>
                 </li>
                 {% endfor %}
@@ -40,6 +40,8 @@
             <p>© {{ current_year }} · <a href="#">{{ site_name }}</a></p>
         </footer>
     </div>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>lucide.createIcons();</script>
 </body>
 
 </html>
