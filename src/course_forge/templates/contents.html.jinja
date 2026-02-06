@@ -19,7 +19,7 @@
 <body>
     <div class="contents-page">
         <header class="contents-header">
-            <a href="{{ back_link_url }}" class="back-link">← {{ back_link_text }}</a>
+            <a href="{{ back_link_url }}" class="back-link"><i data-lucide="arrow-left" class="nav-icon"></i> {{ back_link_text }}</a>
             <div class="contents-ornament">❧</div>
             <h1 class="contents-title">{{ course_name }}</h1>
             {% if year %}
@@ -63,7 +63,7 @@
                         <a href="{{ appendix.slug }}" class="contents-link">
                             <i data-lucide="paperclip" class="appendix-icon"></i>
                             <span class="contents-name">{{ appendix.name }}</span>
-                            <span class="course-arrow">→</span>
+                            <span class="course-arrow"><i data-lucide="arrow-right" class="nav-icon"></i></span>
                         </a>
                     </li>
                     {% endfor %}
@@ -78,7 +78,7 @@
         </footer>
 
         {% if has_slides %}
-        <a href="slides.html" class="slides-handle">Ver Slides →</a>
+        <a href="slides.html" class="slides-handle">Ver Slides <i data-lucide="arrow-right" class="nav-icon"></i></a>
         {% endif %}
     </div>
 

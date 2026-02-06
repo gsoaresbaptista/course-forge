@@ -49,9 +49,12 @@ window.CourseForgeNav = (function () {
             const dynamic = this.getBackLink(defaultUrl, defaultText, isSubcourse);
             link.href = dynamic.url;
 
-            // preserved arrow if it exists in original text
-            if (link.textContent.includes('←')) {
-                link.textContent = '← ' + dynamic.text;
+            // Update text while preserving icon
+            const icon = link.querySelector('[data-lucide]');
+            if (icon) {
+                link.innerHTML = '';
+                link.appendChild(icon);
+                link.appendChild(document.createTextNode(' ' + dynamic.text));
             } else {
                 link.textContent = dynamic.text;
             }
@@ -82,11 +85,16 @@ window.CourseForgeNav = (function () {
 
                 const separator = document.createElement('span');
                 separator.className = 'breadcrumb-separator';
-                separator.textContent = ' › ';
+                separator.innerHTML = '<i data-lucide="chevron-right" class="breadcrumb-icon"></i>';
 
                 // Insert at the beginning
                 container.insertBefore(separator, container.firstChild);
                 container.insertBefore(crumb, container.firstChild);
+
+                // Re-initialize Lucide icons for the new elements
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
             }
         },
 

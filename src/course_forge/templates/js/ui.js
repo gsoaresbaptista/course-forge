@@ -63,7 +63,7 @@ window.CourseForgeUI = (function () {
 
                         if (success) {
                             // Visual feedback
-                            button.innerHTML = '<i data-lucide="check" style="color: #4ade80;"></i>';
+                            button.innerHTML = '<i data-lucide="check" style="color: #1dac52ff;"></i>';
                             this.initIcons();
 
                             setTimeout(() => {

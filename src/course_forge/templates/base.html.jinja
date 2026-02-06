@@ -45,13 +45,13 @@
 
                 <nav class="sidebar-nav-section">
                     {% if prev_chapter %}
-                    <a href="{{ prev_chapter.slug }}.html" class="sidebar-nav-link prev">← {{ prev_chapter.name }}</a>
+                    <a href="{{ prev_chapter.slug }}.html" class="sidebar-nav-link prev"><i data-lucide="chevron-left" class="nav-icon"></i> {{ prev_chapter.name }}</a>
                     {% endif %}
                     {% if next_chapter %}
-                    <a href="{{ next_chapter.slug }}.html" class="sidebar-nav-link next">{{ next_chapter.name }} →</a>
+                    <a href="{{ next_chapter.slug }}.html" class="sidebar-nav-link next">{{ next_chapter.name }} <i data-lucide="chevron-right" class="nav-icon"></i></a>
                     {% endif %}
                     <a href="javascript:void(0)" onclick="handleBackNavigation()"
-                        class="sidebar-nav-link back">Voltar</a>
+                        class="sidebar-nav-link back"><i data-lucide="arrow-left" class="nav-icon"></i> Voltar</a>
                 </nav>
 
             </div>
@@ -92,7 +92,7 @@
                         {% else %}
                         <span class="breadcrumb-part">{{ crumb.name }}</span>
                         {% endif %}
-                        <span class="breadcrumb-separator">›</span>
+                        <span class="breadcrumb-separator"><i data-lucide="chevron-right" class="breadcrumb-icon"></i></span>
                         {% else %}
                         <span class="breadcrumb-current">{{ crumb.name }}</span>
                         {% endif %}
