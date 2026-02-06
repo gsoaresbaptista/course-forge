@@ -31,7 +31,9 @@
     <script>
         Reveal.initialize({
             hash: true,
-            slideNumber: true,
+            slideNumber: 'c/t',
+            center: false,
+            controls: false,
             plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
         });
     </script>
@@ -41,36 +43,90 @@
         /* Adjust base font size */
         .reveal {
             font-size: 20px;
+            text-align: left !important;
         }
 
         .reveal h1 {
             font-size: 2.2em;
             margin-bottom: 40px !important;
+            margin-left: 0 !important;
+            min-height: 2.3em; /* Fix height to handle 1 or 2 lines consistently */
+            display: flex;
+            align-items: center;
+            justify-content: flex-start !important;
+            text-align: left !important;
+            width: 100% !important;
         }
 
         .reveal h2 {
             font-size: 1.6em;
             margin-top: 30px !important;
             margin-bottom: 20px !important;
+            text-align: left !important;
         }
 
         .reveal h3 {
             font-size: 1.3em;
             margin-top: 20px !important;
             margin-bottom: 15px !important;
+            text-align: left !important;
         }
 
-        .reveal p,
-        .reveal ul,
-        .reveal ol {
+        .reveal p {
             line-height: 1.5;
             margin-top: 20px !important;
+            margin-left: 0 !important;
+            text-align: left !important;
+        }
+
+        .reveal ul,
+        .reveal ol,
+        .reveal li {
+            line-height: 1.5;
+            text-align: left !important;
+            margin-left: 0 !important;
+        }
+        
+        .reveal ul, .reveal ol {
+            display: block !important;
+            padding-left: 1.2em !important;
         }
 
         /* Slide padding and layout */
         .reveal .slides section {
             padding: 40px !important;
             box-sizing: border-box;
+            text-align: left !important;
+        }
+
+        .reveal .slides {
+            text-align: left !important;
+        }
+
+        /* Centering for Title slides (h1 ONLY or h1 + h2 ONLY) */
+        .reveal .slides section:not(.stack):has(> h1:only-child),
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2:last-child) {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center !important;
+            height: 100% !important;
+            top: 0 !important;
+        }
+
+        .reveal .slides section:not(.stack):has(> h1:only-child) h1,
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2:last-child) h1,
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2:last-child) h2 {
+            justify-content: center !important;
+            text-align: center !important;
+            margin: 0 !important;
+            min-height: auto !important;
+            width: 100% !important;
+        }
+
+        .reveal .slides section:not(.stack):has(> h1:first-child + h2:last-child) h1 {
+            margin-bottom: 0.5em !important;
         }
 
         /* Full screen slide fix */
@@ -111,11 +167,12 @@
         .reveal blockquote {
             display: block;
             position: relative;
-            margin: var(--r-block-margin) auto;
+            margin: var(--r-block-margin) 0 !important;
             padding: 5px;
             font-style: italic;
             background: rgba(255, 170, 73, 0.2);
             box-shadow: 0 0 2px rgba(0,0,0,.2);
+            text-align: left !important;
         }
 
         .col1 {
@@ -151,14 +208,15 @@
         }
 
         .reveal .callout {
-            margin: 1rem auto;
+            margin: 1rem 0 !important;
             border: 1px solid var(--border);
             border-left: 6px solid var(--callout-note);
             border-radius: 4px;
             overflow: hidden;
-            text-align: left;
+            text-align: left !important;
             font-size: 0.8em;
-            width: 75%;
+            width: 100% !important;
+            max-width: 100% !important;
         }
 
         .reveal .callout-title {
@@ -217,6 +275,14 @@
         .reveal .callout-example .callout-title { color: var(--callout-example); }
         .reveal .callout-quote { border-left-color: var(--callout-quote); }
         .reveal .callout-quote .callout-title { color: var(--callout-quote); }
+
+        .reveal .slide-number {
+            font-size: 0.8em !important;
+            padding: 5px 10px !important;
+            background: rgba(0,0,0,0.1) !important;
+            border-radius: 4px;
+            color: #000000b1 !important;
+        }
     </style>
 </body>
 
