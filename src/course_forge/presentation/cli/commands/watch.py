@@ -25,7 +25,5 @@ def watch(content_path: str, output_path: str, template_dir: str | None = None):
         root=output_path,
         port=Config.watch_port,
         host="localhost",
-        open_url_delay=0,
-        restart_delay=0,
         default_filename="index.html",
     )

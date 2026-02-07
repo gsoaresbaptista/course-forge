@@ -41,11 +41,18 @@ class CalloutMixin:
 
         if match:
             callout_type = match.group(1).lower()
-            remainder = match.group(2).strip()
+            raw_remainder = match.group(2)
+            remainder = raw_remainder.strip()
 
             # Split remainder into title (first line) and body
             # Title ends at the first newline OR first </p>
-            if remainder.startswith("</p>"):
+            # If it starts with newline, <br>, or </p>, it's an empty title
+            if (
+                raw_remainder.startswith("\n")
+                or remainder.startswith("</p>")
+                or remainder.startswith("<br>")
+                or remainder.startswith("<br/>")
+            ):
                 # Case: [!type] followed immediately by newline in MD
                 title = ""
                 body_rest = remainder
