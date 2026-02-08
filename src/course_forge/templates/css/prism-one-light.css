@@ -21,6 +21,8 @@ pre[class*="language-"] {
     -moz-hyphens: none;
     -ms-hyphens: none;
     hyphens: none;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
 }
 
 /* Selection */
