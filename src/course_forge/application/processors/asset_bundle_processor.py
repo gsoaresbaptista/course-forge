@@ -2,6 +2,7 @@ import os
 import re
 from pathlib import Path
 
+from course_forge.config import Config
 import csscompressor
 import jsmin
 
@@ -102,13 +103,17 @@ class AssetBundleProcessor(Processor):
             self._write_bundles()
             self._bundles_written = True
 
-        # Improved regex: handle single/double quotes and optional attributes
+        # Handle base_url in patterns
+        base_url_pattern = re.escape(Config.base_url) if Config.base_url else ""
+        
+        # Improved regex: handle base_url, single/double quotes and optional attributes
         js_pattern = re.compile(
-            r'<script\s+[^>]*?src=["\'](/js/[^":\' ]+)["\'][^>]*>\s*</script>',
+            rf'<script\s+[^>]*?src=["\'](?:{base_url_pattern})?(/js/[^":\' ]+)["\'][^>]*>\s*</script>',
             re.IGNORECASE,
         )
         css_pattern = re.compile(
-            r'<link\s+[^>]*?href=["\'](/css/[^":\' ]+)["\'][^>]*>', re.IGNORECASE
+            rf'<link\s+[^>]*?href=["\'](?:{base_url_pattern})?(/css/[^":\' ]+)["\'][^>]*>', 
+            re.IGNORECASE
         )
 
         new_content = content
@@ -121,7 +126,9 @@ class AssetBundleProcessor(Processor):
                 nonlocal replacement_made
                 if not replacement_made:
                     replacement_made = True
-                    return f'<script src="/{self.js_bundle_rel}"></script>'
+                    # Ensure path starts with / even if base_url is empty
+                    prefix = Config.base_url if Config.base_url else ""
+                    return f'<script src="{prefix}/{self.js_bundle_rel}"></script>'
                 return ""
 
             new_content = js_pattern.sub(custom_sub_js, new_content)
@@ -134,7 +141,9 @@ class AssetBundleProcessor(Processor):
                 nonlocal replacement_made
                 if not replacement_made:
                     replacement_made = True
-                    return f'<link rel="stylesheet" href="/{self.css_bundle_rel}">'
+                    # Ensure path starts with / even if base_url is empty
+                    prefix = Config.base_url if Config.base_url else ""
+                    return f'<link rel="stylesheet" href="{prefix}/{self.css_bundle_rel}">'
                 return ""
 
             new_content = css_pattern.sub(custom_sub_css, new_content)

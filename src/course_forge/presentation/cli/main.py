@@ -14,6 +14,7 @@ def main() -> None:
     )
     parser.add_argument("-o", "--output", required=True, help="Path to output site")
     parser.add_argument("--template-dir", help="Path to template directory")
+    parser.add_argument("--base-url", help="Base URL for deployment (e.g. /my-course)")
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
     parser.add_argument("--port", type=int, help="Port for watch server")
     args = parser.parse_args()

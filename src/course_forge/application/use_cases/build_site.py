@@ -6,6 +6,7 @@ from course_forge.application.loaders import MarkdownLoader
 from course_forge.application.processors import Processor
 from course_forge.application.renders import HTMLTemplateRenderer, MarkdownRenderer
 from course_forge.application.writers import OutputWriter
+from course_forge.config import Config
 from course_forge.domain.entities import ContentNode
 from course_forge.domain.repositories import ContentTreeRepository
 from course_forge.infrastructure.config.config_loader import ConfigLoader
@@ -53,7 +54,17 @@ class BuildSiteUseCase:
         if hasattr(self.writer, "load_checksums"):
             existing_checksums = self.writer.load_checksums(root_path)
 
-        new_checksums = {}
+        # Generate a hash for the current global configuration to detect changes
+        import json
+        config_for_hash = config.copy()
+        config_for_hash["base_url"] = Config.base_url
+        config_for_hash["template_dir"] = template_dir
+        current_config_hash = hashlib.md5(
+            json.dumps(config_for_hash, sort_keys=True).encode()
+        ).hexdigest()
+        
+        config_changed = existing_checksums.get("__config_hash__") != current_config_hash
+        new_checksums = {"__config_hash__": current_config_hash}
 
         self.writer.copy_assets(self.html_renderer.template_dir, skip_bundled=True)
 
@@ -62,7 +73,7 @@ class BuildSiteUseCase:
             pre_processors,
             post_processors,
             global_config=config,
-            existing_checksums=existing_checksums,
+            existing_checksums=existing_checksums if not config_changed else {},
             new_checksums=new_checksums,
         )
 

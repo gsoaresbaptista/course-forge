@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ site_name }} - {{ course_name }}</title>
-    <link rel="icon" href="/img/dark-favicon.svg" media="(prefers-color-scheme: light)">
-    <link rel="icon" href="/img/light-favicon.svg" media="(prefers-color-scheme: dark)">
+    <link rel="icon" href="{{ base_url }}/img/dark-favicon.svg" media="(prefers-color-scheme: light)">
+    <link rel="icon" href="{{ base_url }}/img/light-favicon.svg" media="(prefers-color-scheme: dark)">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="/css/katex.min.css">
-    <link rel="stylesheet" href="/css/base.css">
-    <link rel="stylesheet" href="/css/prism-one-light.css">
+    <link rel="stylesheet" href="{{ base_url }}/css/katex.min.css">
+    <link rel="stylesheet" href="{{ base_url }}/css/base.css">
+    <link rel="stylesheet" href="{{ base_url }}/css/prism-one-light.css">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -140,8 +140,8 @@
         overlay.addEventListener('click', closeMenu);
     </script>
 
-    <script src="/js/katex.min.js"></script>
-    <script src="/js/auto-render.min.js"></script>
+    <script src="{{ base_url }}/js/katex.min.js"></script>
+    <script src="{{ base_url }}/js/auto-render.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             renderMathInElement(document.body, {
@@ -155,8 +155,8 @@
             });
         });
     </script>
-    <script src="/js/rough.min.js"></script>
-    <script src="/js/apply_sketch.js"></script>
+    <script src="{{ base_url }}/js/rough.min.js"></script>
+    <script src="{{ base_url }}/js/apply_sketch.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
@@ -168,9 +168,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
-    <script src="/js/prism-slang.js"></script>
-    <script src="/js/navigation.js"></script>
-    <script src="/js/ui.js"></script>
+    <script src="{{ base_url }}/js/prism-slang.js"></script>
+    <script src="{{ base_url }}/js/navigation.js"></script>
+    <script src="{{ base_url }}/js/ui.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const isSubcourse = {{ is_subcourse | tojson

@@ -1,0 +1,9 @@
+Starting site build from content: "docs"...
+Using global checksum cache at: /home/gabriel/.local/share/course-forge/cache
+Processing content and applying pre-processors...
+Preparing bundles in /home/gabriel/Documents/course-forge/src/course_forge/templates...
+Writing JS bundle to: /home/gabriel/Documents/site-test/js/bundle.min.js
+Writing CSS bundle to: /home/gabriel/Documents/site-test/css/bundle.min.css
+Replacing JS with bundle. Prefix: '/aulas-faesa'
+Replacing CSS with bundle. Prefix: '/aulas-faesa'
+Success! Site generated at: "/home/gabriel/Documents/site-test"

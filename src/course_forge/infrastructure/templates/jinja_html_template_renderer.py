@@ -4,6 +4,7 @@ from datetime import datetime
 from jinja2 import BaseLoader, ChoiceLoader, Environment, FileSystemLoader
 
 from course_forge.application.renders import HTMLTemplateRenderer
+from course_forge.config import Config
 from course_forge.domain.entities import ContentNode
 from course_forge.utils import strip_leading_number, to_roman
 
@@ -205,6 +206,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                     or (config.get("hidden") if config else False)
                 ),
                 "course_slug": node.slugs_path[0] if node.slugs_path else None,
+                "base_url": Config.base_url,
             }
         )
 
@@ -226,6 +228,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
 
         template_context["content"] = content
         template_context["title"] = metadata.get("title", node.name)
+        template_context["base_url"] = Config.base_url
 
         template = self.env.get_template("reveal.html.jinja")
         return template.render(**template_context)
@@ -483,6 +486,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "course_slug": course_node.slugs_path[0]
                 if course_node.slugs_path
                 else course_node.slug,
+                "base_url": Config.base_url,
             }
         )
 
@@ -514,6 +518,7 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "courses": processed_courses,
                 "site_name": self.config.get("site_name", "Course Forge"),
                 "courses_title": self.config.get("courses_title", "Cursos Disponíveis"),
+                "base_url": Config.base_url,
             }
         )
 
@@ -550,7 +555,8 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
                 "course_name": course_name,
                 "slides": slides,
                 "site_name": self.config.get("site_name", "Course Forge"),
-                "author": self.config.get("author", "Course Forge"),
+                "author": config.get("author", "Course Forge"),
                 "year": config.get("year") if config else None,
+                "base_url": Config.base_url,
             }
         )
