@@ -183,7 +183,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         renderer = HeadingRenderer(chapter=chapter)
         markdown = mistune.create_markdown(
             renderer=renderer,
-            plugins=["table", table_in_quote, "strikethrough", self._obsidian_comments_plugin],
+            plugins=["table", "strikethrough", self._obsidian_comments_plugin],
         )
         html = str(markdown(text))
 
@@ -225,7 +225,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
 
         # Pattern to match code blocks (to ignore), LaTeX blocks/inline, and escaped dollars
         pattern = re.compile(
-            r"(?P<code>(?:^|(?<=\s))```[\s\S]*?```|`[^`\n]+`)|"
+            r"(?P<code>```[\s\S]*?```|`[^`\n]+`)|"
             r"(?P<latex_block>\$\$[\s\S]*?\$\$)|"
             r"(?P<latex_inline>(?<!\\)(?<!\$)\$(?!\$)(?P<content>[^$\n]+?)(?<!\\)(?<!\$)\$(?!\$))|"
             r"(?P<escaped_dollar>\\\$)",
@@ -235,9 +235,12 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         def replace_fn(match: re.Match) -> str:
             nonlocal counter
 
-            # If it's code, return it as is
+            # If it's code, mask pipes and return it
             if match.groupdict().get("code"):
-                return match.group(0)
+                content = match.group(0)
+                if "|" in content:
+                    return content.replace("|", "\ufffe")
+                return content
 
             # If it's an escaped dollar, convert to span to avoid KaTeX
             if match.groupdict().get("escaped_dollar"):
@@ -249,12 +252,20 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
             counter += 1
             return placeholder
 
-        # Replace all matches
+        # Mask pipes in bold/italic to avoid breaking table rendering
         text = pattern.sub(replace_fn, text)
+        # Use more specific lookarounds to avoid matching table borders
+        # We only want to mask pipes INSIDE markdown emphasis tags
+        text = re.sub(r"(\*\*|__)(?=[^\r\n]*?\|)(.*?)(\1)", lambda m: m.group(1) + m.group(2).replace("|", "\ufffe") + m.group(3), text)
+        text = re.sub(r"(\*|_)(?=[^\r\n]*?\|)(.*?)(\1)", lambda m: m.group(1) + m.group(2).replace("|", "\ufffe") + m.group(3), text)
+
         return text, latex_placeholders
 
     def _restore_placeholders(self, text: str, placeholders: dict[str, str]) -> str:
         """Restore protected blocks from placeholders."""
+        # Restore masked pipes
+        text = text.replace("\ufffe", "|")
+
         for placeholder, original in placeholders.items():
             text = text.replace(placeholder, original)
         return text
