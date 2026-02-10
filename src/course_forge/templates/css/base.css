@@ -20,6 +20,7 @@
     --active-bg: rgba(59, 130, 246, 0.08);
     --course-accent: #3b82f6;
     --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-variant-ligatures: none;
     --font-code: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
     --content-max: 760px;
     --sidebar-width: 300px;
