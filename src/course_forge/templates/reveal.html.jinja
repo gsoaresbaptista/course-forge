@@ -12,8 +12,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reset.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/theme/white.min.css" />
+    <link rel="stylesheet" href="{{ base_url }}/css/prism-one-light.css">
     <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/highlight/monokai.min.css" />
+        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -27,20 +30,37 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/notes/notes.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/markdown/markdown.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/highlight/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/math/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-perl.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="{{ base_url }}/js/prism-slang.js"></script>
     <script>
         Reveal.initialize({
             hash: true,
             slideNumber: 'c/t',
             center: false,
             controls: false,
-            plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX],
+            plugins: [RevealMarkdown, RevealNotes, RevealMath.KaTeX],
             width: 960,
             height: 800,
             margin: 0.15,
             maxScale: 2.0,
         });
+
+        // Ensure Prism highlights code on slide changes
+        Reveal.on('slideready', event => Prism.highlightAll());
+        Reveal.on('slidechanged', event => Prism.highlightAll());
     </script>
     <script src="{{ base_url }}/js/rough.min.js"></script>
     <script src="{{ base_url }}/js/apply_sketch.js"></script>
@@ -62,6 +82,46 @@
             justify-content: flex-start !important;
             text-align: left !important;
             width: 100% !important;
+        }
+
+        /* Prism overrides for Reveal.js */
+        .reveal pre[class*="language-"] {
+            margin: 1em 0 !important;
+            padding: 1em !important;
+            width: 90% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            font-size: 0.8em !important;
+        }
+
+        .reveal .line-numbers .line-numbers-rows {
+            left: -3em !important;
+            width: 3em !important;
+            padding-top: 1em !important;
+        }
+
+        .reveal .line-numbers-rows > span:before {
+            padding-right: 0.8em !important;
+        }
+
+        .reveal pre[class*="language-"].line-numbers {
+            padding-left: 3.5em !important;
+        }
+
+        /* Language label styling */
+        .reveal div.toolbar {
+            opacity: 1 !important;
+            padding-right: 0.5em !important;
+        }
+
+        .reveal div.toolbar-item span {
+            font-family: 'Inter', sans-serif !important;
+            font-size: 0.7em !important;
+            color: #999 !important;
+            background: none !important;
+            box-shadow: none !important;
+            border: none !important;
+            padding: 0 !important;
         }
 
         .reveal h2 {

@@ -1464,6 +1464,12 @@ th .download-link {
     margin: 0 auto;
 }
 
+@media (max-width: 375) {
+    .col2 {
+        flex-direction: column;
+    }
+}
+
 .svg-graph,
 .schemdraw-plot-img {
     line-height: normal !important;
