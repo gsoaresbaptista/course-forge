@@ -24,6 +24,7 @@
     --font-code: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
     --content-max: 760px;
     --sidebar-width: 300px;
+    --bg-alt: #fbfdff;
     /* Callout colors - kept vibrant for visibility */
     --callout-note: #3b82f6;
     --callout-abstract: #06b6d4;
@@ -1503,15 +1504,56 @@ th .download-link {
 }
 
 .example {
-    border: 3px solid #ccc;
-    padding: 10px 20px;
-    margin: 15px 0;
+    border: 1px solid var(--border);
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: var(--radius-sm);
+    background: var(--bg-alt)
 }
 
 .example-title {
-    background: #ccc;
-    padding: 10px;
-    margin: -10px -20px 15px -20px;
-    font-weight: bolder;
-    color: #1c1c1c;
+    font-family: var(--font-headers);
+    font-size: .9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--course-accent);
+    padding-bottom: .5rem;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none
+}
+
+.example-title:hover {
+    opacity: .8
+}
+
+.example-chevron {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    transition: transform .25s ease;
+    margin-left: .5rem
+}
+
+.example-collapsed .example-chevron {
+    transform: rotate(-90deg)
+}
+
+.example-content {
+    overflow: hidden;
+    transition: height .3s ease
+}
+
+.example-collapsed .example-title {
+    border-bottom-color: transparent;
+    padding-bottom: 0;
+    margin-bottom: 0
+}
+
+.example:not(.example-collapsed) .example-title {
+    margin-bottom: 1rem
 }
