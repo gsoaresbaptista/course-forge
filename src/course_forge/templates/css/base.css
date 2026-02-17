@@ -1177,7 +1177,8 @@ body.sidebar-hidden .toggle-icon {
 @media (min-width:768px) {
     .parts-container {
         grid-template-columns: 1fr 1fr;
-        align-items: start
+        align-items: start;
+        row-gap: 0
     }
 
     .parts-container--single {
@@ -1189,8 +1190,9 @@ body.sidebar-hidden .toggle-icon {
 }
 
 .part-block {
-    display: flex;
-    flex-direction: column
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2
 }
 
 .part-title {
@@ -1200,10 +1202,12 @@ body.sidebar-hidden .toggle-icon {
     text-transform: uppercase;
     letter-spacing: .05em;
     font-weight: 600;
-    min-height: 2.5rem;
     display: flex;
     align-items: flex-end;
-    border-bottom: 1px solid var(--course-accent)
+    align-self: end;
+    border-bottom: 1px solid var(--course-accent);
+    padding-bottom: .4rem;
+    margin-top: 1.5rem
 }
 
 .part-roman {
@@ -1496,4 +1500,18 @@ th .download-link {
 .svg-graph text,
 .schemdraw-plot-img text {
     line-height: normal !important;
+}
+
+.example {
+    border: 3px solid #ccc;
+    padding: 10px 20px;
+    margin: 15px 0;
+}
+
+.example-title {
+    background: #ccc;
+    padding: 10px;
+    margin: -10px -20px 15px -20px;
+    font-weight: bolder;
+    color: #1c1c1c;
 }
