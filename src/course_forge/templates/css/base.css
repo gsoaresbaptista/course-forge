@@ -1516,6 +1516,7 @@ th .download-link {
     font-size: .9rem;
     font-weight: 600;
     text-transform: uppercase;
+    cursor: pointer;
     letter-spacing: .05em;
     color: var(--course-accent);
     padding-bottom: .5rem;

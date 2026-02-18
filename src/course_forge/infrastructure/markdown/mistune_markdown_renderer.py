@@ -179,6 +179,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
 
     def render(self, text: str, chapter: int | None = None) -> str:
         text, latex_placeholders = self._preprocess_latex(text)
+        text, example_placeholders = self._preprocess_example_divs(text)
 
         renderer = HeadingRenderer(chapter=chapter)
         markdown = mistune.create_markdown(
@@ -187,6 +188,8 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         )
         html = str(markdown(text))
 
+        # Restore example divs (renders inner markdown)
+        html = self._restore_example_divs(html, example_placeholders, chapter)
         # Restore LaTeX after markdown processing
         html = self._restore_placeholders(html, latex_placeholders)
         return html
@@ -269,6 +272,120 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         for placeholder, original in placeholders.items():
             text = text.replace(placeholder, original)
         return text
+
+    # Regex to find opening <div class="example"> tags
+    _EXAMPLE_OPEN_RE = re.compile(r'<div\s+class="example">', re.DOTALL)
+    _EXAMPLE_TITLE_RE = re.compile(
+        r'<div\s+class="example-title">(.*?)</div>',
+        re.DOTALL,
+    )
+
+    def _preprocess_example_divs(
+        self, text: str
+    ) -> tuple[str, dict[str, str]]:
+        """Replace <div class='example'> blocks with placeholders before Mistune.
+
+        Uses depth tracking to correctly handle nested <div> tags.
+        """
+        placeholders: dict[str, str] = {}
+        result = []
+        pos = 0
+
+        while pos < len(text):
+            match = self._EXAMPLE_OPEN_RE.search(text, pos)
+            if not match:
+                result.append(text[pos:])
+                break
+
+            # Append everything before this match
+            result.append(text[pos:match.start()])
+
+            # Find the matching </div> by counting depth
+            depth = 1
+            search_pos = match.end()
+            div_open = re.compile(r'<div[\s>]', re.IGNORECASE)
+            div_close = re.compile(r'</div>', re.IGNORECASE)
+
+            while depth > 0 and search_pos < len(text):
+                next_open = div_open.search(text, search_pos)
+                next_close = div_close.search(text, search_pos)
+
+                if next_close is None:
+                    # No more closing tags — malformed, take rest
+                    break
+
+                if next_open and next_open.start() < next_close.start():
+                    depth += 1
+                    search_pos = next_open.end()
+                else:
+                    depth -= 1
+                    if depth == 0:
+                        # Found the matching </div>
+                        full_block = text[match.start():next_close.end()]
+                        placeholder = f"EXAMPLE_PLACEHOLDER_{uuid.uuid4().hex}"
+                        placeholders[placeholder] = full_block
+                        result.append(placeholder)
+                        pos = next_close.end()
+                        break
+                    search_pos = next_close.end()
+            else:
+                # Couldn't find matching close, skip this match
+                result.append(match.group(0))
+                pos = match.end()
+                continue
+
+        return "".join(result), placeholders
+
+    def _restore_example_divs(
+        self, html: str, placeholders: dict[str, str], chapter: int | None = None
+    ) -> str:
+        """Restore example div placeholders, rendering inner markdown."""
+        for placeholder, original in placeholders.items():
+            # Extract title
+            title_match = self._EXAMPLE_TITLE_RE.search(original)
+            title_html = ""
+            inner_md = original
+            if title_match:
+                title_html = title_match.group(0)
+                # Content is everything after the title div, before the closing </div>
+                after_title = original[title_match.end():]
+                # Remove the trailing </div> that closes the example div
+                if after_title.rstrip().endswith("</div>"):
+                    after_title = after_title.rstrip()[:-len("</div>")]
+                inner_md = after_title
+            else:
+                # No title — strip outer <div class="example"> and </div>
+                inner_md = self._EXAMPLE_OPEN_RE.sub("", original, count=1)
+                if inner_md.rstrip().endswith("</div>"):
+                    inner_md = inner_md.rstrip()[:-len("</div>")]
+
+            # Render the inner content as markdown
+            inner_md = inner_md.strip()
+            if inner_md:
+                inner_html = self._render_inner_markdown(inner_md, chapter)
+            else:
+                inner_html = ""
+
+            restored = (
+                f'<div class="example">\n'
+                f"  {title_html}\n"
+                f"  {inner_html}\n"
+                f"</div>"
+            )
+            html = html.replace(placeholder, restored)
+        return html
+
+    def _render_inner_markdown(self, text: str, chapter: int | None = None) -> str:
+        """Render a markdown fragment (used for example div content)."""
+        text, latex_ph = self._preprocess_latex(text)
+        renderer = HeadingRenderer(chapter=chapter)
+        md = mistune.create_markdown(
+            renderer=renderer,
+            plugins=["table", "strikethrough", self._obsidian_comments_plugin],
+        )
+        html = str(md(text))
+        html = self._restore_placeholders(html, latex_ph)
+        return html
 
     @staticmethod
     def _obsidian_comments_plugin(markdown):
