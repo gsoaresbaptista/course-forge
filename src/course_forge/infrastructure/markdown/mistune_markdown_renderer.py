@@ -250,17 +250,58 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
                 return "<span>$</span>"
 
             # Create a unique placeholder for LaTeX
-            placeholder = f"LATEX_PLACEHOLDER_{uuid.uuid4().hex}_{counter}"
+            placeholder = f"LATEXPLACEHOLDER{uuid.uuid4().hex}N{counter}"
             latex_placeholders[placeholder] = match.group(0)
             counter += 1
             return placeholder
 
-        # Mask pipes in bold/italic to avoid breaking table rendering
+        # Mask pipes in bold/italic to avoid breaking table rendering.
+        # We must skip code spans (backticks) so that * or _ inside code
+        # are not mistaken for emphasis delimiters.
         text = pattern.sub(replace_fn, text)
-        # Use more specific lookarounds to avoid matching table borders
-        # We only want to mask pipes INSIDE markdown emphasis tags
-        text = re.sub(r"(\*\*|__)(?=[^\r\n]*?\|)(.*?)(\1)", lambda m: m.group(1) + m.group(2).replace("|", "\ufffe") + m.group(3), text)
-        text = re.sub(r"(\*|_)(?=[^\r\n]*?\|)(.*?)(\1)", lambda m: m.group(1) + m.group(2).replace("|", "\ufffe") + m.group(3), text)
+        _emphasis_pipe_re = re.compile(
+            r"`[^`\n]+`"           # code span — skip entirely
+            r"|(\*\*|__)"          # bold delimiter (group 1)
+            r"|(\*|_)"            # italic delimiter (group 2)
+        )
+
+        def _mask_emphasis_pipes(line: str) -> str:
+            """Mask pipes inside bold/italic spans on a single line."""
+            # Only process lines that look like they could have emphasis around pipes
+            if "|" not in line:
+                return line
+
+            # Find all emphasis delimiters (skipping code spans)
+            delimiters = []
+            for m in _emphasis_pipe_re.finditer(line):
+                if m.group(1):  # bold
+                    delimiters.append((m.start(), m.end(), m.group(1), "bold"))
+                elif m.group(2):  # italic
+                    delimiters.append((m.start(), m.end(), m.group(2), "italic"))
+                # code spans are matched but not appended, so they're skipped
+
+            # Pair up matching delimiters and mask pipes between them
+            result = list(line)
+            used = set()
+            for i, (s1, e1, d1, t1) in enumerate(delimiters):
+                if i in used:
+                    continue
+                # Find matching closing delimiter of same type
+                for j in range(i + 1, len(delimiters)):
+                    if j in used:
+                        continue
+                    s2, e2, d2, t2 = delimiters[j]
+                    if d1 == d2 and t1 == t2:
+                        # Mask pipes between these delimiters
+                        for k in range(e1, s2):
+                            if result[k] == "|":
+                                result[k] = "\ufffe"
+                        used.add(i)
+                        used.add(j)
+                        break
+            return "".join(result)
+
+        text = "\n".join(_mask_emphasis_pipes(l) for l in text.split("\n"))
 
         return text, latex_placeholders
 
@@ -322,7 +363,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
                     if depth == 0:
                         # Found the matching </div>
                         full_block = text[match.start():next_close.end()]
-                        placeholder = f"EXAMPLE_PLACEHOLDER_{uuid.uuid4().hex}"
+                        placeholder = f"EXAMPLEPLACEHOLDER{uuid.uuid4().hex}"
                         placeholders[placeholder] = full_block
                         result.append(placeholder)
                         pos = next_close.end()
