@@ -83,53 +83,93 @@ window.CourseForgeUI = (function () {
         /**
          * Initialize collapsible example blocks.
          * Wraps content after .example-title in a .example-content div,
-         * adds a chevron icon, and starts collapsed.
+         * adds a chevron icon. Persists state via localStorage.
          */
         initExamples: function () {
-            const examples = document.querySelectorAll('.example');
-            examples.forEach(example => {
-                const title = example.querySelector('.example-title');
+            var pageKey = location.pathname;
+            var examples = document.querySelectorAll('.example');
+            examples.forEach(function (example, idx) {
+                var title = example.querySelector('.example-title');
                 if (!title || title.dataset.initialized) return;
                 title.dataset.initialized = 'true';
 
                 // Add chevron icon to title
-                const chevron = document.createElement('i');
+                var chevron = document.createElement('i');
                 chevron.setAttribute('data-lucide', 'chevron-down');
                 chevron.className = 'example-chevron';
                 title.appendChild(chevron);
 
                 // Wrap all siblings after title into .example-content
-                const content = document.createElement('div');
+                var content = document.createElement('div');
                 content.className = 'example-content';
                 while (title.nextSibling) {
                     content.appendChild(title.nextSibling);
                 }
                 example.appendChild(content);
 
-                // Start collapsed
-                content.style.height = '0';
-                example.classList.add('example-collapsed');
+                // Determine storage key from title text
+                var storageKey = 'cf-ex:' + pageKey + ':' + (title.textContent.trim() || idx);
+                var savedState = localStorage.getItem(storageKey);
 
-                // Toggle on title click
-                title.addEventListener('click', () => {
-                    const isCollapsed = example.classList.contains('example-collapsed');
+                // Default to collapsed if no saved state
+                var startCollapsed = savedState === null || savedState === 'collapsed';
+                if (startCollapsed) {
+                    content.style.height = '0';
+                    example.classList.add('example-collapsed');
+                } else {
+                    content.style.height = 'auto';
+                    example.classList.remove('example-collapsed');
+                }
+
+                // Track pending animation timer to prevent race conditions
+                var pendingTimer = null;
+
+                title.addEventListener('click', function () {
+                    // Cancel any in-progress animation
+                    if (pendingTimer !== null) {
+                        clearTimeout(pendingTimer);
+                        pendingTimer = null;
+                    }
+
+                    var isCollapsed = example.classList.contains('example-collapsed');
+
                     if (isCollapsed) {
-                        // Expand: measure natural height, animate to it
-                        content.style.height = content.scrollHeight + 'px';
+                        // EXPAND
+                        // Ensure we start from 0 (snap if stuck mid-animation)
+                        content.style.transition = 'none';
+                        content.style.height = '0';
+                        content.offsetHeight; // force reflow
+                        content.style.transition = '';
+
+                        // Measure natural height and animate to it
+                        var targetHeight = content.scrollHeight;
+                        content.style.height = targetHeight + 'px';
                         example.classList.remove('example-collapsed');
-                        // After transition, set auto so it resizes with content
-                        const onEnd = () => {
+
+                        // After transition, set auto so content can resize
+                        pendingTimer = setTimeout(function () {
                             content.style.height = 'auto';
-                            content.removeEventListener('transitionend', onEnd);
-                        };
-                        content.addEventListener('transitionend', onEnd);
+                            pendingTimer = null;
+                        }, 350); // slightly longer than CSS transition (300ms)
+
+                        localStorage.setItem(storageKey, 'expanded');
                     } else {
-                        // Collapse: set explicit height first, then animate to 0
+                        // COLLAPSE
+                        // Snap to current computed height first (in case it's 'auto')
+                        content.style.transition = 'none';
                         content.style.height = content.scrollHeight + 'px';
-                        // Force reflow
-                        content.offsetHeight;
+                        content.offsetHeight; // force reflow
+                        content.style.transition = '';
+
+                        // Animate to 0
                         content.style.height = '0';
                         example.classList.add('example-collapsed');
+
+                        pendingTimer = setTimeout(function () {
+                            pendingTimer = null;
+                        }, 350);
+
+                        localStorage.setItem(storageKey, 'collapsed');
                     }
                 });
             });
