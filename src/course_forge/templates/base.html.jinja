@@ -20,6 +20,19 @@
 </head>
 
 <body>
+    <script>
+        // Restore sidebar state instantly (before first paint) to avoid transition flash
+        (function() {
+            if (localStorage.getItem('cf_sidebar_hidden') === 'true') {
+                document.body.classList.add('sidebar-hidden', 'no-transition');
+            }
+            requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                    document.body.classList.remove('no-transition');
+                });
+            });
+        })();
+    </script>
     <div class="page-wrapper">
         <nav class="sidebar">
             <div class="sidebar-content">
@@ -177,7 +190,6 @@
         }};
         const courseName = {{ course_name | tojson }};
         CourseForgeNav.applyDynamicBreadcrumbs('.breadcrumb', isSubcourse);
-        CourseForgeNav.initSidebar();
         CourseForgeNav.initScrollSpy();
         CourseForgeUI.initCopyButtons();
         CourseForgeUI.initExamples();

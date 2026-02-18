@@ -6,6 +6,14 @@
     padding: 0
 }
 
+/* Suppress transitions during initial page load (removed by JS after first paint) */
+body.no-transition .sidebar,
+body.no-transition .main-content,
+body.no-transition .sidebar-toggle {
+    transition: none !important;
+}
+
+
 :root {
     /* Modern Light Theme */
     --bg: #ffffff;
