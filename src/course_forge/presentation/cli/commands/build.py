@@ -1,5 +1,6 @@
 from course_forge.application.processors import (
     AssetBundleProcessor,
+    BlockDiagramProcessor,
     ASTProcessor,
     DigitalCircuitProcessor,
     DownloadLinkMarkerProcessor,
@@ -36,6 +37,7 @@ class DependencyContainer:
             GraphvizProcessor(),
             DigitalCircuitProcessor(),
             SchemdrawProcessor(),
+            BlockDiagramProcessor(),
             KarnaughMapProcessor(),
             ASTProcessor(),
             PulseWaveformProcessor(),

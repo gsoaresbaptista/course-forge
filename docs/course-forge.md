@@ -394,7 +394,65 @@ with schemdraw.Drawing() as d:
 
 ---
 
-## 3. Digital Logic Circuits
+## 3. Block Diagrams (DSP)
+
+**Processor:** `blockdiagram.plot`
+
+Render signal processing and block diagrams using `schemdraw.dsp`. All DSP elements are available directly in scope (e.g., `Box(...)` instead of `dsp.Box(...)`).
+
+### Available Elements
+
+| Element | Description |
+| :--- | :--- |
+| `Box` | Generic labeled block |
+| `Square` | Empty square element |
+| `Circle` | Empty circle element |
+| `Arrow` | Directed arrow/connection |
+| `Line` | Simple line |
+| `Dot` | Junction dot |
+| `Sum` / `SumSigma` | Summation node (+ or Σ) |
+| `Amp` / `VGA` | Amplifier / Variable Gain Amplifier |
+| `Filter(response=...)` | Filter (`'lp'`, `'hp'`, `'bp'`, `'notch'`) |
+| `Mixer` | Frequency mixer (circle with X) |
+| `Oscillator` / `OscillatorBox` | Oscillator (circle / square) |
+| `Adc` / `Dac` | Analog↔Digital converter |
+| `Demod` | Demodulator |
+| `Antenna` | Antenna symbol |
+| `Speaker` | Speaker symbol |
+| `Ic` / `IcPin` | Integrated circuit block |
+| `Wire` | Routed wire with bends |
+| `Circulator` / `Isolator` | RF circulator / isolator |
+
+### Parameters
+- `width`: Output width.
+- `height`: Output height.
+- `centered`: Center the diagram.
+- `sketch`: Apply rough/sketchy style.
+
+### Example
+
+```blockdiagram.plot centered
+with schemdraw.Drawing() as d:
+    d.config(fontsize=14)
+    Line().length(d.unit/2).label('F(s)').dot()
+    with d.hold():
+        Line().up(d.unit/2)
+        Arrow().right(d.unit/2)
+        h1 = Box(w=2, h=2).anchor('W').label('$H_1(s)$')
+    Line().down(d.unit/2)
+    Arrow().right(d.unit/2)
+    h2 = Box(w=2, h=2).anchor('W').label('$H_2(s)$')
+    sm = SumSigma().right().at((h1.E[0] + d.unit/2, 0)).anchor('center')
+    Line().at(h1.E).tox(sm.N)
+    Arrow().toy(sm.N)
+    Line().at(h2.E).tox(sm.S)
+    Arrow().toy(sm.S)
+    Arrow().right(d.unit/3).at(sm.E).label('Y(s)', 'right')
+```
+
+---
+
+## 4. Digital Logic Circuits
 
 **Processor:** `digital-circuit.plot`
 
@@ -414,7 +472,7 @@ Q = not (A and B) or C
 
 ---
 
-## 4. Abstract Syntax Trees (AST)
+## 5. Abstract Syntax Trees (AST)
 
 **Processor:** `ast.plot`
 
@@ -431,7 +489,7 @@ Space-separated tokens. Use parenthesis `(` and `)` to create branches.
 
 ---
 
-## 5. Karnaugh Maps
+## 6. Karnaugh Maps
 
 **Processor:** `karnaugh.map`
 
