@@ -491,8 +491,6 @@ Format: `OutputLabel = Expression` or just `Expression`.
 Q = not (A and B) or C
 ```
 
----
-
 ## 5. Abstract Syntax Trees (AST)
 
 **Processor:** `ast.plot`
@@ -510,7 +508,51 @@ Space-separated tokens. Use parenthesis `(` and `)` to create branches.
 
 ---
 
-## 6. Karnaugh Maps
+## 6. Applets (Interactive Embeds)
+
+**Processor:** `applet`
+
+Embed interactive HTML/JS/CSS applets into your pages. Applets are isolated in iframes and can be used for custom visualizations or tools.
+
+### Syntax
+```markdown
+::: applet
+name: applet_name
+height: 500px
+sketch: true
+centered: true
+:::
+```
+
+### Parameters
+
+| Parameter | Description | Default |
+| :--- | :--- | :--- |
+| `name` | The folder name inside `applets/` at course root. | *Required* |
+| `height` | The height of the iframe (pixels). | `500px` |
+| `sketch` | Enable a sketchy border around the applet. | `false` |
+| `centered` | Center the applet container. | `true` |
+| `scrolling` | Enable/disable iframe scrollbars (`true`/`false`). | `false` |
+
+### How to Create an Applet
+
+1. Create an `applets/` directory at the root of your course.
+2. Create a subdirectory for your applet (e.g., `applets/my-tool/`).
+3. Add at least an `index.html` file. You can also include `style.css` and `scripts.js`.
+4. Reference it in any Markdown file using `name: my-tool`.
+
+### Example
+```markdown
+::: applet
+name: tokenizer
+height: 600px
+sketch: true
+:::
+```
+
+---
+
+## 7. Karnaugh Maps
 
 **Processor:** `karnaugh.map`
 

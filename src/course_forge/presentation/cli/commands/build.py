@@ -1,4 +1,5 @@
 from course_forge.application.processors import (
+    AppletProcessor,
     AssetBundleProcessor,
     BlockDiagramProcessor,
     ASTProcessor,
@@ -41,6 +42,7 @@ class DependencyContainer:
             KarnaughMapProcessor(),
             ASTProcessor(),
             PulseWaveformProcessor(),
+            AppletProcessor(),
         ]
         self._post_processors: list[Processor] = [
             DownloadLinkProcessor(),

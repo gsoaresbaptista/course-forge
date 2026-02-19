@@ -1566,3 +1566,27 @@ th .download-link {
 .example:not(.example-collapsed) .example-title {
     margin-bottom: 1rem
 }
+
+/* Applet Styles */
+.applet-container {
+    margin: 2rem 0;
+    width: 100%;
+    background: var(--bg);
+    overflow: hidden;
+}
+
+.applet-container.centered {
+    display: flex;
+    justify-content: center;
+}
+
+.applet-container iframe {
+    max-width: 100%;
+    background: #fff;
+}
+
+.applet-container.sketch-border {
+    border: 2px solid var(--text);
+    border-radius: 4px;
+    box-shadow: 4px 4px 0px var(--text);
+}

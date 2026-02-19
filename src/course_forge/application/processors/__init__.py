@@ -1,3 +1,4 @@
+from .applet_processor import AppletProcessor
 from .asset_bundle_processor import AssetBundleProcessor
 from .block_diagram_processor import BlockDiagramProcessor
 from .ast_processor import ASTProcessor
@@ -13,6 +14,7 @@ from .pulse_waveform_processor import PulseWaveformProcessor
 from .schemdraw_processor import SchemdrawProcessor
 
 __all__ = [
+    "AppletProcessor",
     "BlockDiagramProcessor",
     "Processor",
     "DigitalCircuitProcessor",

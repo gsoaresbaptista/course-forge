@@ -14,12 +14,11 @@ def watch(content_path: str, output_path: str, template_dir: str | None = None):
 
     for root, _, files in os.walk(content_path):
         for file in files:
-            if file.endswith(".md"):
-                full_path = os.path.join(root, file)
-                server.watch(  # type: ignore
-                    full_path,
-                    lambda: build(content_path, output_path, template_dir=template_dir),
-                )
+            full_path = os.path.join(root, file)
+            server.watch(  # type: ignore
+                full_path,
+                lambda: build(content_path, output_path, template_dir=template_dir),
+            )
 
     server.serve(  # type: ignore
         root=output_path,
