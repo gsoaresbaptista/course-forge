@@ -398,38 +398,59 @@ with schemdraw.Drawing() as d:
 
 **Processor:** `blockdiagram.plot`
 
-Render signal processing and block diagrams using `schemdraw.dsp`. All DSP elements are available directly in scope (e.g., `Box(...)` instead of `dsp.Box(...)`).
+Render signal processing and block diagrams. Supports dois modos: **DSL** (notação declarativa) e **Python** (schemdraw direto).
 
-### Available Elements
+### Modo DSL (Declarativo)
+
+Cada linha define um caminho de sinal. Nós com o mesmo nome em linhas diferentes criam bifurcações e junções automaticamente.
+
+**Sintaxe de nós:**
+
+| Sintaxe | Tipo | Descrição |
+| :--- | :--- | :--- |
+| `texto` | Label | Rótulo de entrada/saída |
+| `[texto]` | Box | Bloco genérico |
+| `(+nome)` | Sum (+) | Entrada positiva em junção soma |
+| `(-nome)` | Sum (−) | Entrada negativa em junção soma |
+
+**Conectores:** `->` (seta) ou `--` (linha sem seta)
+
+#### Exemplos DSL
+
+**Série simples:**
+```blockdiagram.plot centered
+X(s) -> [G(s)] -> Y(s)
+```
+
+**Caminhos paralelos:**
+```blockdiagram.plot centered
+X(s) -> [$H_1(s)$] -> [$H_2(s)$] -> (+S) -> Y(s)
+X(s) -> [$H_3(s)$] -> (+S)
+```
+
+**Realimentação (feedback):**
+```blockdiagram.plot centered
+R(s) -> (+S) -> [G(s)] -> C(s)
+C(s) -> [H(s)] -> (-S)
+```
+
+### Modo Python
+
+Código Python com `schemdraw`. Todos os elementos DSP ficam disponíveis no escopo.
 
 | Element | Description |
 | :--- | :--- |
-| `Box` | Generic labeled block |
-| `Square` | Empty square element |
-| `Circle` | Empty circle element |
-| `Arrow` | Directed arrow/connection |
-| `Line` | Simple line |
-| `Dot` | Junction dot |
-| `Sum` / `SumSigma` | Summation node (+ or Σ) |
-| `Amp` / `VGA` | Amplifier / Variable Gain Amplifier |
-| `Filter(response=...)` | Filter (`'lp'`, `'hp'`, `'bp'`, `'notch'`) |
-| `Mixer` | Frequency mixer (circle with X) |
-| `Oscillator` / `OscillatorBox` | Oscillator (circle / square) |
-| `Adc` / `Dac` | Analog↔Digital converter |
-| `Demod` | Demodulator |
-| `Antenna` | Antenna symbol |
-| `Speaker` | Speaker symbol |
-| `Ic` / `IcPin` | Integrated circuit block |
-| `Wire` | Routed wire with bends |
-| `Circulator` / `Isolator` | RF circulator / isolator |
+| `Box`, `Square`, `Circle` | Blocos genéricos |
+| `Arrow`, `Line`, `Dot` | Conexões |
+| `Sum` / `SumSigma` | Junção soma |
+| `Amp` / `VGA` | Amplificador |
+| `Filter(response=...)` | Filtro (`'lp'`, `'hp'`, `'bp'`, `'notch'`) |
+| `Mixer`, `Oscillator` | Mixer / Oscilador |
+| `Adc` / `Dac`, `Demod` | Conversores / Demodulador |
+| `Antenna`, `Speaker` | Antena / Alto-falante |
+| `Ic` / `IcPin`, `Wire` | Circuito integrado / Fio |
 
-### Parameters
-- `width`: Output width.
-- `height`: Output height.
-- `centered`: Center the diagram.
-- `sketch`: Apply rough/sketchy style.
-
-### Example
+#### Exemplo Python
 
 ```blockdiagram.plot centered
 with schemdraw.Drawing() as d:
