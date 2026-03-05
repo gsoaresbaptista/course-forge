@@ -1,5 +1,5 @@
+import hashlib
 import re
-import uuid
 
 import mistune
 from mistune.plugins.table import table_in_quote
@@ -9,6 +9,8 @@ from course_forge.application.renders import MarkdownRenderer
 
 def slugify(text: str) -> str:
     """Convert text to URL-friendly slug."""
+    text = re.sub(r"LATEXPLACEHOLDER[a-f0-9]+N\d+", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"EXAMPLEPLACEHOLDER[a-f0-9]+", "", text, flags=re.IGNORECASE)
     text = text.lower()
     text = re.sub(r"[^\w\s-]", "", text)
     text = re.sub(r"[\s_]+", "-", text)
@@ -249,8 +251,9 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
             if match.groupdict().get("escaped_dollar"):
                 return "<span>$</span>"
 
-            # Create a unique placeholder for LaTeX
-            placeholder = f"LATEXPLACEHOLDER{uuid.uuid4().hex}N{counter}"
+            # Create a deterministic placeholder for LaTeX (based on content hash)
+            content_hash = hashlib.md5(match.group(0).encode()).hexdigest()
+            placeholder = f"LATEXPLACEHOLDER{content_hash}N{counter}"
             latex_placeholders[placeholder] = match.group(0)
             counter += 1
             return placeholder
@@ -363,7 +366,8 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
                     if depth == 0:
                         # Found the matching </div>
                         full_block = text[match.start():next_close.end()]
-                        placeholder = f"EXAMPLEPLACEHOLDER{uuid.uuid4().hex}"
+                        content_hash = hashlib.md5(full_block.encode()).hexdigest()
+                        placeholder = f"EXAMPLEPLACEHOLDER{content_hash}"
                         placeholders[placeholder] = full_block
                         result.append(placeholder)
                         pos = next_close.end()
