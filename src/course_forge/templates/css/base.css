@@ -1590,3 +1590,7 @@ th .download-link {
     border-radius: 4px;
     box-shadow: 4px 4px 0px var(--text);
 }
+
+.red-note {
+    color: var(--callout-failure);
+}
