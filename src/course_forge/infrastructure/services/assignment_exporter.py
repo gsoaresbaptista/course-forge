@@ -690,53 +690,87 @@ class AssignmentExporter:
             label_info = CALLOUT_STYLES.get(callout_type)
             if label_info:
                 label, border_hex = label_info
-                # Title paragraph
-                title_p = doc.add_paragraph()
-                title_p.style = "Normal"
-                title_p.paragraph_format.space_after = Pt(2)
-                title_p.paragraph_format.space_before = Pt(6)
-                title_p.paragraph_format.left_indent = Pt(12)
-                self._add_left_border(title_p, border_hex)
-                self._add_shading(title_p, border_hex)
-                
-                r = title_p.add_run(f"{label}")
-                r.bold = True
-                r.font.name = "Arial"
-                r.font.size = Pt(10)
-                r.font.color.rgb = RGBColor(*self._hex_to_rgb(border_hex))
-                
+            else:
+                label, border_hex = None, "999999"
+
+            table = doc.add_table(rows=1, cols=1)
+            tblPr = table._tbl.tblPr
+            tblW = OxmlElement('w:tblW')
+            tblW.set(qn('w:w'), '5000') # 100% width
+            tblW.set(qn('w:type'), 'pct')
+            tblPr.append(tblW)
+
+            # Prevent table from breaking across pages if possible
+            # tblPr.append(...) ? Not strictly required for now.
+
+            cell = table.cell(0, 0)
+            tcPr = cell._tc.get_or_add_tcPr()
+            
+            # calculate fill color (85% lighter)
+            r, g, b = self._hex_to_rgb(border_hex)
+            fill_hex = f"{int(r*0.15 + 255*0.85):02X}{int(g*0.15 + 255*0.85):02X}{int(b*0.15 + 255*0.85):02X}"
+            
+            shd = OxmlElement('w:shd')
+            shd.set(qn('w:val'), 'clear')
+            shd.set(qn('w:color'), 'auto')
+            shd.set(qn('w:fill'), fill_hex)
+            tcPr.append(shd)
+
+            tcBorders = OxmlElement('w:tcBorders')
+            left = OxmlElement('w:left')
+            left.set(qn('w:val'), 'single')
+            left.set(qn('w:sz'), '24')
+            left.set(qn('w:space'), '0')
+            left.set(qn('w:color'), border_hex)
+            tcBorders.append(left)
+            tcPr.append(tcBorders)
+
+            tcMar = OxmlElement('w:tcMar')
+            for m in ['top', 'bottom', 'left', 'right']:
+                node = OxmlElement(f'w:{m}')
+                node.set(qn('w:w'), '144') # ~2.5mm padding
+                node.set(qn('w:type'), 'dxa')
+                tcMar.append(node)
+            tcPr.append(tcMar)
+
+            title_p = cell.paragraphs[0]
+            title_p.style = "Normal"
+            title_p.paragraph_format.space_before = Pt(0)
+            title_p.paragraph_format.space_after = Pt(2)
+
+            if label:
+                run = title_p.add_run(f"{label}")
+                run.bold = True
+                run.font.name = "Arial"
+                run.font.size = Pt(10)
+                run.font.color.rgb = RGBColor(*self._hex_to_rgb(border_hex))
+
                 if title_nodes:
                     title_p.add_run(" — ").bold = True
-                    # Use _add_runs but we MUST ensure they are bold and correct color
                     start_runs_idx = len(title_p.runs)
                     self._add_runs(title_p, title_nodes)
-                    for r in title_p.runs[start_runs_idx:]:
-                        r.bold = True
-                        r.font.name = "Arial"
-                        r.font.size = Pt(10)
-                        r.font.color.rgb = RGBColor(*self._hex_to_rgb(border_hex))
-
-                # Body items
+                    for run_item in title_p.runs[start_runs_idx:]:
+                        run_item.bold = True
+                        run_item.font.name = "Arial"
+                        run_item.font.size = Pt(10)
+                        run_item.font.color.rgb = RGBColor(*self._hex_to_rgb(border_hex))
+                
+                # Render body directly into cell
                 if body_from_first_p:
-                    bp = doc.add_paragraph()
+                    bp = cell.add_paragraph()
                     bp.style = "Normal"
-                    bp.paragraph_format.left_indent = Pt(12)
-                    self._add_left_border(bp, border_hex)
-                    self._add_shading(bp, border_hex)
                     self._add_runs(bp, body_from_first_p)
                 
                 for child in children[1:]:
-                    self._render_node(child, doc, list_level, callout_style=border_hex)
-                
-                # Closing spacer
-                sp = doc.add_paragraph()
-                sp.paragraph_format.space_after = Pt(4)
-                sp.paragraph_format.space_before = Pt(0)
-            else:
-                # Plain blockquote or failed callout detection
-                border_hex = "999999"
-                for child in children:
-                    self._render_node(child, doc, list_level, callout_style=border_hex)
+                    self._render_node(child, cell, list_level)
+            else: # Plain blockquote
+                if body_from_first_p:
+                    self._add_runs(title_p, body_from_first_p)
+                for child in children[1:]:
+                    self._render_node(child, cell, list_level)
+                    
+            # Add spacer after table
+            doc.add_paragraph().paragraph_format.space_after = Pt(4)
 
         elif ntype == "list":
             # For lists we map options slightly differently if they're a,b,c etc.
@@ -767,16 +801,11 @@ class AssignmentExporter:
 
             def _shaded_para():
                 cp = doc.add_paragraph()
-                if callout_style:
-                    self._add_left_border(cp, callout_style)
-                    self._add_shading(cp, callout_style)
                 
                 cp.style = "Normal"
                 cp.paragraph_format.space_after = Pt(0)
                 cp.paragraph_format.space_before = Pt(0)
-                # If inside callout, add more indent
-                base_indent = 12 if callout_style else 0
-                cp.paragraph_format.left_indent = Pt(base_indent + 8)
+                cp.paragraph_format.left_indent = Pt(8)
                 
                 shd = OxmlElement('w:shd')
                 shd.set(qn('w:fill'), 'F0F0F0')
@@ -793,6 +822,7 @@ class AssignmentExporter:
                 cp._p.get_or_add_pPr().append(bdr)
                 return cp
 
+            rendered = False
             if HAS_PYGMENTS and lang:
                 try:
                     lexer = get_lexer_by_name(lang, stripall=True)
@@ -832,18 +862,18 @@ class AssignmentExporter:
                                 b, it, h = style
                                 run.bold, run.italic = b, it
                                 if h: run.font.color.rgb = RGBColor(*self._hex_to_rgb(h))
-                    return
-            return
+                    rendered = True
 
-            # Fallback: plain monospace, one paragraph per line
-            last_lp = None
-            for line in code.split('\n'):
-                last_lp = _shaded_para()
-                r = last_lp.add_run(line)
-                r.font.name = "Courier New"
-                r.font.size = Pt(9)
-            if last_lp is not None:
-                last_lp.paragraph_format.space_after = Pt(6)
+            if not rendered:
+                # Fallback: plain monospace, one paragraph per line
+                last_lp = None
+                for line in code.split('\n'):
+                    last_lp = _shaded_para()
+                    r = last_lp.add_run(line)
+                    r.font.name = "Courier New"
+                    r.font.size = Pt(9)
+                if last_lp is not None:
+                    last_lp.paragraph_format.space_after = Pt(6)
 
         elif ntype == "thematic_break":
             # Just ignore thematic break in assignments
