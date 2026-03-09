@@ -1034,11 +1034,22 @@ class AssignmentExporter:
                         elif "Professor(a):" in text and "Gabriel" not in text:
                             paragraph.text = text.replace("Professor(a):", "Professor(a): Gabriel Soares Baptista")
                         elif "Valor:" in text:
-                            fmt_val = str(self.total_points).replace('.', ',')
-                            if fmt_val.endswith(',0'):
-                                fmt_val = fmt_val[:-2] # 2,0 -> 2
-                            paragraph.text = text.replace("Valor:", f"Valor: {fmt_val}")
-                            
+                            fmt_val = ""
+                            if self.total_points > 0:
+                                fmt_val = str(self.total_points).replace('.', ',')
+                                if fmt_val.endswith(',0'):
+                                    fmt_val = fmt_val[:-2] # 2,0 -> 2
+                            else:
+                                meta_pts = metadata.get("points") or metadata.get("valor")
+                                if meta_pts is not None:
+                                    fmt_val = str(meta_pts).replace('.', ',')
+                                    if fmt_val.endswith(',0'):
+                                        fmt_val = fmt_val[:-2]
+
+                            if fmt_val:
+                                paragraph.text = text.replace("Valor:", f"Valor: {fmt_val}")
+                            else:
+                                paragraph.text = text
         doc.save(out_docx_path)
         
         try:
