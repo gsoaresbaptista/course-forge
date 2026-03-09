@@ -1,0 +1,85 @@
+# Configuração do template de prova (substitui o arquivo .docx externo FA-DIF-005)
+# Baseado em: FA-DIF-005 - MODELO DE PROVA 2026-1 - ENGENHARIAS.docx
+
+page:
+  # Dimensões em EMUs (English Metric Units). A4: 7562215 x 10689590
+  width: 7562215
+  height: 10689590
+  margins:
+    top: 539750     # ~1.5cm
+    bottom: 539750
+    left: 539750
+    right: 539750
+  header_distance: 0
+  footer_distance: 457200
+
+header:
+  # Parágrafo no cabeçalho do documento com código do formulário
+  # (Configuração agora vazia por padrão, a pedido do usuário)
+  form_code: ""
+  form_code_size_pt: 12
+  form_code_align: right
+
+  # Espaço adicional entre a tabela de identificação e as instruções (em pt)
+  table_spacing_after: 12
+
+institution:
+  # Dados do professor padrão (podem ser sobrescritos via metadata)
+  professor: "Gabriel Soares Baptista"
+  logo: "assets/logo.jpg"  # Caminho para logo institucional (null = sem logo)
+
+# Tabela de identificação da prova (Table 0 - 3 linhas x 4 colunas mescladas)
+# Estrutura real do docx:
+#   Row 0: [logo] | [Curso: / Disciplina:] (colspan 3, mesclado)
+#   Row 1: [Professor(a):] (colspan 2) | [Data:] (colspan 2)
+#   Row 2: [Nome do(a) aluno(a):] (colspan 2) | [Valor:] | [Nota:]
+header_table:
+  style: "Table Grid"
+  font_size_pt: 10  # 127000 EMU / 12700 = 10pt
+  date_label: "Data:"  # Label do campo data (em assignment isso pode ser Data de Entrega:)
+  rows:
+    - cells:
+        - label: ""          # logo (vazio por padrão)
+          colspan: 1
+        - label: "Curso:"
+          sublabel: "Disciplina:"
+          colspan: 3
+    - cells:
+        - label: "Professor(a):"
+          colspan: 2
+        - label: "Data:"
+          colspan: 2
+    - cells:
+        - label: "Nome do(a) aluno(a):"
+          colspan: 2
+        - label: "Valor:"
+          colspan: 1
+        - label: "Nota:"
+          colspan: 1
+
+# Tabela de instruções (Table 1 - 1x1)
+instructions:
+  enabled: true
+  title: "Instruções"
+  title_align: center
+  font_name: "Calibri"
+  font_size_pt: 9  # 114300 EMU / 12700 = 9pt
+  items:
+    - text: "Esta prova é individual. São vedadas comunicação ou troca de material entre os presentes, e consultas a material bibliográfico, cadernos ou anotações."
+    - text: "O celular, ou qualquer dispositivo eletrônico (fone de ouvido, Smartwatches/Relógios Inteligentes, etc.), não pode ser utilizado em nenhuma hipótese."
+    - text: "A calculadora permitida para uso é a com funções simples (modelo CASIO FX-82MS-2-S4-DH ou similares), sendo proibido o uso de calculadoras com funções avançadas (modelos HP Prime V2 ou similares)."
+    - text: "Em caso de identificação de consulta de qualquer tipo sem a anuência do professor/examinador será aplicada a sanção prevista no regimento interno da instituição."
+    - text: "A prova deverá ser realizada com caneta preta ou azul. Não serão aceitas reclamações de provas resolvidas com lápis, rasuradas ou com uso de corretivo."
+    - text: "Para cada uma das questões objetivas de múltipla escolha, você deverá assinalar apenas UMA resposta. Será considerada errada a questão com a marcação de mais de uma alternativa, mesmo que uma das respostas esteja correta."
+    - text: "Para cada uma das questões discursivas, a atribuição da pontuação levará em conta a complexidade do assunto e a argumentação utilizada."
+    - text: "Nos primeiros 30 minutos de aplicação, os alunos que iniciaram a prova não poderão deixar a sala. Após este prazo, não será permitida a entrada de alunos na sala."
+    - text: "Todas as questões deverão ser respondidas de acordo com os conteúdos estudados na disciplina."
+
+# Quadro-resposta para questões objetivas (Table 2 - 3 linhas x 10 colunas)
+answer_grid:
+  enabled: false   # incluído em provas (exam), omitido em assignments
+  title: "QUADRO-RESPOSTA"
+  subtitle: "(REGISTRO OBRIGATÓRIO DAS RESPOSTAS DAS QUESTÕES OBJETIVAS)"
+  instruction: "ESCREVA A LETRA DA ALTERNATIVA COM A RESPOSTA CORRETA CORRESPONDENTE À QUESTÃO."
+  num_questions: 10  # número de colunas (questões 01 a 10)
+  font_size_pt: 10   # 127000 EMU / 12700 = 10pt

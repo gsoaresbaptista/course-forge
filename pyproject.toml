@@ -13,6 +13,7 @@ dependencies = [
     "jinja2>=3.1.6",
     "jsmin>=3.0.1",
     "livereload>=2.7.1",
+    "matplotlib>=3.10.8",
     "minify-html>=0.15.0",
     "mistune>=3.1.4",
     "pygments>=2.19.2",

@@ -375,19 +375,33 @@ class BuildSiteUseCase:
                             assignment_type=assignment_type
                         )
                 else:
-                    # Standard page render
-                    content = self.markdown_renderer.render(content, chapter=chapter)
+                    # Check if it was placed inside 'assignments' folder but missing metadata
+                    is_in_assignments = False
+                    p = node.parent
+                    while p:
+                        if p.name.lower() == "assignments":
+                            is_in_assignments = True
+                            break
+                        p = p.parent
+                        
+                    if is_in_assignments:
+                        print(f"WARNING: File {node.src_path} in assignments folder is not marked as assignment or exam. Skipping HTML/DOCX/PDF generation.")
+                        html = None
+                    else:
+                        # Standard page render
+                        content = self.markdown_renderer.render(content, chapter=chapter)
+    
+                        html = self.html_renderer.render(
+                            content, node, metadata=metadata, config=render_config
+                        )
 
-                    html = self.html_renderer.render(
-                        content, node, metadata=metadata, config=render_config
-                    )
-
-                for processor in post_processors:
-                    html = processor.execute(node, html)
-
-                # Assignments and exams are exported as DOCX/PDF only; skip HTML page.
-                if metadata.get("type") not in ["assignment", "exam"]:
-                    self.writer.write(node, html)
+                if html is not None:
+                    for processor in post_processors:
+                        html = processor.execute(node, html)
+    
+                    # Assignments and exams are exported as DOCX/PDF only; skip HTML page.
+                    if metadata.get("type") not in ["assignment", "exam"]:
+                        self.writer.write(node, html)
             else:
                 self.writer.copy_file(node)
         else:
@@ -402,16 +416,25 @@ class BuildSiteUseCase:
             )
 
             if (has_md_files or has_subcourses) and node.parent is not None:
-                render_config = (global_config or {}).copy()
-                if current_config:
-                    render_config.update(current_config)
-
-                contents_html = self.html_renderer.render_contents(
-                    node, config=render_config
-                )
-                for processor in post_processors:
-                    contents_html = processor.execute(node, contents_html)
-                self.writer.write_contents(node, contents_html)
+                is_in_assignments = False
+                p = node
+                while p:
+                    if p.name.lower() == "assignments":
+                        is_in_assignments = True
+                        break
+                    p = p.parent
+                    
+                if not is_in_assignments:
+                    render_config = (global_config or {}).copy()
+                    if current_config:
+                        render_config.update(current_config)
+    
+                    contents_html = self.html_renderer.render_contents(
+                        node, config=render_config
+                    )
+                    for processor in post_processors:
+                        contents_html = processor.execute(node, contents_html)
+                    self.writer.write_contents(node, contents_html)
 
         for child in node.children:
             # Skip slides folder from normal processing

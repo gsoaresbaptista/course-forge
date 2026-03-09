@@ -1,11 +1,13 @@
 import os
 import subprocess
 import mistune
+import yaml
+from pathlib import Path
 from docx import Document
-from docx.shared import Pt, Inches, RGBColor
+from docx.shared import Pt, Inches, RGBColor, Emu
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.enum.text import WD_COLOR_INDEX
+from docx.enum.text import WD_COLOR_INDEX, WD_ALIGN_PARAGRAPH
 import re
 
 try:
@@ -15,6 +17,9 @@ try:
     HAS_PYGMENTS = True
 except ImportError:
     HAS_PYGMENTS = False
+
+# Default location of the bundled template config (same package directory)
+_DEFAULT_TEMPLATE_CONFIG = Path(__file__).parent.parent.parent / "templates" / "exam_template.yaml"
 
 # Callout type -> (label, border hex color)
 CALLOUT_STYLES = {
@@ -50,10 +55,376 @@ def _hex_to_rgb(h):
     return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
 
 class AssignmentExporter:
-    def __init__(self, template_path="/home/gabriel/Downloads/FA-DIF-005 - MODELO DE PROVA 2026-1 - ENGENHARIAS.docx"):
-        self.template_path = template_path
+    def __init__(self, template_path=None, template_config=None):
+        """Create the exporter.
+
+        Parameters
+        ----------
+        template_path:
+            Optional path to an existing .docx file to use as base template.
+            When None (default) the document is built programmatically from
+            the bundled YAML configuration.
+        template_config:
+            Optional path to a YAML config file. Defaults to the bundled
+            ``exam_template.yaml`` inside the package.
+        """
+        self.template_path = template_path  # kept for backwards-compat (may be None)
         self.total_points = 0.0
         self.out_dir = ""
+
+        # Load template config from YAML
+        config_path = Path(template_config) if template_config else _DEFAULT_TEMPLATE_CONFIG
+        with open(config_path, "r", encoding="utf-8") as f:
+            self._tpl = yaml.safe_load(f)
+
+    # ------------------------------------------------------------------
+    # Template document builder
+    # ------------------------------------------------------------------
+
+    def _build_base_document(self, is_exam: bool, metadata: dict = None) -> Document:
+        """Build the base Word document from the YAML config, no external file needed."""
+        tpl = self._tpl
+        doc = Document()
+        if metadata is None: metadata = {}
+
+        # --- Page setup ---
+        page_cfg = tpl.get("page", {})
+        section = doc.sections[0]
+        if page_cfg.get("width"):
+            section.page_width = Emu(page_cfg["width"])
+        if page_cfg.get("height"):
+            section.page_height = Emu(page_cfg["height"])
+        margins = page_cfg.get("margins", {})
+        if margins.get("top") is not None:
+            section.top_margin = Emu(margins["top"])
+        if margins.get("bottom") is not None:
+            section.bottom_margin = Emu(margins["bottom"])
+        if margins.get("left") is not None:
+            section.left_margin = Emu(margins["left"])
+        if margins.get("right") is not None:
+            section.right_margin = Emu(margins["right"])
+        if page_cfg.get("footer_distance") is not None:
+            section.footer_distance = Emu(page_cfg["footer_distance"])
+        if page_cfg.get("header_distance") is not None:
+            section.header_distance = Emu(page_cfg["header_distance"])
+
+        # --- FA-DIF-005 code in top-right ---
+        hdr_cfg = tpl.get("header", {})
+        form_code = hdr_cfg.get("form_code", "")
+        if form_code:
+            code_para = doc.add_paragraph()
+            code_para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            code_run = code_para.add_run(form_code)
+            code_run.font.size = Pt(hdr_cfg.get("form_code_size_pt", 12))
+            # Empty paragraph after code
+            doc.add_paragraph()
+
+        # --- Header table (identification) ---
+        htbl_cfg = tpl.get("header_table", {})
+        font_pt = htbl_cfg.get("font_size_pt", 10)
+        # Build table based on type
+        num_rows = 3 if is_exam else 2
+        htable = doc.add_table(rows=num_rows, cols=4)
+        try:
+            htable.style = htbl_cfg.get("style", "Table Grid")
+        except Exception:
+            pass
+
+        # Disable autofit to force specific column widths
+        htable.autofit = False
+        tblPr = htable._tbl.tblPr
+        
+        # Set exact table layout
+        tblLayout = OxmlElement('w:tblLayout')
+        tblLayout.set(qn('w:type'), 'fixed')
+        tblPr.append(tblLayout)
+        
+        # Configure table width to exactly 10240 dxa (approx 16 cm)
+        tblW = OxmlElement('w:tblW')
+        tblW.set(qn('w:w'), '10240')
+        tblW.set(qn('w:type'), 'dxa')
+        tblPr.append(tblW)
+
+        # Force the column grid (tblGrid) to obey our layout
+        # Col 0 (Logo): 2400 dxa
+        # Total = 10240 dxa
+        if is_exam:
+            dxas = ['2400', '5280', '1280', '1280']
+        else:
+            # Shift space to Entrega (Col 2: 2720 dxa) taking from Titles (Col 1: 3840 dxa)
+            dxas = ['2400', '3840', '2720', '1280']
+            
+        tblGrid = OxmlElement('w:tblGrid')
+        for w_dxa in dxas:
+            gridCol = OxmlElement('w:gridCol')
+            gridCol.set(qn('w:w'), w_dxa)
+            tblGrid.append(gridCol)
+            
+        # Remove any existing tblGrid that python-docx might have added and append ours
+        existing_grid = htable._tbl.find(qn('w:tblGrid'))
+        if existing_grid is not None:
+            htable._tbl.remove(existing_grid)
+        htable._tbl.append(tblGrid)
+
+        # Row 0: cell[0] = logo placeholder, cells[1-3] merged = Curso/Disciplina
+        r0 = htable.rows[0]
+        
+        # Exact values in EMUs corresponding to the dxa above (dxa * 635)
+        c0_w = int(dxas[0]) * 635
+        c1_w = int(dxas[1]) * 635
+        c2_w = int(dxas[2]) * 635
+        c3_w = int(dxas[3]) * 635
+        
+        # We must set widths on standard row objects so python-docx renders strictly
+        r0.cells[0].width = Emu(c0_w)
+        r0.cells[1].width = Emu(c1_w)
+        r0.cells[2].width = Emu(c2_w)
+        r0.cells[3].width = Emu(c3_w)
+
+        # Set custom margins for logo cell: 0 top/bottom, 108 dxa left/right (standard word padding)
+        tcPr_logo = r0.cells[0]._tc.get_or_add_tcPr()
+        tcMar_logo = OxmlElement('w:tcMar')
+        for m in ['top', 'bottom', 'left', 'right']:
+            node = OxmlElement(f'w:{m}')
+            if m in ['top', 'bottom']:
+                node.set(qn('w:w'), '0')
+            else:
+                node.set(qn('w:w'), '108')
+            node.set(qn('w:type'), 'dxa')
+            tcMar_logo.append(node)
+        tcPr_logo.append(tcMar_logo)
+
+        # Insert logo if specified
+        logo_path = tpl.get("institution", {}).get("logo")
+        if logo_path:
+            logo_abs = Path(_DEFAULT_TEMPLATE_CONFIG).parent.parent / logo_path
+            p_logo = r0.cells[0].paragraphs[0]
+            p_logo.clear()
+            p_logo.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            if logo_abs.exists():
+                r_logo = p_logo.add_run()
+                # Diminuídas para não encostar na borda esquerda/direita (1.25M emu aprox)
+                r_logo.add_picture(str(logo_abs), width=Emu(1250000), height=Emu(617220))
+            else:
+                p_logo.text = "[LOGO]"
+        else:
+            r0.cells[0].text = ""
+
+        # Rest of row widths must be explicit for word to render correctly when merged
+        r1 = htable.rows[1]
+        
+        # Merge columns 1-3 for Curso/Disciplina
+        merged_01 = r0.cells[1].merge(r0.cells[3])
+        merged_01.width = Emu(c1_w + c2_w + c3_w)
+        p_curso = merged_01.paragraphs[0]
+        p_curso.clear()
+        rr = p_curso.add_run("Curso:")
+        rr.bold = True; rr.font.size = Pt(font_pt)
+        merged_01.add_paragraph()  # blank line between Curso and Disciplina
+        p_disc = merged_01.add_paragraph()
+        rd = p_disc.add_run("Disciplina:")
+        rd.bold = True; rd.font.size = Pt(font_pt)
+
+        # Define date label
+        date_label = htbl_cfg.get("date_label", "Data:")
+
+        if is_exam:
+            r2 = htable.rows[2]
+            # Row 1: cells[0-1] merged = Professor(a), cells[2-3] merged = Data
+            merged_prof = r1.cells[0].merge(r1.cells[1])
+            merged_prof.width = Emu(c0_w + c1_w)
+            r1.height = Pt(30)
+            p_prof = merged_prof.paragraphs[0]
+            p_prof.clear()
+            rp = p_prof.add_run("Professor(a):")
+            rp.bold = True; rp.font.size = Pt(font_pt)
+            
+            merged_data = r1.cells[2].merge(r1.cells[3])
+            merged_data.width = Emu(c2_w + c3_w)
+            p_data = merged_data.paragraphs[0]
+            p_data.clear()
+            rd2 = p_data.add_run(date_label)
+            rd2.bold = True; rd2.font.size = Pt(font_pt)
+
+            # Row 2: cells[0-1] merged = Nome aluno, cell[2] = Valor, cell[3] = Nota
+            merged_nome = r2.cells[0].merge(r2.cells[1])
+            merged_nome.width = Emu(c0_w + c1_w)
+            r2.height = Pt(30)
+            p_nome = merged_nome.paragraphs[0]
+            p_nome.clear()
+            rn = p_nome.add_run("Nome do(a) aluno(a):")
+            rn.bold = True; rn.font.size = Pt(font_pt)
+            
+            p_val = r2.cells[2].paragraphs[0]
+            r2.cells[2].width = Emu(c2_w)
+            p_val.clear()
+            rv = p_val.add_run("Valor:")
+            rv.bold = True; rv.font.size = Pt(font_pt)
+            
+            p_nota = r2.cells[3].paragraphs[0]
+            r2.cells[3].width = Emu(c3_w)
+            p_nota.clear()
+            rnt = p_nota.add_run("Nota:")
+            rnt.bold = True; rnt.font.size = Pt(font_pt)
+        else:
+            # ASSIGNMENT mode: 
+            # Row 1: cells[0-1] merged = Professor, cell[2] = Data, cell[3] = Valor
+            merged_prof = r1.cells[0].merge(r1.cells[1])
+            merged_prof.width = Emu(c0_w + c1_w)
+            r1.height = Pt(30)
+            p_prof = merged_prof.paragraphs[0]
+            p_prof.clear()
+            rp = p_prof.add_run("Professor(a):")
+            rp.bold = True; rp.font.size = Pt(font_pt)
+            
+            r1.cells[2].width = Emu(c2_w)
+            p_data = r1.cells[2].paragraphs[0]
+            p_data.clear()
+            
+            due_date = metadata.get("due_date")
+            if due_date:
+                rd2 = p_data.add_run(f"Entrega: {due_date}")
+            else:
+                rd2 = p_data.add_run("Entrega:")
+            
+            rd2.bold = True; rd2.font.size = Pt(font_pt)
+            
+            r1.cells[3].width = Emu(c3_w)
+            p_val = r1.cells[3].paragraphs[0]
+            p_val.clear()
+            rv = p_val.add_run("Valor:")
+            rv.bold = True; rv.font.size = Pt(font_pt)
+
+        # Vertically center all cells in the header table
+        # Para tabelas mescladas, precisamos garantir que tcPr existe
+        for r in htable.rows:
+            for c in r.cells:
+                tcPr = c._tc.get_or_add_tcPr()
+                
+                # Remover vAlign se já existir e adicionar um novo
+                for existing_vAlign in tcPr.findall(qn('w:vAlign')):
+                    tcPr.remove(existing_vAlign)
+                
+                vAlign = OxmlElement('w:vAlign')
+                vAlign.set(qn('w:val'), 'center')
+                tcPr.append(vAlign)
+
+                # Resetar espaçamentos do parágrafo pra não desalinhar
+                for p in c.paragraphs:
+                    p.paragraph_format.space_before = Pt(2)
+                    p.paragraph_format.space_after = Pt(2)
+
+        # Spacing after header table
+        space_after_pt = hdr_cfg.get("table_spacing_after", 0)
+        if space_after_pt > 0:
+            sp = doc.add_paragraph()
+            sp.paragraph_format.space_after = Pt(space_after_pt)
+            sp.paragraph_format.space_before = Pt(0)
+            sp.paragraph_format.line_spacing = 1.0
+
+        # --- Instructions table (only in exam mode) ---
+        instr_cfg = tpl.get("instructions", {})
+        if instr_cfg.get("enabled", True) and is_exam:
+            instr_table = doc.add_table(rows=1, cols=1)
+            instr_table.style = "Normal Table"
+            
+            # Add borders and margins to the table
+            tblPr = instr_table._tbl.tblPr
+            
+            # Set table width to 10245 dxa
+            tblW = OxmlElement('w:tblW')
+            tblW.set(qn('w:w'), '10245')
+            tblW.set(qn('w:type'), 'dxa')
+            tblPr.append(tblW)
+            
+            # Align center
+            jc = OxmlElement('w:jc')
+            jc.set(qn('w:val'), 'center')
+            tblPr.append(jc)
+
+            # Borders
+            tblBorders = OxmlElement('w:tblBorders')
+            for border_name in ['top', 'left', 'bottom', 'right', 'insideH', 'insideV']:
+                border = OxmlElement(f'w:{border_name}')
+                border.set(qn('w:val'), 'single')
+                border.set(qn('w:sz'), '8')
+                border.set(qn('w:space'), '0')
+                border.set(qn('w:color'), '000000')
+                tblBorders.append(border)
+            tblPr.append(tblBorders)
+            
+            # Cell margins (100 dxa = very small margin)
+            tblCellMar = OxmlElement('w:tblCellMar')
+            for m in ['top', 'left', 'bottom', 'right']:
+                mar = OxmlElement(f'w:{m}')
+                mar.set(qn('w:w'), '100')
+                mar.set(qn('w:type'), 'dxa')
+                tblCellMar.append(mar)
+            tblPr.append(tblCellMar)
+
+            cell = instr_table.rows[0].cells[0]
+
+            # Title
+            title_p = cell.paragraphs[0]
+            title_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            title_p.paragraph_format.space_after = Pt(6)
+            title_p.paragraph_format.space_before = Pt(4)
+            tr = title_p.add_run(instr_cfg.get("title", "Instruções"))
+            tr.bold = True
+            tr.font.size = Pt(instr_cfg.get("font_size_pt", 9))
+
+            # Instruction items
+            font_name = instr_cfg.get("font_name", "Calibri")
+            for item in instr_cfg.get("items", []):
+                ip = cell.add_paragraph()
+                ip.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+                ip.style = "Normal" # Remove List Paragraph style to avoid huge indents
+                ip.paragraph_format.space_after = Pt(2)
+                ip.paragraph_format.space_before = Pt(2)
+                ir = ip.add_run(item["text"])
+                ir.font.name = font_name
+                ir.font.size = Pt(instr_cfg.get("font_size_pt", 9))
+
+            # Add spacing after instructions table
+            post_instr = doc.add_paragraph()
+            post_instr.paragraph_format.space_before = Pt(12)
+            post_instr.paragraph_format.space_after = Pt(12)
+
+        # --- Answer grid table (only in exam mode) ---
+        ag_cfg = tpl.get("answer_grid", {})
+        if ag_cfg.get("enabled", True) and is_exam:
+            n = ag_cfg.get("num_questions", 10)
+            ag_font_pt = ag_cfg.get("font_size_pt", 10)
+            ag_table = doc.add_table(rows=3, cols=n)
+            ag_table.style = "Normal Table"
+
+            # Row 0: all cells merged into one header spanning all columns
+            header_cell = ag_table.rows[0].cells[0].merge(ag_table.rows[0].cells[n - 1])
+            for i, text in enumerate([
+                ag_cfg.get("title", "QUADRO-RESPOSTA"),
+                ag_cfg.get("subtitle", ""),
+                ag_cfg.get("instruction", ""),
+            ]):
+                p = header_cell.paragraphs[0] if i == 0 else header_cell.add_paragraph()
+                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                r = p.add_run(text)
+                r.bold = True
+                r.font.size = Pt(ag_font_pt)
+
+            # Row 1: question numbers 01..n
+            for ci in range(n):
+                p = ag_table.rows[1].cells[ci].paragraphs[0]
+                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                r = p.add_run(f"{ci + 1:02d}")
+                r.bold = True
+                r.font.size = Pt(ag_font_pt)
+
+            # Row 2: empty answer cells
+            for ci in range(n):
+                p = ag_table.rows[2].cells[ci].paragraphs[0]
+                p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+
+        return doc
 
     def _hex_to_rgb(self, h):
         h = h.lstrip("#")
@@ -546,40 +917,49 @@ class AssignmentExporter:
             for child in node.get("children", []):
                 self._render_node(child, doc, list_level)
 
-    def export(self, markdown_content: str, out_docx_path: str, out_pdf_path: str, assignment_title="Avaliação", course_name="", metadata=None, assignment_type="assignment"):
+    def export(
+        self,
+        markdown_content: str,
+        out_docx_path: str,
+        out_pdf_path: str | None = None,
+        assignment_title: str | None = None,
+        course_name: str | None = None,
+        metadata: dict | None = None,
+        assignment_type: str | None = None,
+    ):
+        """Build the document using templates and export it to docx/pdf."""
         if metadata is None: metadata = {}
-        if not os.path.exists(self.template_path):
-            print(f"Template path {self.template_path} not found. Using an empty document.")
-            doc = Document()
-        else:
+
+        is_exam = (assignment_type == "exam")
+        
+        # Load the initial base document from yaml config (or external if configured to do so)
+        if hasattr(self, "template_path") and self.template_path and Path(self.template_path).exists():
             doc = Document(self.template_path)
+            # When using the legacy external template we still need to strip the
+            # placeholder paragraphs (indices >= 3) exactly as before.
+            for i, p in reversed(list(enumerate(doc.paragraphs))):
+                if i >= 3:
+                    self._delete_paragraph(p)
+
+            if doc.tables and not is_exam:
+                if len(doc.tables) > 1:
+                    t1 = doc.tables[1]
+                    t1._element.getparent().remove(t1._element)
+                table = doc.tables[0]
+                try:
+                    tr = table.rows[2]._tr
+                    tr.getparent().remove(tr)
+                except Exception:
+                    pass
+                try:
+                    table.rows[1].cells[2].text = "Valor:"
+                except Exception:
+                    pass
+        else:
+            doc = self._build_base_document(is_exam, metadata)
 
         self.out_dir = os.path.dirname(out_docx_path)
         self.total_points = 0.0
-
-        is_exam = (assignment_type == "exam")
-                            
-        for i, p in reversed(list(enumerate(doc.paragraphs))):
-            if i >= 3:
-                self._delete_paragraph(p)
-                
-        if doc.tables and not is_exam:
-            # Remove instructions table early before doc.tables updates
-            if len(doc.tables) > 1:
-                t1 = doc.tables[1]
-                t1._element.getparent().remove(t1._element)
-            
-            table = doc.tables[0]
-            try:
-                tr = table.rows[2]._tr
-                tr.getparent().remove(tr)
-            except Exception:
-                pass
-            
-            try:
-                table.rows[1].cells[2].text = "Valor:"
-            except Exception:
-                pass
 
         title_p = doc.add_paragraph()
         title_p.style = "Normal"
