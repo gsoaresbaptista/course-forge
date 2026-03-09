@@ -26,6 +26,7 @@ class BuildSiteUseCase:
         self.markdown_renderer = markdown_renderer
         self.html_renderer = html_renderer
         self.writer = writer
+        self.assignment_exporter = None
 
     def execute(
         self,
@@ -350,6 +351,29 @@ class BuildSiteUseCase:
                         html = self.html_renderer.render(
                             content, node, metadata=metadata, config=render_config
                         )
+                elif metadata.get("type") in ["assignment", "exam"]:
+                    original_markdown = content
+                    content = self.markdown_renderer.render(content, chapter=chapter)
+                    html = self.html_renderer.render(
+                        content, node, metadata=metadata, config=render_config
+                    )
+                    if self.assignment_exporter:
+                        out_dir = os.path.join(self.writer._root_path, *node.slugs_path)
+                        os.makedirs(out_dir, exist_ok=True)
+                        out_docx_path = os.path.join(out_dir, node.slug + ".docx")
+                        out_pdf_path = os.path.join(out_dir, node.slug + ".pdf")
+                        course_name = render_config.get("name", "Unknown Course")
+                        assignment_title = metadata.get("title", "Avaliação")
+                        assignment_type = metadata.get("type")
+                        self.assignment_exporter.export(
+                            original_markdown, 
+                            out_docx_path, 
+                            out_pdf_path, 
+                            assignment_title=assignment_title, 
+                            course_name=course_name, 
+                            metadata=metadata,
+                            assignment_type=assignment_type
+                        )
                 else:
                     # Standard page render
                     content = self.markdown_renderer.render(content, chapter=chapter)
@@ -361,7 +385,9 @@ class BuildSiteUseCase:
                 for processor in post_processors:
                     html = processor.execute(node, html)
 
-                self.writer.write(node, html)
+                # Assignments and exams are exported as DOCX/PDF only; skip HTML page.
+                if metadata.get("type") not in ["assignment", "exam"]:
+                    self.writer.write(node, html)
             else:
                 self.writer.copy_file(node)
         else:

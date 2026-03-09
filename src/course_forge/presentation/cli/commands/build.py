@@ -57,6 +57,13 @@ class DependencyContainer:
             self._html_renderer,
             self._writer,
         )
+        
+        try:
+            from course_forge.infrastructure.services.assignment_exporter import AssignmentExporter
+            self._build_use_case.assignment_exporter = AssignmentExporter()
+        except ImportError:
+            pass
+
 
     @property
     def build_use_case(self) -> BuildSiteUseCase:
