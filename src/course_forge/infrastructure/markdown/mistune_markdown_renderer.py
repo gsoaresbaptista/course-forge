@@ -186,7 +186,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         renderer = HeadingRenderer(chapter=chapter)
         markdown = mistune.create_markdown(
             renderer=renderer,
-            plugins=["table", "strikethrough", self._obsidian_comments_plugin],
+            plugins=["table", "strikethrough", table_in_quote, self._obsidian_comments_plugin],
         )
         html = str(markdown(text))
 
@@ -203,7 +203,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         renderer = SlideRenderer(escape=False)
         markdown = mistune.create_markdown(
             renderer=renderer,
-            plugins=["table", "strikethrough", self._obsidian_comments_plugin],
+            plugins=["table", "strikethrough", table_in_quote, self._obsidian_comments_plugin],
         )
         html = str(markdown(text))
 
@@ -426,7 +426,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         renderer = HeadingRenderer(chapter=chapter)
         md = mistune.create_markdown(
             renderer=renderer,
-            plugins=["table", "strikethrough", self._obsidian_comments_plugin],
+            plugins=["table", "strikethrough", table_in_quote, self._obsidian_comments_plugin],
         )
         html = str(md(text))
         html = self._restore_placeholders(html, latex_ph)
