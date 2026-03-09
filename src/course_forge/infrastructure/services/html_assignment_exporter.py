@@ -21,23 +21,17 @@ class HTMLAssignmentExporter:
         """Parse points from markdown, calculate total, and inject point labels with wrapping divs."""
         total = 0.0
         
-        # Pattern: **N. [X.Y] Title** or **N. Title**
-        pattern = r'\*\*(\d+)\.\s*(?:([\[\(]\d+(?:[.,]\d+)?(?:\s*pontos?)?[\]\)]))?\s*(.*?)\*\*'
+        # Pattern: **N. [X.Y] Title** or **N. Title** or N. [X.Y] Title
+        pattern = r'^(?:\*\*)?(\d+)\.\s*(?:([\[\(]\d+(?:[.,]\d+)?(?:\s*pontos?)?[\]\)]))?\s*(.*?)(?:\*\*|(?=\s*\n|$))'
         
         # Split content by where questions start to wrap them
-        parts = re.split(f'({pattern})', markdown_content)
+        # Split content to check if there are any questions
+        parts = re.split(pattern, markdown_content, flags=re.MULTILINE)
         
         if len(parts) <= 1:
             return total, markdown_content
 
-        # parts[0] is the intro text before any question
-        new_content = parts[0]
-        
-        # Iterate through matched parts (they come in groups of 5: full_match, q_num, pts, text, following_content)
-        # But re.split with groups returns: [pre, full, q_num, pts, text, post, full, ...]
-        # Actually it's simpler to just use finditer and rebuild
-        
-        matches = list(re.finditer(pattern, markdown_content))
+        matches = list(re.finditer(pattern, markdown_content, flags=re.MULTILINE))
         processed = markdown_content[:matches[0].start()] if matches else markdown_content
         
         for i, match in enumerate(matches):
