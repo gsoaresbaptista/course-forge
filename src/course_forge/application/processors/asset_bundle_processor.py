@@ -27,10 +27,11 @@ class AssetBundleProcessor(Processor):
         js_priority = {
             "katex.min.js": 0,
             "auto-render.min.js": 1,
-            "rough.min.js": 2,
-            "apply_sketch.js": 3,
-            "navigation.js": 4,
-            "ui.js": 5,
+            "prism.min.js": 2,
+            "rough.min.js": 3,
+            "apply_sketch.js": 4,
+            "navigation.js": 5,
+            "ui.js": 6,
         }
 
         def js_sort_key(f: Path):
@@ -53,7 +54,8 @@ class AssetBundleProcessor(Processor):
 
         css_priority = {
             "katex.min.css": 0,
-            "base.css": 1,
+            "prism-one-light.css": 1,
+            "base.css": 2,
         }
 
         def css_sort_key(f: Path):

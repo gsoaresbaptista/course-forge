@@ -59,8 +59,8 @@ class DependencyContainer:
         )
         
         try:
-            from course_forge.infrastructure.services.assignment_exporter import AssignmentExporter
-            self._build_use_case.assignment_exporter = AssignmentExporter()
+            from course_forge.infrastructure.services.html_assignment_exporter import HTMLAssignmentExporter
+            self._build_use_case.assignment_exporter = HTMLAssignmentExporter()
         except ImportError:
             pass
 

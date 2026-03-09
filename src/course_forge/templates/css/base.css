@@ -804,27 +804,43 @@ pre::-webkit-scrollbar-thumb:hover {
     background: var(--course-accent)
 }
 
-table {
+.article-body table,
+.content table,
+.assignment-content table {
     margin: 0 auto;
     border-collapse: collapse;
+}
+
+.article-body table,
+.content table {
     font-size: .9rem
 }
 
-thead {
+.article-body thead,
+.content thead,
+.assignment-content thead {
     border-bottom: 2px solid var(--border)
 }
 
-td,
-th {
+.article-body td,
+.article-body th,
+.content td,
+.content th,
+.assignment-content td,
+.assignment-content th {
     padding: .5rem .75rem
 }
 
-th {
+.article-body th,
+.content th,
+.assignment-content th {
     font-weight: 600;
     text-align: left
 }
 
-td {
+.article-body td,
+.content td,
+.assignment-content td {
     border-bottom: 1px solid var(--border)
 }
 
@@ -839,7 +855,9 @@ hr::before {
     display: none
 }
 
-img {
+.article-body img,
+.content img,
+.assignment-content img {
     display: block;
     margin: 1rem auto
 }

@@ -233,6 +233,41 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         template = self.env.get_template("reveal.html.jinja")
         return template.render(**template_context)
 
+    def render_assignment(
+        self,
+        content: str,
+        assignment_title: str,
+        course_name: str,
+        course_display_name: str,
+        discipline_name: str,
+        professor_name: str,
+        date_label: str,
+        date_value: str,
+        total_points: str,
+        is_exam: bool,
+        instructions: dict | None = None,
+        logo_url: str | None = None,
+        metadata: dict | None = None,
+    ) -> str:
+        """Render content using the standalone assignment template."""
+        template = self.env.get_template("assignment.html.jinja")
+        return template.render(
+            content=content,
+            assignment_title=assignment_title,
+            course_name=course_name,
+            course_display_name=course_display_name,
+            discipline_name=discipline_name,
+            professor_name=professor_name,
+            date_label=date_label,
+            date_value=date_value,
+            total_points=total_points,
+            is_exam=is_exam,
+            instructions=instructions,
+            logo_url=logo_url,
+            metadata=metadata or {},
+            base_url=Config.base_url,
+        )
+
     def _get_relative_node_url(
         self, from_node: ContentNode, to_node: ContentNode
     ) -> str:
@@ -351,6 +386,10 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
         chapters = []
         for c in course_node.children:
             if c.is_file and c.file_extension == ".md":
+                # Do not show assignments or exams in the TOC
+                if c.metadata and c.metadata.get("type") in ["assignment", "exam"]:
+                    continue
+
                 chapter_name = strip_leading_number(c.name)
                 if c.metadata and c.metadata.get("title"):
                     chapter_name = c.metadata["title"]
@@ -406,8 +445,8 @@ class JinjaHTMLTemplateRenderer(HTMLTemplateRenderer):
 
         appendices = []
         for c in course_node.children:
-            # Skip slides folder - it has its own dedicated link
-            if not c.is_file and c.name.lower() == "slides":
+            # Skip slides and assignments folders - they should not be listed as appendices
+            if not c.is_file and c.name.lower() in ["slides", "assignments"]:
                 continue
                 
             if not c.is_file:

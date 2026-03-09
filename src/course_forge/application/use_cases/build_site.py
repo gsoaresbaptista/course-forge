@@ -97,6 +97,10 @@ class BuildSiteUseCase:
 
             # Check for config.yaml to get custom name and visibility
             if not child.is_file and child.src_path:
+                # Never index 'assignments' or 'slides' as top-level courses
+                if child.name.lower() in ["assignments", "slides"]:
+                    continue
+
                 local_config_path = os.path.join(child.src_path, "config.yaml")
                 if os.path.exists(local_config_path):
                     local_config = ConfigLoader().load(local_config_path)
@@ -352,28 +356,43 @@ class BuildSiteUseCase:
                             content, node, metadata=metadata, config=render_config
                         )
                 elif metadata.get("type") in ["assignment", "exam"]:
+                    # Run pre-processors on markdown content
+                    for processor in pre_processors:
+                        content = processor.execute(node, content)
                     original_markdown = content
-                    content = self.markdown_renderer.render(content, chapter=chapter)
-                    html = self.html_renderer.render(
-                        content, node, metadata=metadata, config=render_config
-                    )
+                    
+                    # Also render for normal site view if needed, but primarily we want the assignment export
+                    rendered_body = self.markdown_renderer.render(content, chapter=chapter)
+                    
                     if self.assignment_exporter:
                         out_dir = os.path.join(self.writer._root_path, *node.slugs_path)
                         os.makedirs(out_dir, exist_ok=True)
-                        out_docx_path = os.path.join(out_dir, node.slug + ".docx")
-                        out_pdf_path = os.path.join(out_dir, node.slug + ".pdf")
+                        out_html_path = os.path.join(out_dir, node.slug + ".html")
                         course_name = render_config.get("name", "Unknown Course")
                         assignment_title = metadata.get("title", "Avaliação")
                         assignment_type = metadata.get("type")
-                        self.assignment_exporter.export(
+                        
+                        # Get standalone HTML
+                        html = self.assignment_exporter.export(
                             original_markdown, 
-                            out_docx_path, 
-                            out_pdf_path, 
+                            out_html_path, 
                             assignment_title=assignment_title, 
                             course_name=course_name, 
                             metadata=metadata,
-                            assignment_type=assignment_type
+                            assignment_type=assignment_type,
+                            html_renderer=self.html_renderer
                         )
+                        
+                        # Run post-processors (like asset bundling) on the standalone HTML
+                        for processor in post_processors:
+                            html = processor.execute(node, html)
+                        
+                        # Write the final processed HTML to the assignment path
+                        with open(out_html_path, "w", encoding="utf-8") as f:
+                            f.write(html)
+                        
+                        # Prevent normal write from use case (we already wrote it)
+                        html = None 
                 else:
                     # Check if it was placed inside 'assignments' folder but missing metadata
                     is_in_assignments = False

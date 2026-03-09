@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ assignment_title }} - {{ course_name }}</title>
+    <link rel="stylesheet" href="{{ base_url }}/css/katex.min.css">
+    <link rel="stylesheet" href="{{ base_url }}/css/prism-one-light.css">
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+
+        :root {
+            --primary-color: #333;
+            --border-color: #000;
+            --bg-muted: #f9f9f9;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.5;
+            color: var(--primary-color);
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Header Table */
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 10pt!important;
+        }
+
+        .header-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            vertical-align: middle;
+        }
+
+        .logo-cell {
+            width: 20%;
+            text-align: center;
+        }
+
+        .logo-img {
+            max-width: 120px;
+            height: auto;
+        }
+
+        .info-cell {
+            width: 80%;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .field-label {
+            font-weight: bold;
+        }
+
+        /* Assignment Title */
+        .assignment-title {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 30px 0;
+        }
+
+        /* Instructions Box */
+        .instructions-box {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 9pt;
+        }
+
+        .instructions-title {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .instructions-list {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .instructions-item {
+            margin-bottom: 4px;
+            text-align: justify;
+        }
+
+        /* Content Styles */
+        .assignment-content {
+            font-size: 10pt;
+        }
+
+        .content h1, .content h2, .content h3 {
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+
+        .content p {
+            margin-bottom: 1em;
+            text-align: justify;
+        }
+
+        /* Question Styles */
+        .question {
+            margin-top: 10px;
+            margin-bottom: 30px;
+            break-inside: avoid;
+        }
+
+        .question strong {
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        /* KaTeX / Math / LaTeX Scaling */
+        .katex-display {
+            overflow-x: auto;
+            overflow-y: hidden;
+            margin: 1em 0;
+            padding: 0.5em 0;
+        }
+
+        /* Scale down large tables in LaTeX */
+        .katex table {
+            font-size: 0.85em; /* Scale down tables specifically */
+            border-collapse: collapse;
+        }
+
+        .katex-display > .katex {
+            max-width: 100%;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        /* Callouts / Blockquotes */
+        blockquote {
+            margin: 1.5em 0;
+            padding: 1em;
+            border-left: 4px solid #ccc;
+            background: var(--bg-muted);
+            break-inside: avoid;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: #f4f4f4 !important;
+            padding: 1em !important;
+            border: 1px solid #ddd !important;
+            border-radius: 4px !important;
+            font-size: 9pt !important;
+            overflow-x: auto;
+            break-inside: avoid;
+        }
+
+        /* Images */
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1em auto;
+        }
+
+        /* Print tweaks */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+            }
+            .container {
+                width: 100%;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <table class="header-table">
+            <tr>
+                <td class="logo-cell" rowspan="{{ 3 if is_exam else 2 }}">
+                    {% if logo_url %}
+                    <img src="{{ logo_url }}" alt="Logo" class="logo-img">
+                    {% else %}
+                    <strong>[LOGO]</strong>
+                    {% endif %}
+                </td>
+                <td colspan="3">
+                    <div class="field-label">Curso: <span style="font-weight: normal;">{{ course_display_name }}</span></div>
+                    <div class="field-label">Disciplina: <span style="font-weight: normal;">{{ discipline_name }}</span></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="field-label">Professor(a): <span style="font-weight: normal;">{{ professor_name }}</span></div>
+                </td>
+                <td colspan="2">
+                    <div class="field-label">{{ date_label }} <span style="font-weight: normal;">{{ date_value }}</span></div>
+                </td>
+            </tr>
+            {% if is_exam %}
+            <tr>
+                <td>
+                    <div class="field-label">Nome do(a) aluno(a):</div>
+                </td>
+                <td style="width: 15%">
+                    <div class="field-label">Valor: <span style="font-weight: normal;">{{ total_points }}</span></div>
+                </td>
+                <td style="width: 15%">
+                    <div class="field-label">Nota:</div>
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+
+        <div class="assignment-title">{{ assignment_title }}</div>
+
+        {% if instructions and is_exam %}
+        <div class="instructions-box">
+            <div class="instructions-title">{{ instructions.title }}</div>
+            <ul class="instructions-list">
+                {% for item in instructions['items'] %}
+                <li class="instructions-item">{{ item.text }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="assignment-content">
+            {{ content }}
+        </div>
+    </div>
+
+    <script src="{{ base_url }}/js/katex.min.js"></script>
+    <script src="{{ base_url }}/js/auto-render.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                    { left: "\\(", right: "\\)", display: false },
+                    { left: "\\[", right: "\\]", display: true }
+                ],
+                throwOnError: false
+            });
+        });
+    </script>
+</body>
+</html>
