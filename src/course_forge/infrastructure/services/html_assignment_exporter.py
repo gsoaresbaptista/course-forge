@@ -17,35 +17,65 @@ class HTMLAssignmentExporter:
         with open(config_path, "r", encoding="utf-8") as f:
             self._tpl = yaml.safe_load(f)
 
-    def _process_points_and_content(self, markdown_content: str) -> tuple[float, str]:
-        """Parse points from markdown, calculate total, and inject point labels with wrapping divs."""
+    def _process_points_and_content(self, markdown_content: str, is_exam: bool = True) -> tuple[float, str]:
+        """Parse points from markdown, calculate total, and conditionally inject point labels and wrapping divs."""
         total = 0.0
         
-        # Pattern: **N. [X.Y] Title** or **N. Title** or N. [X.Y] Title
-        pattern = r'^(?:\*\*)?(\d+)\.\s*(?:([\[\(]\d+(?:[.,]\d+)?(?:\s*pontos?)?[\]\)]))?\s*(.*?)(?:\*\*|(?=\s*\n|$))'
-        
-        # Split content by where questions start to wrap them
-        # Split content to check if there are any questions
-        parts = re.split(pattern, markdown_content, flags=re.MULTILINE)
-        
-        if len(parts) <= 1:
-            return total, markdown_content
+        # Ensure lists are properly separated by a blank line for Mistune
+        # This helps rendering lists correctly even in exams or assignments
+        markdown_content = re.sub(r'(?<!\n)\n([*-]|\d+\.)\s', r'\n\n\1 ', markdown_content)
 
-        matches = list(re.finditer(pattern, markdown_content, flags=re.MULTILINE))
-        processed = markdown_content[:matches[0].start()] if matches else markdown_content
+        # Simplified return if not an exam (we don't do question wrapping)
+        if not is_exam:
+            return 0.0, markdown_content
+
+        # Pattern for question headers:
+        # 1. Optional bold markers **
+        # 2. Question number
+        # 3. Optional points marker [X.Y]
+        # 4. Text (stops at closing stars or newline)
+        pattern = r'^(?P<bold>\*\*)?(\d+)\.\s*(?P<pts>[\[\(]\d+(?:[.,]\d+)?(?:\s*pontos?)?[\]\)])?\s*(?P<text>.*?)(?:(?P=bold)|(?=\s*\n|$))'
+        
+        all_matches = list(re.finditer(pattern, markdown_content, flags=re.MULTILINE))
+        
+        if not all_matches:
+            return 0.0, markdown_content
+
+        # Filter: only treat as question if it has bold markers OR explicit points
+        # This prevents internal lists (1. item) from being treated as questions
+        matches = []
+        for m in all_matches:
+            if m.group('bold') or m.group('pts'):
+                matches.append(m)
+        
+        if not matches:
+            return 0.0, markdown_content
+
+        # Always calculate total based on valid questions
+        for m in matches:
+            pts_marker = m.group('pts')
+            if pts_marker:
+                m_val = re.search(r'(\d+(?:[.,]\d+)?)', pts_marker)
+                val = float(m_val.group(1).replace(',', '.')) if m_val else 1.0
+            else:
+                val = 1.0
+            total += val
+
+        # Transformation logic for exams: wrap in <div class="question"> and add point labels
+        processed = markdown_content[:matches[0].start()]
         
         for i, match in enumerate(matches):
-            q_num = match.group(1)
-            pts_marker = match.group(2)
-            q_text = match.group(3)
+            q_num = match.group(2) # Number group
+            pts_marker = match.group('pts')
+            q_text = match.group('text')
             
+            # Recalculate val for current match
             if pts_marker:
                 m_val = re.search(r'(\d+(?:[.,]\d+)?)', pts_marker)
                 val = float(m_val.group(1).replace(',', '.')) if m_val else 1.0
             else:
                 val = 1.0
             
-            total += val
             val_str = f"{val:.1f}".replace('.', ',')
             suffix = "ponto" if val == 1.0 else "pontos"
             
@@ -79,8 +109,11 @@ class HTMLAssignmentExporter:
         # Remove frontmatter from content if present
         markdown_content = re.sub(r'^---\n.*?\n---\n', '', markdown_content, flags=re.DOTALL)
         
-        # Parse points and transform markdown
-        self.total_points, transformed_markdown = self._process_points_and_content(markdown_content)
+        # Parse points and transform markdown (only for exams)
+        self.total_points, transformed_markdown = self._process_points_and_content(
+            markdown_content, 
+            is_exam=is_exam
+        )
 
         # Basic context for the template
         tpl_cfg = self._tpl
@@ -89,12 +122,13 @@ class HTMLAssignmentExporter:
 
         # Format total points
         fmt_total_points = ""
-        if self.total_points > 0:
-            fmt_total_points = f"{self.total_points:.1f}".replace('.', ',')
-        else:
-            meta_pts = metadata.get("points") or metadata.get("valor")
-            if meta_pts is not None:
-                fmt_total_points = f"{float(meta_pts):.1f}".replace('.', ',')
+        if is_exam:
+            if self.total_points > 0:
+                fmt_total_points = f"{self.total_points:.1f}".replace('.', ',')
+            else:
+                meta_pts = metadata.get("points") or metadata.get("valor")
+                if meta_pts is not None:
+                    fmt_total_points = f"{float(meta_pts):.1f}".replace('.', ',')
 
         # Determine course display name
         curso_name = metadata.get("course")
