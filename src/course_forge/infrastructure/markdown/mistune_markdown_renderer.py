@@ -313,7 +313,9 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         # Restore masked pipes
         text = text.replace("\ufffe", "|")
 
-        for placeholder, original in placeholders.items():
+        # Sort descending by length so longer placeholders (like ...N10) are
+        # completely replaced before smaller substring placeholders (like ...N1)
+        for placeholder, original in sorted(placeholders.items(), key=lambda x: len(x[0]), reverse=True):
             text = text.replace(placeholder, original)
         return text
 
