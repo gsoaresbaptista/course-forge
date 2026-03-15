@@ -84,9 +84,9 @@ class HTMLAssignmentExporter:
             # Content of this question goes until next match or end of string
             start = match.end()
             end = matches[i+1].start() if i+1 < len(matches) else len(markdown_content)
-            q_body = markdown_content[start:end]
+            q_body = markdown_content[start:end].strip() # Strip leading/trailing whitespaces to avoid extra paragraphs
             
-            processed += header + q_body + "\n</div>\n"
+            processed += header + "\n" + q_body + "\n</div>\n"
 
         return total, processed
 
@@ -148,7 +148,7 @@ class HTMLAssignmentExporter:
         # In mistune v3+, we can allow raw HTML by not using the safe plugin or by setting escape=False in the HTML renderer
         # Since we want to keep the default renderer but allow our tags, we'll use a custom renderer if needed, 
         # but mistune.create_markdown(escape=False) is usually the way.
-        markdown = mistune.create_markdown(plugins=["table"], escape=False, hard_wrap=True)
+        markdown = mistune.create_markdown(plugins=["table"], escape=False, hard_wrap=False)
         body_html = markdown(transformed_markdown)
 
         # Get logo as base64
