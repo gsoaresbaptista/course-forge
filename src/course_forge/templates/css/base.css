@@ -1612,3 +1612,21 @@ th .download-link {
 .red-note {
     color: var(--callout-failure);
 }
+
+.exam-gap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 30px;
+    /* 50px gap + parentheses approx */
+    margin: 0 4px;
+    font-weight: 500;
+}
+
+.exam-gap::before {
+    content: "(";
+}
+
+.exam-gap::after {
+    content: ")";
+}
