@@ -10,6 +10,7 @@ from course_forge.application.processors import (
     HTMLMinifyProcessor,
     InternalLinkProcessor,
     KarnaughMapProcessor,
+    MermaidProcessor,
     Processor,
     PulseWaveformProcessor,
     SchemdrawProcessor,
@@ -41,6 +42,7 @@ class DependencyContainer:
             BlockDiagramProcessor(),
             KarnaughMapProcessor(),
             ASTProcessor(),
+            MermaidProcessor(),
             PulseWaveformProcessor(),
             AppletProcessor(),
         ]

@@ -42,7 +42,7 @@ class _Edge:
 class BlockDiagramProcessor(SchemdrawProcessor):
     """Processor for block diagram code blocks (Python and DSL modes)."""
 
-    pattern = SVGProcessorBase.create_pattern("blockdiagram.plot", r"(?P<code>.*?)")
+    pattern = SVGProcessorBase.create_pattern("blockdiagram.plot", "")
 
     # Layout constants
     UNIT_X = 3.0

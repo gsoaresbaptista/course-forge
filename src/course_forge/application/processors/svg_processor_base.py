@@ -12,12 +12,12 @@ class SVGProcessorBase(Processor):
     """Base class for processors that generate SVG graphics with common metadata extraction."""
 
     @staticmethod
-    def create_pattern(block_type: str, content_pattern: str) -> re.Pattern:
+    def create_pattern(block_type: str, _unused: str = "") -> re.Pattern:
         """Create a regex pattern for SVG code blocks with common attributes.
 
         Args:
             block_type: The code block type (e.g., "ast.plot", "digital-circuit.plot")
-            content_pattern: The regex pattern for the block's specific content
+            _unused: Legacy parameter, no longer used.
 
         Returns:
             Compiled regex pattern with width, height, centered, and sketch groups
@@ -26,7 +26,7 @@ class SVGProcessorBase(Processor):
             r"(?P<indent>[ \t]*)"
             rf"```{re.escape(block_type)}"
             r"(?:\s+(?:width=(?P<width>\d+)|height=(?P<height>\d+)|(?P<centered>centered)|(?P<sketch>sketch)))*"
-            rf"\s+{content_pattern}```"
+            r"[ \t]*\r?\n(?P<content>.*?)```"
         )
         return re.compile(pattern_str, re.DOTALL)
 

@@ -16,7 +16,7 @@ class GraphvizProcessor(SVGProcessorBase):
     automatic layout, clustering, and professional styling.
     """
     
-    pattern = SVGProcessorBase.create_pattern("graphviz.plot", r"(?P<content>.*?)")
+    pattern = SVGProcessorBase.create_pattern("graphviz.plot", "")
     
     def execute(self, node: ContentNode, content: str) -> str:
         if not GRAPHVIZ_AVAILABLE:

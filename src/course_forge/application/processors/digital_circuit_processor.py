@@ -1,3 +1,4 @@
+import re
 from schemdraw.parsing.logic_parser import logicparse
 
 from course_forge.domain.entities import ContentNode
@@ -6,17 +7,24 @@ from .svg_processor_base import SVGProcessorBase
 
 
 class DigitalCircuitProcessor(SVGProcessorBase):
-    pattern = SVGProcessorBase.create_pattern(
-        "digital-circuit.plot", r"(?P<left>.+?)(?:=(?P<right>.+?))?"
-    )
+    pattern = SVGProcessorBase.create_pattern("digital-circuit.plot", "")
 
     def execute(self, node: ContentNode, content: str) -> str:
         matches = list(self.pattern.finditer(content))
 
         for match in matches:
-            left = match.group("left").strip()
-            right = match.group("right").strip() if match.group("right") else ""
-            
+            full_content = match.group("content").strip()
+
+            # Re-parse the internal content to get left and right
+            sub_match = re.match(r"(?P<left>.+?)(?:=(?P<right>.+?))?$", full_content, re.DOTALL)
+            if not sub_match:
+                continue
+
+            left = sub_match.group("left").strip()
+            right = sub_match.group("right").strip() if sub_match.group("right") else None
+
+            attrs = self.parse_svg_attributes(match)
+
             # If right-hand side logic is a python string literal (e.g. r'...' or "..."),
             # extract the inner string content to allow LaTeX usage without quotes being rendered.
             if right:

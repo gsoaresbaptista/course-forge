@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{{ base_url }}/css/prism-one-light.css">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="{{ base_url }}/js/lucide.min.js"></script>
 </head>
 
 <body>
@@ -71,15 +71,11 @@
         </nav>
 
         <button class="mobile-menu-toggle" aria-label="Menu">
-            <div class="hamburger-container">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </div>
+            <i data-lucide="menu"></i>
         </button>
 
         <button class="sidebar-toggle" onclick="CourseForgeNav.toggleSidebar()" aria-label="Alternar Barra Lateral">
-            <i data-lucide="chevron-left" class="toggle-icon"></i>
+            <i data-lucide="chevron-left" class="toggle-icon" id="sidebar-toggle-icon"></i>
         </button>
 
         <div class="mobile-menu-overlay"></div>
@@ -132,6 +128,8 @@
             sidebar.classList.add('open');
             overlay.classList.add('open');
             toggle.classList.add('open');
+            toggle.innerHTML = '<i data-lucide="x"></i>';
+            CourseForgeUI.initIcons();
             document.body.style.overflow = 'hidden';
         }
 
@@ -139,6 +137,8 @@
             sidebar.classList.remove('open');
             overlay.classList.remove('open');
             toggle.classList.remove('open');
+            toggle.innerHTML = '<i data-lucide="menu"></i>';
+            CourseForgeUI.initIcons();
             document.body.style.overflow = '';
         }
 
@@ -172,11 +172,13 @@
     <script src="{{ base_url }}/js/apply_sketch.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-perl.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-mermaid.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
     <script
@@ -184,6 +186,22 @@
     <script src="{{ base_url }}/js/prism-slang.js"></script>
     <script src="{{ base_url }}/js/navigation.js"></script>
     <script src="{{ base_url }}/js/ui.js"></script>
+    <script src="{{ base_url }}/js/mermaid.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                securityLevel: 'loose',
+                fontFamily: 'Inter, system-ui, sans-serif',
+                themeVariables: {
+                    fontSize: '16px',
+                    edgeLabelFontSize: '16px',
+                    multiplicityFontSize: '18px'
+                }
+            });
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const isSubcourse = {{ is_subcourse | tojson

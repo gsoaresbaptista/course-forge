@@ -45,6 +45,17 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.js"></script>
     <script src="{{ base_url }}/js/prism-slang.js"></script>
+    <script src="{{ base_url }}/js/mermaid.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'default',
+                securityLevel: 'loose',
+                fontFamily: 'Inter, system-ui, sans-serif',
+            });
+        });
+    </script>
     <script>
         Reveal.initialize({
             hash: true,

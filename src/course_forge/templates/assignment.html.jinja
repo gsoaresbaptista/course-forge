@@ -139,6 +139,23 @@
             display: inline-block;
         }
 
+        /* Tables */
+        .assignment-content table {
+            margin: 1.5em auto;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .assignment-content th, .assignment-content td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: left;
+        }
+
+        .assignment-content th {
+            background: var(--bg-muted);
+        }
+
         /* KaTeX / Math / LaTeX Scaling */
         .katex-display {
             overflow-x: auto;
@@ -171,6 +188,7 @@
         /* Code Blocks */
         pre {
             background: #f4f4f4 !important;
+            margin: 1.5em 0;
             padding: 1em !important;
             border: 1px solid #ddd !important;
             border-radius: 4px !important;
@@ -258,6 +276,18 @@
 
     <script src="{{ base_url }}/js/katex.min.js"></script>
     <script src="{{ base_url }}/js/auto-render.min.js"></script>
+    <script src="{{ base_url }}/js/mermaid.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            mermaid.initialize({
+                startOnLoad: true,
+                theme: 'neutral',
+                securityLevel: 'loose',
+                fontFamily: 'Inter, system-ui, sans-serif',
+                flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+            });
+        });
+    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             renderMathInElement(document.body, {

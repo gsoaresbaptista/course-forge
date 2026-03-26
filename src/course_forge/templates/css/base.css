@@ -276,60 +276,35 @@ a:hover {
     top: 1rem;
     left: 1rem;
     z-index: 200;
-    width: 48px;
-    height: 48px;
+    width: 42px;
+    height: 42px;
     background: var(--course-accent);
+    color: #fff;
     border: 0;
     border-radius: 50%;
     cursor: pointer;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
-    transition: transform .4s cubic-bezier(.4, 0, .2, 1), background-color .3s, box-shadow .3s
+    transition: all .3s cubic-bezier(.4, 0, .2, 1);
 }
 
 .mobile-menu-toggle:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, .25)
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+}
+
+.mobile-menu-toggle svg {
+    width: 20px;
+    height: 20px;
 }
 
 .mobile-menu-toggle.open {
-    transform: translateX(calc(280px - 1rem - 24px)) rotate(180deg)
+    transform: translateX(calc(280px - 1rem - 21px));
 }
 
 .mobile-menu-toggle.open:hover {
-    transform: translateX(calc(280px - 1rem - 24px)) rotate(180deg) scale(1.05)
-}
-
-.hamburger-container {
-    width: 20px;
-    height: 14px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: transform .3s
-}
-
-.hamburger-line {
-    display: block;
-    width: 100%;
-    height: 2px;
-    background-color: #fff;
-    border-radius: 4px;
-    transition: transform .3s, opacity .3s
-}
-
-.mobile-menu-toggle.open .hamburger-line:nth-child(1) {
-    transform: translateY(6px) rotate(45deg)
-}
-
-.mobile-menu-toggle.open .hamburger-line:nth-child(2) {
-    opacity: 0
-}
-
-.mobile-menu-toggle.open .hamburger-line:nth-child(3) {
-    transform: translateY(-6px) rotate(-45deg)
+    transform: translateX(calc(280px - 1rem - 21px)) scale(1.05);
 }
 
 .mobile-menu-overlay {
@@ -462,8 +437,8 @@ a {
 .article-body h3 {
     font-size: 1.35rem;
     font-weight: 600;
-    margin-top: 2.5rem;
-    margin-bottom: 1rem;
+    margin-top: 3.5rem;
+    margin-bottom: 1.5rem;
     letter-spacing: -0.01em;
 }
 
@@ -476,8 +451,8 @@ a {
 
 .article-body h3 {
     font-size: 1.05rem;
-    margin-top: 2rem;
-    margin-bottom: .75rem;
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
     padding-bottom: .25rem;
 }
 
@@ -506,7 +481,8 @@ a {
 }
 
 .article-body p {
-    margin: 1rem 0;
+    margin: 1.5rem 0;
+    line-height: 1.7;
     text-align: justify;
     hyphens: auto
 }
@@ -526,7 +502,7 @@ a {
 .article-body h4+p,
 .article-body h5+p,
 .article-body h6+p {
-    margin-top: 0
+    margin-top: 0.5rem;
 }
 
 /* Also handle cases where there might be wrapper elements or other content between heading and paragraph */
@@ -536,7 +512,7 @@ a {
 .article-body h4:not(:first-child)~p:first-of-type,
 .article-body h5:not(:first-child)~p:first-of-type,
 .article-body h6:not(:first-child)~p:first-of-type {
-    margin-top: 0
+    margin-top: 0.5rem;
 }
 
 .article-body ol,
@@ -807,7 +783,7 @@ pre::-webkit-scrollbar-thumb:hover {
 .article-body table,
 .content table,
 .assignment-content table {
-    margin: 0 auto;
+    margin: 1.5rem auto;
     border-collapse: collapse;
 }
 
@@ -1629,4 +1605,123 @@ th .download-link {
 
 .exam-gap::after {
     content: ")";
+}
+/* Mermaid Diagram Styles */
+.mermaid {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 1.5rem 0 !important;
+    font-family: inherit !important;
+    overflow: visible !important;
+    text-align: center;
+}
+
+pre.mermaid {
+    /* Prevent default pre styling before Mermaid renders it */
+    white-space: pre;
+    font-family: var(--font-code);
+    color: var(--text-muted);
+}
+
+.centered .mermaid {
+    display: flex;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+.mermaid svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Mermaid Multiplicity Styling - High Specificity */
+.mermaid svg .edgeBadge text,
+.mermaid svg .edgeBadge tspan,
+.mermaid svg .edgeTerm text,
+.mermaid svg .edgeTerm tspan,
+.mermaid svg .multiplicity text,
+.mermaid svg .multiplicity tspan,
+.mermaid svg text.edgeBadge,
+.mermaid svg text.edgeTerm {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    fill: var(--heading) !important;
+}
+
+/* Mermaid Source Switcher */
+.mermaid-outer-container {
+    margin: 1.5rem 0;
+    position: relative;
+    width: 100%;
+}
+
+.mermaid-switcher {
+    display: flex;
+    justify-content: flex-end; /* Always on the right */
+    margin-bottom: 0.75rem;
+    width: 100%;
+}
+
+.switcher-track {
+    display: inline-flex;
+    align-items: center;
+    background: var(--code-bg);
+    padding: 3px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    position: relative;
+}
+
+.switcher-btn {
+    display: flex; /* Added for icons */
+    align-items: center;
+    gap: 0.4rem;
+    border: none;
+    background: transparent;
+    padding: 0.35rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-radius: calc(var(--radius) - 2px);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 1;
+}
+
+.switcher-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.switcher-btn:hover {
+    color: var(--text);
+}
+
+.switcher-btn.active {
+    color: var(--heading);
+    background: var(--bg);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.mermaid-content {
+    min-height: 50px;
+}
+
+.mermaid-display {
+    transition: opacity 0.2s ease;
+}
+
+.mermaid-source pre {
+    margin: 0 !important;
+    background: var(--code-bg) !important;
+    border: 1px dashed var(--border) !important;
+}
+
+.mermaid-display.centered {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
 }

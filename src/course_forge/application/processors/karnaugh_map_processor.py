@@ -17,13 +17,13 @@ class KarnaughMapProcessor(SVGProcessorBase):
         ```
     """
 
-    pattern = SVGProcessorBase.create_pattern("karnaugh.map", r"(?P<code>.*?)")
+    pattern = SVGProcessorBase.create_pattern("karnaugh.map", "")
 
     def execute(self, node: ContentNode, content: str) -> str:
         matches = list(self.pattern.finditer(content))
 
         for match in matches:
-            code = match.group("code").strip()
+            code = match.group("content").strip()
             attrs = self.parse_svg_attributes(match)
 
             try:

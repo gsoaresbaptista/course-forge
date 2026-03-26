@@ -105,6 +105,16 @@ window.CourseForgeNav = (function () {
             const body = document.body;
             const isHidden = body.classList.toggle('sidebar-hidden');
             localStorage.setItem('cf_sidebar_hidden', isHidden);
+
+            // Update toggle icon
+            const icon = document.getElementById('sidebar-toggle-icon');
+            if (icon) {
+                icon.setAttribute('data-lucide', isHidden ? 'chevron-right' : 'chevron-left');
+                // Re-initialize Lucide for the new attribute
+                if (typeof CourseForgeUI !== 'undefined') {
+                    CourseForgeUI.initIcons();
+                }
+            }
         },
 
         /**

@@ -124,13 +124,13 @@ from .svg_processor_base import SVGProcessorBase
 class SchemdrawProcessor(SVGProcessorBase):
     """Processor for schemdraw code blocks."""
 
-    pattern = SVGProcessorBase.create_pattern("schemdraw.plot", r"(?P<code>.*?)")
+    pattern = SVGProcessorBase.create_pattern("schemdraw.plot", "")
 
     def execute(self, node: ContentNode, content: str) -> str:
         matches = list(self.pattern.finditer(content))
 
         for match in matches:
-            code = match.group("code").strip()
+            code = match.group("content").strip()
             attrs = self.parse_svg_attributes(match)
 
             try:

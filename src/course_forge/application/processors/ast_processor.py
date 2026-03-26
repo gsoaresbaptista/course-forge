@@ -19,7 +19,7 @@ class ASTProcessor(SVGProcessorBase):
     Example: ( + 1 ( * 2 3 ) )
     """
     
-    pattern = SVGProcessorBase.create_pattern("ast.plot", r"(?P<content>.*?)")
+    pattern = SVGProcessorBase.create_pattern("ast.plot", "")
     
     def execute(self, node: ContentNode, content: str) -> str:
         if not GRAPHVIZ_AVAILABLE:

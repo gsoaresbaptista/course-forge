@@ -183,6 +183,11 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         text, latex_placeholders = self._preprocess_latex(text)
         text, example_placeholders = self._preprocess_example_divs(text)
 
+        # Fix nested emphasis ambiguity (e.g. **bold *italic*** -> **bold _italic_**)
+        # Mistune v3 sometimes gets confused with triple asterisks at the end of nested spans.
+        # We replace the internal single * with _ which is semantically equivalent in MD.
+        text = re.sub(r'(\*\*)([^*]+?)\*([^*]+?)\*(\*\*)', r'\1\2_\3_\4', text)
+
         renderer = HeadingRenderer(chapter=chapter)
         markdown = mistune.create_markdown(
             renderer=renderer,

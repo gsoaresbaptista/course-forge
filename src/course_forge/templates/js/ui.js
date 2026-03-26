@@ -175,6 +175,29 @@ window.CourseForgeUI = (function () {
             });
             // Re-render Lucide for injected chevron icons
             this.initIcons();
+        },
+        /**
+         * Switch between Mermaid diagram and source code using a switcher.
+         */
+        switchMermaidView: function (button, mode) {
+            const container = button.closest('.mermaid-outer-container');
+            if (!container) return;
+
+            const display = container.querySelector('.mermaid-display');
+            const source = container.querySelector('.mermaid-source');
+            const buttons = container.querySelectorAll('.switcher-btn');
+            
+            // Update button states
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            if (mode === 'code') {
+                display.style.display = 'none';
+                source.style.display = 'block';
+            } else {
+                source.style.display = 'none';
+                display.style.display = 'block';
+            }
         }
     };
 })();

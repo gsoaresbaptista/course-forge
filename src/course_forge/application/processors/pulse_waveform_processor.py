@@ -22,7 +22,7 @@ class PulseWaveformProcessor(SVGProcessorBase):
     Example: `---...` = 3 units high, 3 units low
     """
 
-    pattern = SVGProcessorBase.create_pattern("pulse.waveform", r"(?P<code>.*?)")
+    pattern = SVGProcessorBase.create_pattern("pulse.waveform", "")
 
     # Dimensions
     PULSE_HEIGHT = 40
@@ -47,7 +47,7 @@ class PulseWaveformProcessor(SVGProcessorBase):
         matches = list(self.pattern.finditer(content))
 
         for match in matches:
-            code = match.group("code").strip()
+            code = match.group("content").strip()
             attrs = self.parse_svg_attributes(match)
 
             try:
