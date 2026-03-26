@@ -10,6 +10,7 @@ from .graphviz_processor import GraphvizProcessor
 from .html_minify_processor import HTMLMinifyProcessor
 from .internal_link_processor import InternalLinkProcessor
 from .karnaugh_map_processor import KarnaughMapProcessor
+from .matplotlib_processor import MatplotlibProcessor
 from .mermaid_processor import MermaidProcessor
 from .pulse_waveform_processor import PulseWaveformProcessor
 from .schemdraw_processor import SchemdrawProcessor
@@ -22,6 +23,7 @@ __all__ = [
     "GraphvizProcessor",
     "ASTProcessor",
     "KarnaughMapProcessor",
+    "MatplotlibProcessor",
     "MermaidProcessor",
     "PulseWaveformProcessor",
     "SchemdrawProcessor",

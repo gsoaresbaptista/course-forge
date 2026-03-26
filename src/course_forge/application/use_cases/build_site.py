@@ -356,9 +356,6 @@ class BuildSiteUseCase:
                             content, node, metadata=metadata, config=render_config
                         )
                 elif metadata.get("type") in ["assignment", "exam"]:
-                    # Run pre-processors on markdown content
-                    for processor in pre_processors:
-                        content = processor.execute(node, content)
                     original_markdown = content
                     
                     # Also render for normal site view if needed, but primarily we want the assignment export
