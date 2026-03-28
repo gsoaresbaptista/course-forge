@@ -437,7 +437,7 @@ a {
 .article-body h3 {
     font-size: 1.35rem;
     font-weight: 600;
-    margin-top: 3.5rem;
+    margin-top: 2.5rem;
     margin-bottom: 1.5rem;
     letter-spacing: -0.01em;
 }
@@ -480,18 +480,32 @@ a {
     margin-left: auto
 }
 
-.article-body p {
+.article-body p,
+.content p,
+.assignment-content p {
     margin: 1.5rem 0;
     line-height: 1.7;
     text-align: justify;
     hyphens: auto
 }
 
-.article-body p:first-child {
+.article-body p:first-child,
+.content p:first-child,
+.assignment-content p:first-child {
     margin-top: 0
 }
 
-.article-body p:last-child {
+/* Ensure clear visual gap between consecutive paragraphs */
+.article-body p+p,
+.content p+p,
+.callout-content p+p,
+.assignment-content p+p {
+    margin-top: 1.25rem;
+}
+
+.article-body p:last-child,
+.content p:last-child,
+.assignment-content p:last-child {
     margin-bottom: 0
 }
 
@@ -501,7 +515,13 @@ a {
 .article-body h3+p,
 .article-body h4+p,
 .article-body h5+p,
-.article-body h6+p {
+.article-body h6+p,
+.content h1+p,
+.content h2+p,
+.content h3+p,
+.content h4+p,
+.content h5+p,
+.content h6+p {
     margin-top: 0.5rem;
 }
 
@@ -511,7 +531,13 @@ a {
 .article-body h3:not(:first-child)~p:first-of-type,
 .article-body h4:not(:first-child)~p:first-of-type,
 .article-body h5:not(:first-child)~p:first-of-type,
-.article-body h6:not(:first-child)~p:first-of-type {
+.article-body h6:not(:first-child)~p:first-of-type,
+.content h1:not(:first-child)~p:first-of-type,
+.content h2:not(:first-child)~p:first-of-type,
+.content h3:not(:first-child)~p:first-of-type,
+.content h4:not(:first-child)~p:first-of-type,
+.content h5:not(:first-child)~p:first-of-type,
+.content h6:not(:first-child)~p:first-of-type {
     margin-top: 0.5rem;
 }
 
@@ -793,30 +819,48 @@ pre::-webkit-scrollbar-thumb:hover {
 }
 
 .article-body thead,
-.content thead,
-.assignment-content thead {
+.content thead {
     border-bottom: 2px solid var(--border)
 }
 
 .article-body td,
 .article-body th,
 .content td,
-.content th,
-.assignment-content td,
-.assignment-content th {
+.content th {
     padding: .5rem .75rem
 }
 
 .article-body th,
-.content th,
-.assignment-content th {
+.content th {
     font-weight: 600;
     text-align: left
 }
 
-.article-body td,
-.content td,
+/* Refined Assignment Table Styles */
+.assignment-content th,
 .assignment-content td {
+    padding: .5rem .75rem;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+}
+
+.assignment-content th:last-child,
+.assignment-content td:last-child {
+    border-right: none;
+}
+
+.assignment-content th {
+    font-weight: 600;
+    background: none;
+}
+
+.assignment-content tr:last-child td {
+    border-bottom: none;
+}
+
+.article-body td,
+.content td {
     border-bottom: 1px solid var(--border)
 }
 
@@ -1606,6 +1650,7 @@ th .download-link {
 .exam-gap::after {
     content: ")";
 }
+
 /* Mermaid Diagram Styles */
 .mermaid {
     background: transparent !important;
@@ -1630,6 +1675,7 @@ pre.mermaid {
     margin-left: auto;
     margin-right: auto;
 }
+
 .mermaid svg {
     max-width: 100%;
     height: auto;
@@ -1658,7 +1704,8 @@ pre.mermaid {
 
 .mermaid-switcher {
     display: flex;
-    justify-content: flex-end; /* Always on the right */
+    justify-content: flex-end;
+    /* Always on the right */
     margin-bottom: 0.75rem;
     width: 100%;
 }
@@ -1674,7 +1721,8 @@ pre.mermaid {
 }
 
 .switcher-btn {
-    display: flex; /* Added for icons */
+    display: flex;
+    /* Added for icons */
     align-items: center;
     gap: 0.4rem;
     border: none;
@@ -1702,7 +1750,7 @@ pre.mermaid {
 .switcher-btn.active {
     color: var(--heading);
     background: var(--bg);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .mermaid-content {

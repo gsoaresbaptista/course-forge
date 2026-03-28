@@ -147,13 +147,22 @@
         }
 
         .assignment-content th, .assignment-content td {
-            border: 1px solid var(--border-color);
             padding: 8px;
             text-align: left;
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .assignment-content th:last-child, .assignment-content td:last-child {
+            border-right: none;
         }
 
         .assignment-content th {
-            background: var(--bg-muted);
+            background: none;
+        }
+
+        .assignment-content tr:last-child td {
+            border-bottom: none;
         }
 
         /* KaTeX / Math / LaTeX Scaling */

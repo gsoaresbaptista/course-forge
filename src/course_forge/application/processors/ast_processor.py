@@ -30,14 +30,28 @@ class ASTProcessor(SVGProcessorBase):
             return content
         
         matches = list(self.pattern.finditer(content))
-        
-        for match in matches:
+        if not matches:
+            return content
+
+        # Process from back to front to avoid position shifts during replacement
+        processed_content = content
+        for match in reversed(matches):
             ast_notation = match.group("content").strip()
             attrs = self.parse_svg_attributes(match)
             
             try:
+                # Generate a unique prefix for this plot to avoid DOM ID collisions 
+                # between multiple SVGs on the same page.
+                import hashlib
+                prefix = "ast_" + hashlib.md5(ast_notation.encode()).hexdigest()[:8]
+
                 # Parse simple notation and convert to Graphviz DOT
-                dot_code = self._convert_to_dot(ast_notation)
+                dot_code = self._convert_to_dot(
+                    ast_notation,
+                    highlight_leftmost=attrs["leftmost"],
+                    highlight_rightmost=attrs["rightmost"],
+                    node_prefix=prefix
+                )
                 
                 # Render using Graphviz
                 svg_data = self._render_graphviz(dot_code)
@@ -51,18 +65,44 @@ class ASTProcessor(SVGProcessorBase):
                     css_class="svg-graph ast-plot-img",
                 )
                 svg_html = f'<div class="no-break">{svg_html}</div>'
-                content = content.replace(match.group(0), svg_html)
+                
+                # Replace only this specific match occurrence
+                start, end = match.span()
+                processed_content = processed_content[:start] + svg_html + processed_content[end:]
             except Exception as e:
                 error_msg = f'<div class="error">AST error: {str(e)}</div>'
-                content = content.replace(match.group(0), error_msg)
+                start, end = match.span()
+                processed_content = processed_content[:start] + error_msg + processed_content[end:]
         
-        return content
+        return processed_content
     
-    def _convert_to_dot(self, notation: str) -> str:
-        """Convert simple Lisp-like notation to Graphviz DOT."""
+    def _convert_to_dot(
+        self,
+        notation: str,
+        highlight_leftmost: bool = False,
+        highlight_rightmost: bool = False,
+        node_prefix: str = "n"
+    ) -> str:
+        """Convert simple Lisp-like notation to Graphviz DOT.
+        
+        Args:
+            notation: The Lisp-like AST notation string.
+            highlight_leftmost: If True, highlights the leftmost inner operator node.
+            highlight_rightmost: If True, highlights the rightmost inner operator node.
+            node_prefix: Prefix for node IDs to ensure uniqueness across multiple plots.
+        """
         # Parse the notation into a tree structure
         tokens = self._tokenize(notation)
         root, _ = self._parse_tokens(tokens, 0)
+
+        # Determine which node to highlight
+        highlight_id: str | None = None
+        root_id = f"{node_prefix}_0"
+        
+        if highlight_leftmost:
+            highlight_id = self._find_leftmost_inner_operator(root, root_id, node_prefix)
+        elif highlight_rightmost:
+            highlight_id = self._find_rightmost_inner_operator(root, root_id, node_prefix)
         
         # Generate DOT code
         dot_lines = [
@@ -71,8 +111,9 @@ class ASTProcessor(SVGProcessorBase):
             "    rankdir=TB",
             "    nodesep=0.5",
             "    ranksep=0.4",
+            "    ordering=out",  # Crucial: forces left-to-right order to match expression
             "",
-            "    /* Operator nodes */",
+            "    /* Operator nodes (default style) */",
             "    node [",
             '        shape=box',
             '        style="rounded,filled"',
@@ -86,11 +127,20 @@ class ASTProcessor(SVGProcessorBase):
             "",
         ]
         
-        # Add operator nodes
+        # Add operator nodes (use a synchronized shared counter)
+        shared_counter = [0]
         operators = []
-        self._collect_operators(root, operators)
+        self._collect_operators(root, operators, root_id, shared_counter, node_prefix)
         for op_id, op_label in operators:
-            dot_lines.append(f'    {op_id} [label="{self._escape_label(op_label)}"]')
+            if op_id == highlight_id:
+                accent_color = "#e8a317" if highlight_leftmost else "#17bfb8"
+                dot_lines.append(
+                    f'    {op_id} [label="{self._escape_label(op_label)}" '
+                    f'color="{accent_color}" fontcolor="{accent_color}" '
+                    f'style="rounded,filled" fillcolor="transparent"]'
+                )
+            else:
+                dot_lines.append(f'    {op_id} [label="{self._escape_label(op_label)}"]')
         
         # Switch to leaf node style
         dot_lines.extend([
@@ -105,9 +155,9 @@ class ASTProcessor(SVGProcessorBase):
             "",
         ])
         
-        # Add leaf nodes
+        # Add leaf nodes (reset counter to match operator traversal)
         leaves = []
-        self._collect_leaves(root, leaves)
+        self._collect_leaves(root, leaves, root_id, [0], node_prefix)
         for leaf_id, leaf_label in leaves:
             dot_lines.append(f'    {leaf_id} [label="{self._escape_label(leaf_label)}"]')
         
@@ -119,7 +169,7 @@ class ASTProcessor(SVGProcessorBase):
         ])
         
         edges = []
-        self._collect_edges(root, edges)
+        self._collect_edges(root, edges, root_id, [0], node_prefix)
         for parent, child in edges:
             dot_lines.append(f"    {parent} -> {child}")
         
@@ -185,34 +235,51 @@ class ASTProcessor(SVGProcessorBase):
             # This is a leaf node
             return {"type": "leaf", "value": token}, index + 1
     
-    def _collect_operators(self, node: dict, operators: list, node_id: str = "n0", counter: list = [0]):
+    def _collect_operators(self, node: dict, operators: list, node_id: str, counter: list, prefix: str):
         """Collect all operator nodes."""
         if node["type"] == "operator":
             operators.append((node_id, node["value"]))
-            for i, child in enumerate(node["children"]):
+            for child in node["children"]:
                 counter[0] += 1
-                child_id = f"n{counter[0]}"
-                self._collect_operators(child, operators, child_id, counter)
+                child_id = f"{prefix}_{counter[0]}"
+                self._collect_operators(child, operators, child_id, counter, prefix)
     
-    def _collect_leaves(self, node: dict, leaves: list, node_id: str = "n0", counter: list = [0]):
+    def _collect_leaves(self, node: dict, leaves: list, node_id: str, counter: list, prefix: str):
         """Collect all leaf nodes."""
         if node["type"] == "leaf":
             leaves.append((node_id, node["value"]))
         else:
-            for i, child in enumerate(node["children"]):
+            for child in node["children"]:
                 counter[0] += 1
-                child_id = f"n{counter[0]}"
-                self._collect_leaves(child, leaves, child_id, counter)
+                child_id = f"{prefix}_{counter[0]}"
+                self._collect_leaves(child, leaves, child_id, counter, prefix)
     
-    def _collect_edges(self, node: dict, edges: list, node_id: str = "n0", counter: list = [0]):
+    def _collect_edges(self, node: dict, edges: list, node_id: str, counter: list, prefix: str):
         """Collect all edges."""
         if node["type"] == "operator":
             for child in node["children"]:
                 counter[0] += 1
-                child_id = f"n{counter[0]}"
+                child_id = f"{prefix}_{counter[0]}"
                 edges.append((node_id, child_id))
-                self._collect_edges(child, edges, child_id, counter)
+                self._collect_edges(child, edges, child_id, counter, prefix)
     
+    def _find_leftmost_inner_operator(self, root: dict, root_id: str, prefix: str) -> str | None:
+        """Return the node ID of the first non-root operator in DFS left-to-right order."""
+        operators: list[tuple[str, str]] = []
+        self._collect_operators(root, operators, root_id, [0], prefix)
+        for op_id, _ in operators[1:]:
+            return op_id
+        return None
+
+    def _find_rightmost_inner_operator(self, root: dict, root_id: str, prefix: str) -> str | None:
+        """Return the node ID of the last non-root operator in DFS left-to-right order."""
+        operators: list[tuple[str, str]] = []
+        self._collect_operators(root, operators, root_id, [0], prefix)
+        for op_id, _ in reversed(operators):
+            if op_id != root_id:
+                return op_id
+        return None
+
     def _escape_label(self, label: str) -> str:
         """Escape special characters in labels."""
         # Replace * with proper multiplication symbol

@@ -25,7 +25,7 @@ class SVGProcessorBase(Processor):
         pattern_str = (
             r"(?P<indent>[ \t]*)"
             rf"```{re.escape(block_type)}"
-            r"(?:\s+(?:width=(?P<width>\d+)|height=(?P<height>\d+)|(?P<centered>centered)|(?P<sketch>sketch)))*"
+            r"(?:\s+(?:width=(?P<width>\d+)|height=(?P<height>\d+)|(?P<centered>centered)|(?P<sketch>sketch)|(?P<leftmost>leftmost)|(?P<rightmost>rightmost)))*"
             r"[ \t]*\r?\n(?P<content>.*?)```"
         )
         return re.compile(pattern_str, re.DOTALL)
@@ -43,12 +43,16 @@ class SVGProcessorBase(Processor):
                 - height: Height value as string or None
                 - centered: Boolean indicating if centered attribute is present
                 - sketch: Boolean indicating if sketch attribute is present
+                - leftmost: Boolean indicating leftmost-derivation highlight
+                - rightmost: Boolean indicating rightmost-derivation highlight
         """
         return {
             "width": match.group("width"),
             "height": match.group("height"),
             "centered": match.group("centered") is not None,
             "sketch": match.group("sketch") is not None,
+            "leftmost": match.group("leftmost") is not None,
+            "rightmost": match.group("rightmost") is not None,
         }
 
     def extract_svg_metadata(self, svg_bytes: bytes) -> dict[str, any]:
