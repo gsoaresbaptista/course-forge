@@ -1,3 +1,4 @@
+from typing import Optional
 import re
 from schemdraw.parsing.logic_parser import logicparse
 
@@ -23,27 +24,54 @@ class DigitalCircuitProcessor(SVGProcessorBase):
             left = sub_match.group("left").strip()
             right = sub_match.group("right").strip() if sub_match.group("right") else None
 
+            # Detect which side is the expression and which is the output label.
+            # Usually the label is a single word, while the expression contains operators.
+            # We support both "S = A and B" and "A and B = S".
+            if right:
+                # Heuristic: if left is a single identifier and right is more complex, left is outlabel.
+                # If right is a single identifier and left is more complex, right is outlabel.
+                left_is_simple = bool(re.fullmatch(r"[\w\.\$]+", left))
+                right_is_simple = bool(re.fullmatch(r"[\w\.\$]+", right))
+                
+                if left_is_simple and not right_is_simple:
+                    expr = right
+                    outlabel = left
+                elif right_is_simple and not left_is_simple:
+                    expr = left
+                    outlabel = right
+                else:
+                    # Identity case S = A or both complex (unlikely)
+                    # Use documentation default: OutputLabel = Expression
+                    expr = right
+                    outlabel = left
+            else:
+                expr = left
+                outlabel = None
+
+            # If the expression is just a single identifier, we handle it as a simple wire.
+            is_identity = bool(re.fullmatch(r"[\w\.\$]+", expr))
+
             attrs = self.parse_svg_attributes(match)
 
-            # If right-hand side logic is a python string literal (e.g. r'...' or "..."),
+            # If expression is a python string literal (e.g. r'...' or "..."),
             # extract the inner string content to allow LaTeX usage without quotes being rendered.
-            if right:
+            if expr:
                 # Check for r'...' or r"..."
-                if (right.startswith("r'") and right.endswith("'")) or \
-                   (right.startswith('r"') and right.endswith('"')):
-                    right = right[2:-1]
+                if (expr.startswith("r'") and expr.endswith("'")) or \
+                   (expr.startswith('r"') and expr.endswith('"')):
+                    expr = expr[2:-1]
                 # Check for '...' or "..."
-                elif (right.startswith("'") and right.endswith("'")) or \
-                     (right.startswith('"') and right.endswith('"')):
-                    right = right[1:-1]
+                elif (expr.startswith("'") and expr.endswith("'")) or \
+                     (expr.startswith('"') and expr.endswith('"')):
+                    expr = expr[1:-1]
                 
                 # Check for LaTeX syntax (backslashes) and wrap in $ if needed
-                if "\\" in right and not (right.startswith("$") and right.endswith("$")):
-                    right = f"${right}$"
+                if "\\" in expr and not (expr.startswith("$") and expr.endswith("$")):
+                    expr = f"${expr}$"
 
             attrs = self.parse_svg_attributes(match)
 
-            svg_data = self._render_circuit(left, right)
+            svg_data = self._render_circuit(expr, outlabel, is_identity=is_identity)
             svg_html = self.generate_inline_svg(
                 svg_data,
                 attrs["width"],
@@ -60,7 +88,7 @@ class DigitalCircuitProcessor(SVGProcessorBase):
 
         return content
 
-    def _render_circuit(self, expr: str, outlabel: str) -> bytes:
+    def _render_circuit(self, expr: str, outlabel: Optional[str], is_identity: bool = False) -> bytes:
         # Configure matplotlib for SVG output (similar to schemdraw processor)
         try:
             import schemdraw
@@ -71,7 +99,13 @@ class DigitalCircuitProcessor(SVGProcessorBase):
         except ImportError:
             pass
 
-        d = logicparse(expr, outlabel=outlabel)
+        if is_identity:
+            import schemdraw.elements as elm
+            d = schemdraw.Drawing()
+            d += elm.Line().length(1.5).label(expr, 'left').label(outlabel, 'right')
+        else:
+            d = logicparse(expr, outlabel=outlabel)
+        
         svg_data = d.get_imagedata("svg")
         
         # Explicitly close all figures to prevent "More than 20 figures have been opened" warning
