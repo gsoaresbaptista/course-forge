@@ -81,12 +81,22 @@ class BuildSiteUseCase:
 
         if Config.export_slides:
             print("Exporting slides to PDF...")
+            from course_forge.infrastructure.services.chrome_pdf_exporter import ChromePdfExporter
             from course_forge.infrastructure.services.decktape_exporter import DeckTapeExporter
-            exporter = DeckTapeExporter(self.writer._root_path)
+            
             # Sort URLs for consistent output
             with self._slides_lock:
                 urls = sorted(list(set(self.slide_urls)))
-            exporter.export_slides(urls)
+            
+            # Try Chrome first as it's lighter
+            chrome_exporter = ChromePdfExporter(self.writer._root_path)
+            if chrome_exporter.chrome_path:
+                print(f"Using Chrome for PDF export ({chrome_exporter.chrome_path})")
+                chrome_exporter.export_slides(urls)
+            else:
+                print("Chrome not found, falling back to DeckTape (Node.js required)")
+                exporter = DeckTapeExporter(self.writer._root_path)
+                exporter.export_slides(urls)
 
     def _collect_top_level_courses(self, node: ContentNode) -> list[dict]:
         courses = []
