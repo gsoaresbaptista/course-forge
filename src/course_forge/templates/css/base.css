@@ -1523,6 +1523,7 @@ th .download-link {
     align-items: center;
     width: 90%;
     margin: 0 auto;
+    align-items: flex-start;
 }
 
 .answer {
