@@ -1,6 +1,7 @@
 import hashlib
 import os
 import re
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from course_forge.application.loaders import MarkdownLoader
 from course_forge.application.processors import Processor
@@ -51,35 +52,21 @@ class BuildSiteUseCase:
             if hasattr(processor, "set_root"):
                 processor.set_root(tree.root)
 
-        existing_checksums = {}
-        if hasattr(self.writer, "load_checksums"):
-            existing_checksums = self.writer.load_checksums(root_path)
-
-        # Generate a hash for the current global configuration to detect changes
-        import json
-        config_for_hash = config.copy()
-        config_for_hash["base_url"] = Config.base_url
-        config_for_hash["template_dir"] = template_dir
-        current_config_hash = hashlib.md5(
-            json.dumps(config_for_hash, sort_keys=True).encode()
-        ).hexdigest()
-        
-        config_changed = existing_checksums.get("__config_hash__") != current_config_hash
-        new_checksums = {"__config_hash__": current_config_hash}
-
         self.writer.copy_assets(self.html_renderer.template_dir, skip_bundled=True)
 
-        self._process_node(
-            tree.root,
-            pre_processors,
-            post_processors,
-            global_config=config,
-            existing_checksums=existing_checksums if not config_changed else {},
-            new_checksums=new_checksums,
-        )
-
-        if hasattr(self.writer, "save_checksums"):
-            self.writer.save_checksums(root_path, new_checksums)
+        with ThreadPoolExecutor() as executor:
+            futures = []
+            self._process_node(
+                tree.root,
+                pre_processors,
+                post_processors,
+                global_config=config,
+                parent_course_config=None,
+                executor=executor,
+                futures=futures,
+            )
+            for f in as_completed(futures):
+                f.result()
 
         courses = self._collect_top_level_courses(tree.root)
 
@@ -286,12 +273,10 @@ class BuildSiteUseCase:
         post_processors: list[Processor],
         global_config: dict | None = None,
         parent_course_config: dict | None = None,
-        existing_checksums: dict | None = None,
-        new_checksums: dict | None = None,
+        executor=None,
+        futures=None,
     ) -> None:
         current_config = parent_course_config
-        existing_checksums = existing_checksums or {}
-        new_checksums = new_checksums if new_checksums is not None else {}
 
         # Check for config.yaml in this directory if it's a directory
         if not node.is_file and node.src_path:
@@ -305,22 +290,10 @@ class BuildSiteUseCase:
             print(f"Skipping alias: {node.slug} (points to {node.alias_to.slug})")
             return
 
-        if node.is_file:
+        def process_file():
             if node.file_extension == ".md":
                 markdown = self.loader.load(node.src_path)
                 content = markdown["content"]
-
-                current_checksum = hashlib.md5(content.encode("utf-8")).hexdigest()
-                new_checksums[node.src_path] = current_checksum
-                is_changed = existing_checksums.get(node.src_path) != current_checksum
-
-                output_exists = True
-                if hasattr(self.writer, "exists"):
-                    output_exists = self.writer.exists(node)
-
-                if not is_changed and output_exists:
-                    print(f"Skipping unchanged: {node.slug}")
-                    return
 
                 metadata = markdown.get("metadata", {})
                 node.metadata = metadata
@@ -356,40 +329,44 @@ class BuildSiteUseCase:
                             content, node, metadata=metadata, config=render_config
                         )
                 elif metadata.get("type") in ["assignment", "exam"]:
-                    original_markdown = content
+                    if not Config.generate_exams:
+                        html = None
+                    else:
+                        original_markdown = content
+                        
+                        # Also render for normal site view if needed, but primarily we want the assignment export
+                        rendered_body = self.markdown_renderer.render(content, chapter=chapter)
+                        
+                        if self.assignment_exporter:
+                            out_dir = os.path.join(self.writer._root_path, *node.slugs_path)
+                            os.makedirs(out_dir, exist_ok=True)
+                            out_html_path = os.path.join(out_dir, node.slug + ".html")
+                            course_name = render_config.get("name", "Unknown Course")
+                            assignment_title = metadata.get("title", "Avaliação")
+                            assignment_type = metadata.get("type")
+                            
+                            # Get standalone HTML
+                            html = self.assignment_exporter.export(
+                                original_markdown, 
+                                out_html_path, 
+                                assignment_title=assignment_title, 
+                                course_name=course_name, 
+                                metadata=metadata,
+                                assignment_type=assignment_type,
+                                html_renderer=self.html_renderer
+                            )
+                            
+                            # Run post-processors (like asset bundling) on the standalone HTML
+                            for processor in post_processors:
+                                html = processor.execute(node, html)
+                            
+                            # Write the final processed HTML to the assignment path
+                            with open(out_html_path, "w", encoding="utf-8") as f:
+                                f.write(html)
+                            
+                            # Prevent normal write from use case (we already wrote it)
+                            html = None 
                     
-                    # Also render for normal site view if needed, but primarily we want the assignment export
-                    rendered_body = self.markdown_renderer.render(content, chapter=chapter)
-                    
-                    if self.assignment_exporter:
-                        out_dir = os.path.join(self.writer._root_path, *node.slugs_path)
-                        os.makedirs(out_dir, exist_ok=True)
-                        out_html_path = os.path.join(out_dir, node.slug + ".html")
-                        course_name = render_config.get("name", "Unknown Course")
-                        assignment_title = metadata.get("title", "Avaliação")
-                        assignment_type = metadata.get("type")
-                        
-                        # Get standalone HTML
-                        html = self.assignment_exporter.export(
-                            original_markdown, 
-                            out_html_path, 
-                            assignment_title=assignment_title, 
-                            course_name=course_name, 
-                            metadata=metadata,
-                            assignment_type=assignment_type,
-                            html_renderer=self.html_renderer
-                        )
-                        
-                        # Run post-processors (like asset bundling) on the standalone HTML
-                        for processor in post_processors:
-                            html = processor.execute(node, html)
-                        
-                        # Write the final processed HTML to the assignment path
-                        with open(out_html_path, "w", encoding="utf-8") as f:
-                            f.write(html)
-                        
-                        # Prevent normal write from use case (we already wrote it)
-                        html = None 
                 else:
                     # Check if it was placed inside 'assignments' folder but missing metadata
                     is_in_assignments = False
@@ -401,7 +378,8 @@ class BuildSiteUseCase:
                         p = p.parent
                         
                     if is_in_assignments:
-                        print(f"WARNING: File {node.src_path} in assignments folder is not marked as assignment or exam. Skipping HTML/DOCX/PDF generation.")
+                        if Config.generate_exams:
+                            print(f"WARNING: File {node.src_path} in assignments folder is not marked as assignment or exam. Skipping HTML/DOCX/PDF generation.")
                         html = None
                     else:
                         # Standard page render
@@ -420,7 +398,8 @@ class BuildSiteUseCase:
                         self.writer.write(node, html)
             else:
                 self.writer.copy_file(node)
-        else:
+
+        def process_dir():
             has_md_files = any(
                 c.is_file and c.file_extension == ".md" for c in node.children
             )
@@ -440,7 +419,7 @@ class BuildSiteUseCase:
                         break
                     p = p.parent
                     
-                if not is_in_assignments:
+                if not is_in_assignments or Config.generate_exams:
                     render_config = (global_config or {}).copy()
                     if current_config:
                         render_config.update(current_config)
@@ -451,6 +430,17 @@ class BuildSiteUseCase:
                     for processor in post_processors:
                         contents_html = processor.execute(node, contents_html)
                     self.writer.write_contents(node, contents_html)
+
+        if node.is_file:
+            if executor is not None and futures is not None:
+                futures.append(executor.submit(process_file))
+            else:
+                process_file()
+        else:
+            if executor is not None and futures is not None:
+                futures.append(executor.submit(process_dir))
+            else:
+                process_dir()
 
         for child in node.children:
             # Skip slides folder from normal processing
@@ -463,8 +453,8 @@ class BuildSiteUseCase:
                 post_processors,
                 global_config,
                 current_config,
-                existing_checksums,
-                new_checksums,
+                executor,
+                futures,
             )
 
         # Process slides folder separately if it exists
@@ -476,7 +466,12 @@ class BuildSiteUseCase:
                         gc.is_file and gc.file_extension == ".md" for gc in child.children
                     )
                     if has_md:
-                        self._process_slides_folder(
-                            node, child, pre_processors, post_processors, global_config, current_config
-                        )
+                        def process_slides():
+                            self._process_slides_folder(
+                                node, child, pre_processors, post_processors, global_config, current_config
+                            )
+                        if executor is not None and futures is not None:
+                            futures.append(executor.submit(process_slides))
+                        else:
+                            process_slides()
                     break

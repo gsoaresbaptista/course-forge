@@ -10,3 +10,4 @@ wheels/
 # Virtual environments
 .venv
 test_content
+.course_forge_cache

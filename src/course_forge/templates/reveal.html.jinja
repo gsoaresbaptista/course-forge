@@ -11,12 +11,12 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reset.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/theme/white.min.css" />
-    <link rel="stylesheet" href="{{ base_url }}/css/prism-one-light.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/theme/beige.min.css" />
+    <link rel="stylesheet" href="{{ base_url }}/css/prism-one-light.css" data-no-bundle>
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
     <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -31,6 +31,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/notes/notes.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/markdown/markdown.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/math/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/zoom/zoom.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
@@ -43,9 +44,11 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script
         src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.js"></script>
-    <script src="{{ base_url }}/js/prism-slang.js"></script>
-    <script src="{{ base_url }}/js/mermaid.min.js"></script>
+    <script src="{{ base_url }}/js/prism-slang.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/mermaid.min.js" data-no-bundle></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             mermaid.initialize({
@@ -62,7 +65,7 @@
             slideNumber: 'c/t',
             center: false,
             controls: false,
-            plugins: [RevealMarkdown, RevealNotes, RevealMath.KaTeX],
+            plugins: [RevealMarkdown, RevealNotes, RevealMath.KaTeX, RevealZoom],
             katex: {
                 output: 'html',
                 throwOnError: false,
@@ -77,8 +80,8 @@
         Reveal.on('slideready', event => Prism.highlightAll());
         Reveal.on('slidechanged', event => Prism.highlightAll());
     </script>
-    <script src="{{ base_url }}/js/rough.min.js"></script>
-    <script src="{{ base_url }}/js/apply_sketch.js"></script>
+    <script src="{{ base_url }}/js/rough.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/apply_sketch.js" data-no-bundle></script>
     <style>
         /* Modern base styles */
         .reveal {

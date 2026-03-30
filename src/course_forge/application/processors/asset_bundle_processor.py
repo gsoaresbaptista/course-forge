@@ -2,11 +2,11 @@ import os
 import re
 from pathlib import Path
 
+from course_forge.domain.entities import ContentNode
 from course_forge.config import Config
 import csscompressor
 import jsmin
-
-from course_forge.domain.entities import ContentNode
+import threading
 
 from .base import Processor
 
@@ -21,10 +21,12 @@ class AssetBundleProcessor(Processor):
         self._bundles_written = False
         self._js_content = ""
         self._css_content = ""
+        self._lock = threading.Lock()
 
     def _prepare_bundles(self):
         """Bundle all local JS and CSS files found in the template directory."""
         js_priority = {
+            "lucide.min.js": -1,
             "katex.min.js": 0,
             "auto-render.min.js": 1,
             "prism.min.js": 2,
@@ -32,6 +34,7 @@ class AssetBundleProcessor(Processor):
             "apply_sketch.js": 4,
             "navigation.js": 5,
             "ui.js": 6,
+            "mermaid.min.js": 7,
         }
 
         def js_sort_key(f: Path):
@@ -46,9 +49,26 @@ class AssetBundleProcessor(Processor):
             for f in files:
                 try:
                     with open(f, "r", encoding="utf-8") as file:
-                        self._js_content += (
-                            f"\n/* --- BUNDLED: {f.name} --- */\n" + file.read() + "\n"
-                        )
+                        content = file.read()
+                        
+                        # Remove source mapping comments
+                        content = re.sub(r"\/\/[#@]\s*sourceMappingURL=.*$", "", content, flags=re.MULTILINE)
+                        content = re.sub(r"\/\*#\s*sourceMappingURL=.*?\*\/", "", content, flags=re.MULTILINE)
+
+                        # Add header
+                        self._js_content += f"\n/* --- BUNDLED: {f.name} --- */\n"
+                        
+                        # Minify ONLY if not already minified
+                        if f.name.endswith(".min.js"):
+                            self._js_content += content
+                        else:
+                            try:
+                                minified = jsmin.jsmin(content, quote_chars="'\"`")
+                                self._js_content += minified
+                            except Exception as e:
+                                print(f"Warning: Failed to minify {f.name}: {e}")
+                                self._js_content += content
+                        self._js_content += "\n;\n" # Semicolon + Newline safety
                 except Exception as e:
                     print(f"Warning: Failed to read {f} for bundling: {e}")
 
@@ -70,51 +90,65 @@ class AssetBundleProcessor(Processor):
             for f in files:
                 try:
                     with open(f, "r", encoding="utf-8") as file:
-                        self._css_content += (
-                            f"\n/* --- BUNDLED: {f.name} --- */\n" + file.read() + "\n"
-                        )
+                        content = file.read()
+                        
+                        # Remove source mapping comments
+                        content = re.sub(r"\/\/[#@]\s*sourceMappingURL=.*$", "", content, flags=re.MULTILINE)
+                        content = re.sub(r"\/\*#\s*sourceMappingURL=.*?\*\/", "", content, flags=re.MULTILINE)
+                        
+                        self._css_content += f"\n/* --- BUNDLED: {f.name} --- */\n"
+                        
+                        if f.name.endswith(".min.css"):
+                            self._css_content += content
+                        else:
+                            try:
+                                minified = csscompressor.compress(content)
+                                self._css_content += minified
+                            except Exception as e:
+                                print(f"Warning: Failed to compress {f.name}: {e}")
+                                self._css_content += content
+                        self._css_content += "\n"
                 except Exception as e:
                     print(f"Warning: Failed to read {f} for bundling: {e}")
 
     def _write_bundles(self):
-        """Minify and write the collected bundles to the output directory."""
+        """Write the collected bundles to the output directory."""
         if self._js_content:
             try:
-                minified = jsmin.jsmin(self._js_content, quote_chars="'\"`")
                 dst_path = self.output_dir / self.js_bundle_rel
                 dst_path.parent.mkdir(parents=True, exist_ok=True)
                 with open(dst_path, "w", encoding="utf-8") as f:
-                    f.write(minified)
+                    f.write(self._js_content)
             except Exception as e:
-                print(f"Warning: Failed to minify/write JS bundle: {e}")
+                print(f"Warning: Failed to write JS bundle: {e}")
 
         if self._css_content:
             try:
-                minified = csscompressor.compress(self._css_content)
                 dst_path = self.output_dir / self.css_bundle_rel
                 dst_path.parent.mkdir(parents=True, exist_ok=True)
                 with open(dst_path, "w", encoding="utf-8") as f:
-                    f.write(minified)
+                    f.write(self._css_content)
             except Exception as e:
-                print(f"Warning: Failed to minify/write CSS bundle: {e}")
+                print(f"Warning: Failed to write CSS bundle: {e}")
 
     def execute(self, node: ContentNode, content: str) -> str:
         """Replace local asset tags with a single bundle tag."""
-        if not self._bundles_written:
-            self._prepare_bundles()
-            self._write_bundles()
-            self._bundles_written = True
+        with self._lock:
+            if not self._bundles_written:
+                self._prepare_bundles()
+                self._write_bundles()
+                self._bundles_written = True
 
         # Handle base_url in patterns
         base_url_pattern = re.escape(Config.base_url) if Config.base_url else ""
         
         # Improved regex: handle base_url, single/double quotes and optional attributes
         js_pattern = re.compile(
-            rf'<script\s+[^>]*?src=["\'](?:{base_url_pattern})?(/js/[^":\' ]+)["\'][^>]*>\s*</script>',
+            rf'<script\s+(?!.*?data-no-bundle)[^>]*?src=["\'](?:{base_url_pattern})?(/js/[^":\' ]+)["\'][^>]*>\s*</script>',
             re.IGNORECASE,
         )
         css_pattern = re.compile(
-            rf'<link\s+[^>]*?href=["\'](?:{base_url_pattern})?(/css/[^":\' ]+)["\'][^>]*>', 
+            rf'<link\s+(?!.*?data-no-bundle)[^>]*?href=["\'](?:{base_url_pattern})?(/css/[^":\' ]+)["\'][^>]*>', 
             re.IGNORECASE
         )
 

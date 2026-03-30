@@ -71,7 +71,14 @@ class DigitalCircuitProcessor(SVGProcessorBase):
 
             attrs = self.parse_svg_attributes(match)
 
-            svg_data = self._render_circuit(expr, outlabel, is_identity=is_identity)
+            def render_circuit():
+                return self._render_circuit(expr, outlabel, is_identity=is_identity)
+
+            svg_data = self.get_cached_svg_or_render(
+                "digital_circuit",
+                match.group(0),
+                render_circuit
+            )
             svg_html = self.generate_inline_svg(
                 svg_data,
                 attrs["width"],

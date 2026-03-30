@@ -1,7 +1,9 @@
 import re
+import os
+import hashlib
 import xml.etree.ElementTree as ET
 from abc import abstractmethod
-from typing import Any
+from typing import Any, Callable
 
 from course_forge.domain.entities import ContentNode
 
@@ -10,6 +12,38 @@ from .base import Processor
 
 class SVGProcessorBase(Processor):
     """Base class for processors that generate SVG graphics with common metadata extraction."""
+
+    def get_cached_svg_or_render(self, processor_name: str, code_to_hash: str, render_func: Callable, *args, **kwargs) -> bytes:
+        """Cache mechanism to avoid recompiling heavy SVG graphics if the markdown block hasn't changed.
+        
+        Args:
+            processor_name: A unique name for the processor (e.g. 'schemdraw', 'graphviz')
+            code_to_hash: The full code block to compute the hash from (helps distinguish configs).
+            render_func: Callable that generates the SVG bytes.
+            *args, **kwargs: Passed to render_func.
+        """
+        cache_dir = os.path.join(os.getcwd(), ".course_forge_cache", processor_name)
+        os.makedirs(cache_dir, exist_ok=True)
+        
+        content_hash = hashlib.sha256(code_to_hash.encode('utf-8')).hexdigest()
+        cache_file = os.path.join(cache_dir, f"{content_hash}.svg")
+        
+        if os.path.exists(cache_file):
+            try:
+                with open(cache_file, "rb") as f:
+                    return f.read()
+            except IOError:
+                pass
+                
+        svg_data = render_func(*args, **kwargs)
+        
+        try:
+            with open(cache_file, "wb") as f:
+                f.write(svg_data)
+        except IOError:
+            pass
+            
+        return svg_data
 
     @staticmethod
     def create_pattern(block_type: str, _unused: str = "") -> re.Pattern:

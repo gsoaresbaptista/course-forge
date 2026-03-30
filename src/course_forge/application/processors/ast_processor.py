@@ -45,16 +45,21 @@ class ASTProcessor(SVGProcessorBase):
                 import hashlib
                 prefix = "ast_" + hashlib.md5(ast_notation.encode()).hexdigest()[:8]
 
-                # Parse simple notation and convert to Graphviz DOT
-                dot_code = self._convert_to_dot(
-                    ast_notation,
-                    highlight_leftmost=attrs["leftmost"],
-                    highlight_rightmost=attrs["rightmost"],
-                    node_prefix=prefix
-                )
+                def render_ast():
+                    prefix = "ast_" + hashlib.md5(ast_notation.encode()).hexdigest()[:8]
+                    dot_code = self._convert_to_dot(
+                        ast_notation,
+                        highlight_leftmost=attrs["leftmost"],
+                        highlight_rightmost=attrs["rightmost"],
+                        node_prefix=prefix
+                    )
+                    return self._render_graphviz(dot_code)
                 
-                # Render using Graphviz
-                svg_data = self._render_graphviz(dot_code)
+                svg_data = self.get_cached_svg_or_render(
+                    "ast",
+                    match.group(0),
+                    render_ast
+                )
                 
                 svg_html = self.generate_inline_svg(
                     svg_data,

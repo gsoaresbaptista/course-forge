@@ -87,25 +87,44 @@ window.CourseForgeUI = (function () {
          */
         initExamples: function () {
             var pageKey = location.pathname;
-            var examples = document.querySelectorAll('.example');
+            // Support multiple block types
+            var blockSelectors = ['.example', '.exam', '.assignment', '.question', '.questions', '.block-slide', '.block-presentation'];
+            var examples = document.querySelectorAll(blockSelectors.join(','));
+            
             examples.forEach(function (example, idx) {
-                var title = example.querySelector('.example-title');
+                // Determine the correct class names for this specific block type
+                var blockClass = "";
+                blockSelectors.forEach(function(cls) {
+                    if (example.classList.contains(cls.substring(1))) {
+                        blockClass = cls.substring(1);
+                    }
+                });
+                
+                var titleSelector = '.' + blockClass + '-title';
+                var contentClass = blockClass + '-content';
+                var collapsedClass = blockClass + '-collapsed';
+
+                var title = example.querySelector(titleSelector);
                 if (!title || title.dataset.initialized) return;
                 title.dataset.initialized = 'true';
 
                 // Add chevron icon to title
                 var chevron = document.createElement('i');
                 chevron.setAttribute('data-lucide', 'chevron-down');
-                chevron.className = 'example-chevron';
+                chevron.className = 'example-chevron'; // Keep this for styling or make it generic? Base.css uses .example-chevron
                 title.appendChild(chevron);
 
-                // Wrap all siblings after title into .example-content
-                var content = document.createElement('div');
-                content.className = 'example-content';
-                while (title.nextSibling) {
-                    content.appendChild(title.nextSibling);
+                // Wrap all siblings after title into the content div
+                var content = example.querySelector('.' + contentClass);
+                if (!content) {
+                    // Fallback for dynamically creating content div if not present
+                    content = document.createElement('div');
+                    content.className = contentClass;
+                    while (title.nextSibling) {
+                        content.appendChild(title.nextSibling);
+                    }
+                    example.appendChild(content);
                 }
-                example.appendChild(content);
 
                 // Determine storage key from title text
                 var storageKey = 'cf-ex:' + pageKey + ':' + (title.textContent.trim() || idx);
@@ -115,10 +134,10 @@ window.CourseForgeUI = (function () {
                 var startCollapsed = savedState === null || savedState === 'collapsed';
                 if (startCollapsed) {
                     content.style.height = '0';
-                    example.classList.add('example-collapsed');
+                    example.classList.add(collapsedClass);
                 } else {
                     content.style.height = 'auto';
-                    example.classList.remove('example-collapsed');
+                    example.classList.remove(collapsedClass);
                 }
 
                 // Track pending animation timer to prevent race conditions
@@ -131,7 +150,7 @@ window.CourseForgeUI = (function () {
                         pendingTimer = null;
                     }
 
-                    var isCollapsed = example.classList.contains('example-collapsed');
+                    var isCollapsed = example.classList.contains(collapsedClass);
 
                     if (isCollapsed) {
                         // EXPAND
@@ -144,7 +163,7 @@ window.CourseForgeUI = (function () {
                         // Measure natural height and animate to it
                         var targetHeight = content.scrollHeight;
                         content.style.height = targetHeight + 'px';
-                        example.classList.remove('example-collapsed');
+                        example.classList.remove(collapsedClass);
 
                         // After transition, set auto so content can resize
                         pendingTimer = setTimeout(function () {
@@ -163,7 +182,7 @@ window.CourseForgeUI = (function () {
 
                         // Animate to 0
                         content.style.height = '0';
-                        example.classList.add('example-collapsed');
+                        example.classList.add(collapsedClass);
 
                         pendingTimer = setTimeout(function () {
                             pendingTimer = null;

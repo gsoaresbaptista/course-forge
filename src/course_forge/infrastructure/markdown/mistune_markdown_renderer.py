@@ -10,7 +10,7 @@ from course_forge.application.renders import MarkdownRenderer
 def slugify(text: str) -> str:
     """Convert text to URL-friendly slug."""
     text = re.sub(r"LATEXPLACEHOLDER[a-f0-9]+N\d+", "", text, flags=re.IGNORECASE)
-    text = re.sub(r"EXAMPLEPLACEHOLDER[a-f0-9]+", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"BLOCKPLACEHOLDER[a-f0-9]+", "", text, flags=re.IGNORECASE)
     text = text.lower()
     text = re.sub(r"[^\w\s-]", "", text)
     text = re.sub(r"[\s_]+", "-", text)
@@ -152,20 +152,44 @@ class HeadingRenderer(CalloutMixin, mistune.HTMLRenderer):
 
     def block_code(self, code: str, info: str | None = None) -> str:
         lang = ""
+        fragment_classes: list[str] = []
+        fragment_index: str | None = None
+
         if info:
-            lang = info.strip().split(None, 1)[0]
+            info_parts = info.strip().split()
+            if info_parts:
+                lang = info_parts[0]
+                remaining = info_parts[1:]
+                i = 0
+                while i < len(remaining):
+                    part = remaining[i]
+                    if part == "fragment":
+                        fragment_classes.append("fragment")
+                    elif part.startswith("index="):
+                        fragment_index = part[len("index="):]
+                    elif fragment_classes:  # effect keyword after 'fragment'
+                        fragment_classes.append(part)
+                    i += 1
 
         classes = ["line-numbers"]
         if lang:
             classes.append(f"language-{lang}")
+        classes.extend(fragment_classes)
 
         class_str = " ".join(classes)
         data_lang = f' data-lang="{lang.upper()}"' if lang else ""
+        data_index = f' data-fragment-index="{fragment_index}"' if fragment_index else ""
         return (
-            f'<pre class="{class_str}"{data_lang}><code class="language-{lang or "none"}">'
+            f'<pre class="{class_str}"{data_lang}{data_index}><code class="language-{lang or "none"}">'
             f"{mistune.escape(code)}"
             f"</code></pre>\n"
         )
+
+
+# Regex matching inline fragment markers like {.fragment} or {.fragment.fade-up} or {.fragment.highlight-red index=2}
+_INLINE_FRAGMENT_RE = re.compile(
+    r'\{\s*\.fragment(?:\.([\w-]+))?(?:\s+index=(\d+))?\s*\}'
+)
 
 
 class SlideRenderer(CalloutMixin, mistune.HTMLRenderer):
@@ -175,13 +199,67 @@ class SlideRenderer(CalloutMixin, mistune.HTMLRenderer):
         """Use horizontal rules as slide separators."""
         return "</section>\n<section>"
 
+    def block_code(self, code: str, info: str | None = None) -> str:
+        """Reuse HeadingRenderer's code block with full fragment support."""
+        lang = ""
+        fragment_classes: list[str] = []
+        fragment_index: str | None = None
+
+        if info:
+            info_parts = info.strip().split()
+            if info_parts:
+                lang = info_parts[0]
+                remaining = info_parts[1:]
+                i = 0
+                while i < len(remaining):
+                    part = remaining[i]
+                    if part == "fragment":
+                        fragment_classes.append("fragment")
+                    elif part.startswith("index="):
+                        fragment_index = part[len("index="):]
+                    elif fragment_classes:
+                        fragment_classes.append(part)
+                    i += 1
+
+        classes = ["line-numbers"]
+        if lang:
+            classes.append(f"language-{lang}")
+        classes.extend(fragment_classes)
+
+        class_str = " ".join(classes)
+        data_lang = f' data-lang="{lang.upper()}"' if lang else ""
+        data_index = f' data-fragment-index="{fragment_index}"' if fragment_index else ""
+        return (
+            f'<pre class="{class_str}"{data_lang}{data_index}><code class="language-{lang or "none"}">'
+            f"{mistune.escape(code)}"
+            f"</code></pre>\n"
+        )
+
+    def list_item(self, text: str, **attrs) -> str:
+        """Support inline {.fragment} / {.fragment.effect index=N} markers on list items."""
+        # Strip trailing </p>\n to get the inner content, then re-wrap
+        match = _INLINE_FRAGMENT_RE.search(text)
+        if match:
+            effect = match.group(1)  # may be None
+            idx = match.group(2)     # may be None
+            # Remove the marker from the text
+            clean = _INLINE_FRAGMENT_RE.sub("", text).strip()
+            classes = ["fragment"]
+            if effect:
+                classes.append(effect)
+            class_str = " ".join(classes)
+            data_index = f' data-fragment-index="{idx}"' if idx else ""
+            return f'<li class="{class_str}"{data_index}>{clean}</li>\n'
+        return f"<li>{text}</li>\n"
+
 
 class MistuneMarkdownRenderer(MarkdownRenderer):
     COMMENT_PATTERN = re.compile(r"%%[\s\S]*?%%", re.MULTILINE)
 
     def render(self, text: str, chapter: int | None = None) -> str:
         text, latex_placeholders = self._preprocess_latex(text)
-        text, example_placeholders = self._preprocess_example_divs(text)
+        text, block_placeholders = self._preprocess_block_divs(text)
+        text, fragment_placeholders = self._preprocess_fragment_containers(text)
 
         # Fix nested emphasis ambiguity (e.g. **bold *italic*** -> **bold _italic_**)
         # Mistune v3 sometimes gets confused with triple asterisks at the end of nested spans.
@@ -191,12 +269,15 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         renderer = HeadingRenderer(chapter=chapter)
         markdown = mistune.create_markdown(
             renderer=renderer,
+            hard_wrap=True,
             plugins=["table", "strikethrough", table_in_quote, self._obsidian_comments_plugin],
         )
         html = str(markdown(text))
 
-        # Restore example divs (renders inner markdown)
-        html = self._restore_example_divs(html, example_placeholders, chapter)
+        # Restore block divs (renders inner markdown)
+        html = self._restore_block_divs(html, block_placeholders, chapter)
+        # Restore fragments
+        html = self._restore_fragment_containers(html, fragment_placeholders, chapter)
         # Restore LaTeX after markdown processing
         html = self._restore_placeholders(html, latex_placeholders)
         return html
@@ -204,10 +285,13 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
     def render_slide(self, text: str) -> str:
         """Render markdown content as Reveal.js slides."""
         text, latex_placeholders = self._preprocess_latex(text)
+        text, block_placeholders = self._preprocess_block_divs(text)
+        text, fragment_placeholders = self._preprocess_fragment_containers(text)
 
         renderer = SlideRenderer(escape=False)
         markdown = mistune.create_markdown(
             renderer=renderer,
+            hard_wrap=True,
             plugins=["table", "strikethrough", table_in_quote, self._obsidian_comments_plugin],
         )
         html = str(markdown(text))
@@ -219,6 +303,8 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         else:
             html = "<section></section>"
 
+        html = self._restore_block_divs(html, block_placeholders)
+        html = self._restore_fragment_containers(html, fragment_placeholders)
         html = self._restore_placeholders(html, latex_placeholders)
         return html
 
@@ -324,14 +410,31 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
             text = text.replace(placeholder, original)
         return text
 
-    # Regex to find opening <div class="example"> tags
-    _EXAMPLE_OPEN_RE = re.compile(r'<div\s+class="example">', re.DOTALL)
-    _EXAMPLE_TITLE_RE = re.compile(
-        r'<div\s+class="example-title">(.*?)</div>',
-        re.DOTALL,
+    # Regex to find opening block tags (example, exam, assignment, slide, etc.)
+    _BLOCK_OPEN_RE = re.compile(
+        r'<div\s+class="(example|exam|assignment|question|questions|block-slide|block-presentation)">', 
+        re.IGNORECASE
+    )
+    _BLOCK_TITLE_RE = re.compile(
+        r'<div\s+class="[\w-]+-title">(.*?)</div>',
+        re.DOTALL | re.IGNORECASE,
     )
 
-    def _preprocess_example_divs(
+    # Regex to find fragment containers: ::: fragment [effect] [index=N]
+    # Also matches ::: fragment list [effect] [index=N] for per-item fragments
+    _FRAGMENT_CONTAINER_RE = re.compile(r':::\s*fragment(?:\s+([^\n]*))?\s*\n(.*?)\n:::\s*', re.DOTALL)
+
+    # Valid Reveal.js fragment animation classes
+    _FRAGMENT_EFFECTS = {
+        "fade-out", "fade-up", "fade-down", "fade-left", "fade-right",
+        "fade-in-then-out", "fade-in-then-semi-out",
+        "grow", "shrink", "strike",
+        "highlight-red", "highlight-green", "highlight-blue",
+        "highlight-current-red", "highlight-current-green", "highlight-current-blue",
+        "semi-fade-out", "current-visible",
+    }
+
+    def _preprocess_block_divs(
         self, text: str
     ) -> tuple[str, dict[str, str]]:
         """Replace <div class='example'> blocks with placeholders before Mistune.
@@ -343,7 +446,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         pos = 0
 
         while pos < len(text):
-            match = self._EXAMPLE_OPEN_RE.search(text, pos)
+            match = self._BLOCK_OPEN_RE.search(text, pos)
             if not match:
                 result.append(text[pos:])
                 break
@@ -374,7 +477,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
                         # Found the matching </div>
                         full_block = text[match.start():next_close.end()]
                         content_hash = hashlib.md5(full_block.encode()).hexdigest()
-                        placeholder = f"EXAMPLEPLACEHOLDER{content_hash}"
+                        placeholder = f"BLOCKPLACEHOLDER{content_hash}"
                         placeholders[placeholder] = full_block
                         result.append(placeholder)
                         pos = next_close.end()
@@ -388,26 +491,30 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
 
         return "".join(result), placeholders
 
-    def _restore_example_divs(
+    def _restore_block_divs(
         self, html: str, placeholders: dict[str, str], chapter: int | None = None
     ) -> str:
-        """Restore example div placeholders, rendering inner markdown."""
+        """Restore block div placeholders, rendering inner markdown."""
         for placeholder, original in placeholders.items():
+            # Get the exact class from the original tag
+            class_match = re.search(r'class="([^"]+)"', original, re.IGNORECASE)
+            block_class = class_match.group(1) if class_match else "example"
+
             # Extract title
-            title_match = self._EXAMPLE_TITLE_RE.search(original)
+            title_match = self._BLOCK_TITLE_RE.search(original)
             title_html = ""
             inner_md = original
             if title_match:
                 title_html = title_match.group(0)
                 # Content is everything after the title div, before the closing </div>
                 after_title = original[title_match.end():]
-                # Remove the trailing </div> that closes the example div
+                # Remove the trailing </div> that closes the block div
                 if after_title.rstrip().endswith("</div>"):
                     after_title = after_title.rstrip()[:-len("</div>")]
                 inner_md = after_title
             else:
-                # No title — strip outer <div class="example"> and </div>
-                inner_md = self._EXAMPLE_OPEN_RE.sub("", original, count=1)
+                # No title — strip outer <div class="..."> and </div>
+                inner_md = self._BLOCK_OPEN_RE.sub("", original, count=1)
                 if inner_md.rstrip().endswith("</div>"):
                     inner_md = inner_md.rstrip()[:-len("</div>")]
 
@@ -419,7 +526,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
                 inner_html = ""
 
             restored = (
-                f'<div class="example">\n'
+                f'<div class="{block_class}">\n'
                 f"  {title_html}\n"
                 f"  {inner_html}\n"
                 f"</div>"
@@ -433,10 +540,88 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         renderer = HeadingRenderer(chapter=chapter)
         md = mistune.create_markdown(
             renderer=renderer,
+            hard_wrap=True,
             plugins=["table", "strikethrough", table_in_quote, self._obsidian_comments_plugin],
         )
         html = str(md(text))
         html = self._restore_placeholders(html, latex_ph)
+        return html
+
+    def _preprocess_fragment_containers(self, text: str) -> tuple[str, dict]:
+        """Extract ::: fragment blocks and replace them with placeholders."""
+        placeholders: dict[str, tuple] = {}
+
+        def replace_fragment(match):
+            opts_raw = match.group(1).strip() if match.group(1) else ""
+            content = match.group(2)
+
+            # Parse options: detect 'list' keyword, effect, and index=N
+            opts_parts = opts_raw.split() if opts_raw else []
+            is_list = False
+            effect: str | None = None
+            index: str | None = None
+
+            for part in opts_parts:
+                if part == "list":
+                    is_list = True
+                elif part.startswith("index="):
+                    index = part[len("index="):]
+                elif part in self._FRAGMENT_EFFECTS:
+                    effect = part
+                else:
+                    # Treat unknown keyword as effect (for forward-compat / custom effects)
+                    effect = part
+
+            content_hash = hashlib.md5(content.encode()).hexdigest()
+            placeholder = f"FRAGMENTPLACEHOLDER{content_hash}"
+            placeholders[placeholder] = (effect, index, is_list, content)
+            return placeholder
+
+        new_text = self._FRAGMENT_CONTAINER_RE.sub(replace_fragment, text)
+        return new_text, placeholders
+
+    def _restore_fragment_containers(
+        self, html: str, placeholders: dict, chapter: int | None = None
+    ) -> str:
+        """Restore fragment placeholders with rendered HTML."""
+        for placeholder, (effect, index, is_list, content) in placeholders.items():
+            inner_html = self._render_inner_markdown(content, chapter)
+
+            data_index = f' data-fragment-index="{index}"' if index else ""
+
+            if is_list:
+                # Wrap each <li> inside the inner HTML with fragment classes
+                classes = ["fragment"]
+                if effect:
+                    classes.append(effect)
+                class_str = " ".join(classes)
+
+                def add_fragment_to_li(m):
+                    existing_attrs = m.group(1).strip() if m.group(1) else ""
+                    # Merge with existing class if present
+                    if 'class="' in existing_attrs:
+                        new_attrs = re.sub(
+                            r'class="([^"]*)"',
+                            lambda cm: f'class="{cm.group(1)} {class_str}"',
+                            existing_attrs,
+                        )
+                    else:
+                        new_attrs = (existing_attrs + f' class="{class_str}"').strip()
+                    return f'<li {new_attrs}{data_index}>'
+
+                replacement = re.sub(r'<li([^>]*)>', add_fragment_to_li, inner_html)
+            else:
+                classes = ["fragment"]
+                if effect:
+                    classes.append(effect)
+                class_str = " ".join(classes)
+                replacement = (
+                    f'<div class="{class_str}"{data_index}>\n'
+                    f'  {inner_html}\n'
+                    f'</div>'
+                )
+
+            html = html.replace(placeholder, replacement)
         return html
 
     @staticmethod

@@ -28,7 +28,15 @@ class KarnaughMapProcessor(SVGProcessorBase):
 
             try:
                 config = self._parse_config(code)
-                svg_data = self._render_kmap(config)
+                
+                def render_kmap():
+                    return self._render_kmap(config)
+                    
+                svg_data = self.get_cached_svg_or_render(
+                    "karnaugh_map",
+                    match.group(0),
+                    render_kmap
+                )
                 
                 svg_html = self.generate_inline_svg(
                     svg_data,

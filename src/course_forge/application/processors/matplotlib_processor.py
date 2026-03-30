@@ -32,7 +32,13 @@ class MatplotlibProcessor(SVGProcessorBase):
             attrs = self.parse_svg_attributes(match)
 
             try:
-                svg_data = self._render_plot(code)
+                svg_data = self.get_cached_svg_or_render(
+                    "matplotlib",
+                    match.group(0),
+                    self._render_plot,
+                    code
+                )
+                
                 svg_html = self.generate_inline_svg(
                     svg_data,
                     attrs["width"],

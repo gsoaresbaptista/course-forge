@@ -34,7 +34,13 @@ class GraphvizProcessor(SVGProcessorBase):
             
             try:
                 # Render the DOT code to SVG
-                svg_data = self._render_graphviz(dot_code, attrs)
+                svg_data = self.get_cached_svg_or_render(
+                    "graphviz",
+                    match.group(0),
+                    self._render_graphviz,
+                    dot_code,
+                    attrs
+                )
                 
                 svg_html = self.generate_inline_svg(
                     svg_data,

@@ -1549,7 +1549,12 @@ th .download-link {
     line-height: normal !important;
 }
 
-.example {
+.example,
+.exam,
+.assignment,
+.question,
+.block-slide,
+.block-presentation {
     border: 1px solid var(--border);
     padding: 1rem 1.25rem;
     margin: 1.5rem 0;
@@ -1557,7 +1562,12 @@ th .download-link {
     background: var(--bg-alt)
 }
 
-.example-title {
+.example-title,
+.exam-title,
+.assignment-title,
+.question-title,
+.block-slide-title,
+.block-presentation-title {
     font-family: var(--font-headers);
     font-size: .9rem;
     font-weight: 600;
@@ -1571,10 +1581,16 @@ th .download-link {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     user-select: none
 }
 
-.example-title:hover {
+.example-title:hover,
+.exam-title:hover,
+.assignment-title:hover,
+.question-title:hover,
+.block-slide-title:hover,
+.block-presentation-title:hover {
     opacity: .8
 }
 
@@ -1590,19 +1606,107 @@ th .download-link {
     transform: rotate(-90deg)
 }
 
-.example-content {
+.example-content,
+.exam-content,
+.assignment-content,
+.question-content,
+.block-slide-content,
+.block-presentation-content {
     overflow: hidden;
     transition: height .3s ease
 }
 
-.example-collapsed .example-title {
+.example-collapsed .example-title,
+.exam-collapsed .exam-title,
+.assignment-collapsed .assignment-title,
+.question-collapsed .question-title,
+.block-slide-collapsed .block-slide-title,
+.block-presentation-collapsed .block-presentation-title {
     border-bottom-color: transparent;
     padding-bottom: 0;
     margin-bottom: 0
 }
 
-.example:not(.example-collapsed) .example-title {
+.example:not(.example-collapsed) .example-title,
+.exam:not(.example-collapsed) .exam-title,
+.assignment:not(.example-collapsed) .assignment-title,
+.question:not(.example-collapsed) .question-title,
+.block-slide:not(.example-collapsed) .block-slide-title,
+.block-presentation:not(.example-collapsed) .block-presentation-title {
     margin-bottom: 1rem
+}
+
+/* Reduce top margin for lists inside block containers and remove bullets for cleaner multiple-choice presentation */
+.example ul,
+.exam ul,
+.assignment ul,
+.question ul,
+.questions ul,
+.block-slide ul,
+.block-presentation ul,
+.example ol,
+.exam ol,
+.assignment ol,
+.question ol,
+.questions ol,
+.block-slide ol,
+.block-presentation ol {
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+    list-style-type: none;
+    padding-left: 0.5rem;
+}
+
+/* Eliminate gap when a list immediately follows a paragraph in these blocks (common for questions) */
+.example p+ul,
+.exam p+ul,
+.assignment p+ul,
+.question p+ul,
+.questions p+ul,
+.block-slide p+ul,
+.block-presentation p+ul,
+.example p+ol,
+.exam p+ol,
+.assignment p+ol,
+.question p+ol,
+.questions p+ol,
+.block-slide p+ol,
+.block-presentation p+ol {
+    margin-top: -1.25rem;
+}
+
+/* Questions block (transparent) */
+.questions {
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+.questions-title {
+    font-family: var(--font-headers);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    letter-spacing: .05em;
+    color: var(--heading);
+    padding-bottom: .75rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    user-select: none;
+}
+
+.questions-content {
+    overflow: hidden;
+    transition: height .3s ease;
+}
+
+.questions-collapsed .questions-title {
+    margin-bottom: 0;
 }
 
 /* Applet Styles */

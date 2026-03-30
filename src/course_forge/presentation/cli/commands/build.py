@@ -87,9 +87,6 @@ def build(content_path: str, output_path: str, template_dir: str | None = None) 
 
     container = DependencyContainer(output_path, template_dir=template_dir)
 
-    cache_dir = container._writer.get_cache_dir()
-    print(f"Using global checksum cache at: {cache_dir}")
-
     print("Processing content and applying pre-processors...")
     container.build_use_case.execute(
         content_path,

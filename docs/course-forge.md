@@ -662,6 +662,70 @@ Content...
 Content...
 ```
 
+## Fragmentos (Animações Reveal.js)
+
+O Course Forge suporta animações de fragmentos completas do Reveal.js para revelar elementos passo a passo nos slides.
+
+### 1. Blocos de Código
+
+Você pode adicionar o efeito e a ordem de aparição direntamente nos blocos de código:
+
+````markdown
+```python fragment
+print("aparece com fade-in padrão")
+```
+
+```python fragment fade-up index=2
+print("desliza para cima, aparece como segundo passo")
+```
+````
+
+### 2. Containers `::: fragment`
+
+Para animar qualquer tipo de conteúdo em bloco (imagens, equações, parágrafos), envolva-os em um container fragment:
+
+```markdown
+::: fragment fade-up
+Qualquer conteúdo: texto, imagem, equação...
+:::
+
+::: fragment highlight-red index=3
+$E = mc^2$
+:::
+```
+
+### 3. Listas (`::: fragment list`)
+
+Para animar os itens de uma lista individualmente e sequencialmente:
+
+```markdown
+::: fragment list fade-up
+- Primeiro item (aparece 1º)
+- Segundo item (aparece 2º)
+- Terceiro item (aparece 3º)
+:::
+```
+
+### 4. Itens de Lista Inline `{.fragment}`
+
+Para um controle mais granular dentro de itens de lista normais, use os marcadores inline:
+
+```markdown
+- Item normal (sempre visível)
+- Este aparece depois {.fragment}
+- Este também, com efeito {.fragment.fade-up}
+- Com ordem específica, aparecendo ao mesmo tempo que outro elemento {.fragment.highlight-red index=2}
+```
+
+### Efeitos Suportados
+
+Os seguintes efeitos padrão do Reveal.js podem ser utilizados:
+`fade-out`, `fade-up`, `fade-down`, `fade-left`, `fade-right`, `fade-in-then-out`, `fade-in-then-semi-out`, `grow`, `shrink`, `strike`, `highlight-red`, `highlight-green`, `highlight-blue`, `highlight-current-red`, `highlight-current-green`, `highlight-current-blue`, `semi-fade-out`, `current-visible`.
+
+### Controle de Ordem (`index=N`)
+
+Use `index=N` em qualquer um dos comandos acima para controlar a ordem de aparição. Elementos com o mesmo índice aparecerão juntos no mesmo "clique".
+
 # Automatic Features
 
 ## Download Links
