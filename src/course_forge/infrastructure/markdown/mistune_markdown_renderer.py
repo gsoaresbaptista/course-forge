@@ -412,7 +412,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
 
     # Regex to find opening block tags (example, exam, assignment, slide, etc.)
     _BLOCK_OPEN_RE = re.compile(
-        r'<div\s+class="(example|exam|assignment|question|questions|block-slide|block-presentation)">', 
+        r'<(?P<tag>div|span)\b[^>]*?(?:class="(?:example|exam|assignment|question|questions|block-slide|block-presentation)"|markdown="(?:1|true)")[^>]*>', 
         re.IGNORECASE
     )
     _BLOCK_TITLE_RE = re.compile(
@@ -437,9 +437,9 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
     def _preprocess_block_divs(
         self, text: str
     ) -> tuple[str, dict[str, str]]:
-        """Replace <div class='example'> blocks with placeholders before Mistune.
+        """Replace block html tags with placeholders before Mistune.
 
-        Uses depth tracking to correctly handle nested <div> tags and is code-aware.
+        Uses depth tracking to correctly handle nested tags and is code-aware.
         """
         placeholders: dict[str, str] = {}
         result = []
@@ -448,7 +448,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         # Pattern to match code blocks (to ignore) and block openings
         pattern = re.compile(
             r"(?P<code>```[\s\S]*?```|`[^`\n]+`)|"
-            r"(?P<open><div\s+class=\"(example|exam|assignment|question|questions|block-slide|block-presentation)\">)",
+            r"(?P<open><(?P<tag>div|span)\b[^>]*?(?:class=\"(?:example|exam|assignment|question|questions|block-slide|block-presentation)\"|markdown=\"(?:1|true)\")[^>]*>)",
             re.IGNORECASE | re.MULTILINE
         )
 
@@ -467,15 +467,17 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
                 continue
 
             # Found an opening tag
-            # Find the matching </div> by counting depth, skipping code blocks inside
+            tag_name = match.group("tag").lower()
+            
+            # Find the matching closing tag by counting depth, skipping code blocks inside
             depth = 1
             search_pos = match.end()
             
             # Sub-pattern for finding next open/close or code block
             sub_pattern = re.compile(
                 r"(?P<code>```[\s\S]*?```|`[^`\n]+`)|"
-                r"(?P<open><div[\s>])|"
-                r"(?P<close></div>)",
+                rf"(?P<open><{tag_name}[\s>])|"
+                rf"(?P<close></{tag_name}>)",
                 re.IGNORECASE | re.MULTILINE
             )
 
@@ -518,27 +520,34 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
     ) -> str:
         """Restore block div placeholders, rendering inner markdown."""
         for placeholder, original in placeholders.items():
-            # Get the exact class from the original tag
-            class_match = re.search(r'class="([^"]+)"', original, re.IGNORECASE)
-            block_class = class_match.group(1) if class_match else "example"
+            open_match = self._BLOCK_OPEN_RE.match(original)
+            if not open_match:
+                # Fallback, just return unchanged if somehow pattern misses
+                html = html.replace(placeholder, original)
+                continue
+                
+            open_tag = open_match.group(0)
+            tag_name = open_match.group("tag").lower()
+            close_tag = f"</{tag_name}>"
 
             # Extract title
-            title_match = self._BLOCK_TITLE_RE.search(original)
+            title_match = self._BLOCK_TITLE_RE.search(original, open_match.end())
             title_html = ""
             inner_md = original
+            
             if title_match:
                 title_html = title_match.group(0)
-                # Content is everything after the title div, before the closing </div>
+                # Content is everything after the title div, before the closing tag
                 after_title = original[title_match.end():]
-                # Remove the trailing </div> that closes the block div
-                if after_title.rstrip().endswith("</div>"):
-                    after_title = after_title.rstrip()[:-len("</div>")]
+                # Remove the trailing closing tag
+                if after_title.rstrip().endswith(close_tag):
+                    after_title = after_title.rstrip()[:-len(close_tag)]
                 inner_md = after_title
             else:
-                # No title — strip outer <div class="..."> and </div>
-                inner_md = self._BLOCK_OPEN_RE.sub("", original, count=1)
-                if inner_md.rstrip().endswith("</div>"):
-                    inner_md = inner_md.rstrip()[:-len("</div>")]
+                # No title — strip outer open_tag and close_tag
+                inner_md = original[open_match.end():]
+                if inner_md.rstrip().endswith(close_tag):
+                    inner_md = inner_md.rstrip()[:-len(close_tag)]
 
             # Render the inner content as markdown
             inner_md = inner_md.strip()
@@ -547,13 +556,28 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
             else:
                 inner_html = ""
 
-            restored = (
-                f'<div class="{block_class}">\n'
-                f"  {title_html}\n"
-                f"  {inner_html}\n"
-                f"</div>"
-            )
-            html = html.replace(placeholder, restored)
+            restored = f"{open_tag}\n"
+            if title_html:
+                restored += f"  {title_html}\n"
+            if inner_html:
+                # remove trailing newline from inner_html to keep things tidy
+                restored += f"  {inner_html.rstrip()}\n"
+            restored += f"{close_tag}"
+            
+            # Mistune often wraps block placeholders with <p> since they are just text between blank lines.
+            p_wrapped = rf"<p>\s*{placeholder}\s*</p>"
+            if re.search(p_wrapped, html):
+                html = re.sub(p_wrapped, restored, html)
+            else:
+                html = html.replace(placeholder, restored)
+        return html
+
+    def _unwrap_single_paragraph(self, html: str) -> str:
+        """Remove <p> tags if the html is exactly one paragraph."""
+        stripped = html.strip()
+        if stripped.startswith('<p>') and stripped.endswith('</p>'):
+            if stripped.count('<p>') == 1 and stripped.count('</p>') == 1:
+                return stripped[3:-4].strip()
         return html
 
     def _render_inner_markdown(self, text: str, is_slide: bool = False, chapter: int | None = None) -> str:
@@ -570,7 +594,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         html = str(md(text))
         html = self._restore_fragment_containers(html, fragment_ph, is_slide, chapter)
         html = self._restore_placeholders(html, latex_ph)
-        return html
+        return self._unwrap_single_paragraph(html)
 
     def _preprocess_fragment_containers(self, text: str) -> tuple[str, dict]:
         """Extract ::: fragment blocks and replace them with placeholders."""
@@ -656,11 +680,15 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
                 class_str = " ".join(classes)
                 replacement = (
                     f'<div class="{class_str}"{data_index}>\n'
-                    f'  {inner_html}\n'
+                    f'  {inner_html.rstrip()}\n'
                     f'</div>'
                 )
 
-            html = html.replace(placeholder, replacement)
+            p_wrapped = rf"<p>\s*{placeholder}\s*</p>"
+            if re.search(p_wrapped, html):
+                html = re.sub(p_wrapped, replacement, html)
+            else:
+                html = html.replace(placeholder, replacement)
         return html
 
     @staticmethod
