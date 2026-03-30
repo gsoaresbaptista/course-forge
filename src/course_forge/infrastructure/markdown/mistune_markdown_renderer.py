@@ -422,7 +422,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
 
     # Regex to find fragment containers: ::: fragment [effect] [index=N]
     # Also matches ::: fragment list [effect] [index=N] for per-item fragments
-    _FRAGMENT_CONTAINER_RE = re.compile(r':::\s*fragment(?:\s+([^\n]*))?\s*\n(.*?)\n:::\s*', re.DOTALL)
+    _FRAGMENT_CONTAINER_RE = re.compile(r':::[ \t]*fragment(?:[ \t]+([^\n]*))?[ \t]*\n(.*?)\n:::[ \t]*', re.DOTALL)
 
     # Valid Reveal.js fragment animation classes
     _FRAGMENT_EFFECTS = {
@@ -439,14 +439,21 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
     ) -> tuple[str, dict[str, str]]:
         """Replace <div class='example'> blocks with placeholders before Mistune.
 
-        Uses depth tracking to correctly handle nested <div> tags.
+        Uses depth tracking to correctly handle nested <div> tags and is code-aware.
         """
         placeholders: dict[str, str] = {}
         result = []
         pos = 0
 
+        # Pattern to match code blocks (to ignore) and block openings
+        pattern = re.compile(
+            r"(?P<code>```[\s\S]*?```|`[^`\n]+`)|"
+            r"(?P<open><div\s+class=\"(example|exam|assignment|question|questions|block-slide|block-presentation)\">)",
+            re.IGNORECASE | re.MULTILINE
+        )
+
         while pos < len(text):
-            match = self._BLOCK_OPEN_RE.search(text, pos)
+            match = pattern.search(text, pos)
             if not match:
                 result.append(text[pos:])
                 break
@@ -454,35 +461,50 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
             # Append everything before this match
             result.append(text[pos:match.start()])
 
-            # Find the matching </div> by counting depth
+            if match.group("code"):
+                result.append(match.group(0))
+                pos = match.end()
+                continue
+
+            # Found an opening tag
+            # Find the matching </div> by counting depth, skipping code blocks inside
             depth = 1
             search_pos = match.end()
-            div_open = re.compile(r'<div[\s>]', re.IGNORECASE)
-            div_close = re.compile(r'</div>', re.IGNORECASE)
+            
+            # Sub-pattern for finding next open/close or code block
+            sub_pattern = re.compile(
+                r"(?P<code>```[\s\S]*?```|`[^`\n]+`)|"
+                r"(?P<open><div[\s>])|"
+                r"(?P<close></div>)",
+                re.IGNORECASE | re.MULTILINE
+            )
 
             while depth > 0 and search_pos < len(text):
-                next_open = div_open.search(text, search_pos)
-                next_close = div_close.search(text, search_pos)
-
-                if next_close is None:
-                    # No more closing tags — malformed, take rest
+                sub_match = sub_pattern.search(text, search_pos)
+                if not sub_match:
+                    # No more tags — malformed, take rest
                     break
 
-                if next_open and next_open.start() < next_close.start():
+                if sub_match.group("code"):
+                    search_pos = sub_match.end()
+                    continue
+                
+                if sub_match.group("open"):
                     depth += 1
-                    search_pos = next_open.end()
-                else:
+                    search_pos = sub_match.end()
+                elif sub_match.group("close"):
                     depth -= 1
                     if depth == 0:
                         # Found the matching </div>
-                        full_block = text[match.start():next_close.end()]
+                        full_block = text[match.start():sub_match.end()]
                         content_hash = hashlib.md5(full_block.encode()).hexdigest()
                         placeholder = f"BLOCKPLACEHOLDER{content_hash}"
                         placeholders[placeholder] = full_block
-                        result.append(placeholder)
-                        pos = next_close.end()
+                        # Surround with blank lines
+                        result.append(f"\n\n{placeholder}\n\n")
+                        pos = sub_match.end()
                         break
-                    search_pos = next_close.end()
+                    search_pos = sub_match.end()
             else:
                 # Couldn't find matching close, skip this match
                 result.append(match.group(0))
@@ -553,10 +575,22 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
     def _preprocess_fragment_containers(self, text: str) -> tuple[str, dict]:
         """Extract ::: fragment blocks and replace them with placeholders."""
         placeholders: dict[str, tuple] = {}
+        counter = 0
+
+        # Pattern to match code blocks (to ignore) and fragments
+        pattern = re.compile(
+            r"(?P<code>```[\s\S]*?```|`[^`\n]+`)|"
+            r"(?P<fragment>^[ \t]*:::[ \t]*fragment(?P<opts_raw>[ \t]+[^\n]*)?[ \t]*\n(?P<content>.*?)\n^[ \t]*:::[ \t]*$)",
+            re.MULTILINE | re.DOTALL
+        )
 
         def replace_fragment(match):
-            opts_raw = match.group(1).strip() if match.group(1) else ""
-            content = match.group(2)
+            nonlocal counter
+            if match.group("code"):
+                return match.group(0)
+
+            opts_raw = match.group("opts_raw").strip() if match.group("opts_raw") else ""
+            content = match.group("content")
 
             # Parse options: detect 'list' keyword, effect, and index=N
             opts_parts = opts_raw.split() if opts_raw else []
@@ -572,15 +606,17 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
                 elif part in self._FRAGMENT_EFFECTS:
                     effect = part
                 else:
-                    # Treat unknown keyword as effect (for forward-compat / custom effects)
                     effect = part
 
             content_hash = hashlib.md5(content.encode()).hexdigest()
-            placeholder = f"FRAGMENTPLACEHOLDER{content_hash}"
+            placeholder = f"FRAGMENTPLACEHOLDER{content_hash}N{counter}"
+            counter += 1
             placeholders[placeholder] = (effect, index, is_list, content)
-            return placeholder
+            
+            # Surround with blank lines to avoid being eaten by setext headings (---)
+            return f"\n\n{placeholder}\n\n"
 
-        new_text = self._FRAGMENT_CONTAINER_RE.sub(replace_fragment, text)
+        new_text = pattern.sub(replace_fragment, text)
         return new_text, placeholders
 
     def _restore_fragment_containers(
