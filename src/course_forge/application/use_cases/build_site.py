@@ -88,15 +88,21 @@ class BuildSiteUseCase:
             with self._slides_lock:
                 urls = sorted(list(set(self.slide_urls)))
             
-            # Try Chrome first as it's lighter
-            chrome_exporter = ChromePdfExporter(self.writer._root_path)
-            if chrome_exporter.chrome_path:
-                print(f"Using Chrome for PDF export ({chrome_exporter.chrome_path})")
-                chrome_exporter.export_slides(urls)
-            else:
-                print("Chrome not found, falling back to DeckTape (Node.js required)")
+            # Prefer DeckTape for Reveal.js as it iterates through slides
+            # and handles fragments better than a simple Chrome print.
+            import shutil
+            if shutil.which("node"):
+                print("Using DeckTape for high-quality slide export (Node.js detected)")
                 exporter = DeckTapeExporter(self.writer._root_path)
                 exporter.export_slides(urls)
+            else:
+                # Fallback to Chrome if Node is missing
+                chrome_exporter = ChromePdfExporter(self.writer._root_path)
+                if chrome_exporter.chrome_path:
+                    print(f"Using Chrome for PDF export ({chrome_exporter.chrome_path})")
+                    chrome_exporter.export_slides(urls)
+                else:
+                    print("Neither Node.js nor Chrome found. Slide export failed.")
 
     def _collect_top_level_courses(self, node: ContentNode) -> list[dict]:
         courses = []

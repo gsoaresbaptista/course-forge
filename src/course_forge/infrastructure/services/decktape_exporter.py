@@ -70,24 +70,23 @@ class DeckTapeExporter:
             pdf_path = os.path.splitext(html_path)[0] + ".pdf"
             
             # Optimized decktape command
-            # Using --wait-until load and --load-pause 200 since assets are local
+            # Using --wait-until load and --load-pause 1000 since assets are local
+            common_args = [
+                "reveal",
+                url, pdf_path,
+                "--size", "1280x720",
+                "--wait-until", "load",
+                "--load-pause", "1000",
+                "--chrome-arg=--no-sandbox",
+                "--chrome-arg=--disable-gpu",
+                "--chrome-arg=--allow-file-access-from-files"
+            ]
+            
             if decktape_bin:
-                cmd = [
-                    decktape_bin, "reveal",
-                    url, pdf_path,
-                    "--size", "1280x720",
-                    "--wait-until", "load",
-                    "--load-pause", "200"
-                ]
+                cmd = [decktape_bin] + common_args
             else:
                 # Fallback to npx but with speed flags
-                cmd = [
-                    "npx", "-y", "decktape@3.12.0", "reveal",
-                    url, pdf_path,
-                    "--size", "1280x720",
-                    "--wait-until", "load",
-                    "--load-pause", "200"
-                ]
+                cmd = ["npx", "-y", "decktape@3.12.0"] + common_args
             
             try:
                 subprocess.run(cmd, check=True, capture_output=True, text=True)

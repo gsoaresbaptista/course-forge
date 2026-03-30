@@ -11,4 +11,4 @@ wheels/
 .venv
 test_content
 .course_forge_cache
-node_modules/
+./node_modules
