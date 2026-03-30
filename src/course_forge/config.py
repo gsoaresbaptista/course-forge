@@ -12,6 +12,7 @@ class Config:
     watch_port = int(os.getenv("COURSE_FORGE_WATCH_PORT", "8001"))
     base_url = os.getenv("COURSE_FORGE_BASE_URL", "").rstrip("/")
     generate_exams = False
+    export_slides = False
 
     @classmethod
     def update_from_args(cls, args: argparse.Namespace):
@@ -29,3 +30,5 @@ class Config:
             cls.base_url = args.base_url.rstrip("/")
         if hasattr(args, "exam") and args.exam:
             cls.generate_exams = args.exam
+        if hasattr(args, "slide_export") and args.slide_export:
+            cls.export_slides = args.slide_export

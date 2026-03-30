@@ -1,6 +1,7 @@
 import hashlib
 import os
 import re
+import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from course_forge.application.loaders import MarkdownLoader
@@ -28,6 +29,8 @@ class BuildSiteUseCase:
         self.html_renderer = html_renderer
         self.writer = writer
         self.assignment_exporter = None
+        self.slide_urls = []
+        self._slides_lock = threading.Lock()
 
     def execute(
         self,
@@ -52,7 +55,7 @@ class BuildSiteUseCase:
             if hasattr(processor, "set_root"):
                 processor.set_root(tree.root)
 
-        self.writer.copy_assets(self.html_renderer.template_dir, skip_bundled=True)
+        self.writer.copy_assets(self.html_renderer.template_dir, skip_bundled=False)
 
         with ThreadPoolExecutor() as executor:
             futures = []
@@ -75,6 +78,15 @@ class BuildSiteUseCase:
             for processor in post_processors:
                 index_html = processor.execute(tree.root, index_html)
             self.writer.write_index(index_html)
+
+        if Config.export_slides:
+            print("Exporting slides to PDF...")
+            from course_forge.infrastructure.services.decktape_exporter import DeckTapeExporter
+            exporter = DeckTapeExporter(self.writer._root_path)
+            # Sort URLs for consistent output
+            with self._slides_lock:
+                urls = sorted(list(set(self.slide_urls)))
+            exporter.export_slides(urls)
 
     def _collect_top_level_courses(self, node: ContentNode) -> list[dict]:
         courses = []
@@ -230,6 +242,11 @@ class BuildSiteUseCase:
 
                 # Write the slide file
                 self.writer.write(slide_file, html)
+
+                # Collect URL for export
+                with self._slides_lock:
+                    rel_path = "/".join(slide_file.slugs_path + [slide_file.slug + ".html"])
+                    self.slide_urls.append(rel_path)
 
                 # Collect metadata for listing
                 slide_name = self._clean_name(slide_file.name)
@@ -396,6 +413,11 @@ class BuildSiteUseCase:
                     # Assignments and exams are exported as DOCX/PDF only; skip HTML page.
                     if metadata.get("type") not in ["assignment", "exam"]:
                         self.writer.write(node, html)
+                        
+                        if metadata.get("type") == "slide":
+                            with self._slides_lock:
+                                rel_path = "/".join(node.slugs_path + [node.slug + ".html"])
+                                self.slide_urls.append(rel_path)
             else:
                 self.writer.copy_file(node)
 

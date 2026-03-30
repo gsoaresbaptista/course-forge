@@ -1,0 +1,95 @@
+<svg width="278pt" height="209pt"
+ viewBox="0.00 0.00 278.00 209.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 205)">
+<title>CompilerPipeline</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-205 274,-205 274,4 -4,4"/>
+<g id="clust1" class="cluster">
+<title>cluster_frontends</title>
+<path fill="#f5f5e8" stroke="black" d="M20,-8C20,-8 70,-8 70,-8 76,-8 82,-14 82,-20 82,-20 82,-181 82,-181 82,-187 76,-193 70,-193 70,-193 20,-193 20,-193 14,-193 8,-187 8,-181 8,-181 8,-20 8,-20 8,-14 14,-8 20,-8"/>
+<text xml:space="preserve" text-anchor="middle" x="45" y="-175.7" font-family="Times,serif" font-size="14.00">Frontends</text>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_backends</title>
+<path fill="#f5f5e8" stroke="black" d="M204,-8C204,-8 250,-8 250,-8 256,-8 262,-14 262,-20 262,-20 262,-181 262,-181 262,-187 256,-193 250,-193 250,-193 204,-193 204,-193 198,-193 192,-187 192,-181 192,-181 192,-20 192,-20 192,-14 198,-8 204,-8"/>
+<text xml:space="preserve" text-anchor="middle" x="227" y="-175.7" font-family="Times,serif" font-size="14.00">Backends</text>
+</g>
+<!-- c -->
+<g id="node1" class="node">
+<title>c</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M60,-52C60,-52 30,-52 30,-52 24,-52 18,-46 18,-40 18,-40 18,-28 18,-28 18,-22 24,-16 30,-16 30,-16 60,-16 60,-16 66,-16 72,-22 72,-28 72,-28 72,-40 72,-40 72,-46 66,-52 60,-52"/>
+<text xml:space="preserve" text-anchor="middle" x="45" y="-28.57" font-family="Helvetica,sans-Serif" font-size="14.00">C</text>
+</g>
+<!-- ir -->
+<g id="node4" class="node">
+<title>ir</title>
+<path fill="none" stroke="#7a5cff" stroke-width="2" d="M152,-106C152,-106 122,-106 122,-106 116,-106 110,-100 110,-94 110,-94 110,-82 110,-82 110,-76 116,-70 122,-70 122,-70 152,-70 152,-70 158,-70 164,-76 164,-82 164,-82 164,-94 164,-94 164,-100 158,-106 152,-106"/>
+<text xml:space="preserve" text-anchor="middle" x="137" y="-82.58" font-family="Helvetica,sans-Serif" font-size="14.00">IR</text>
+</g>
+<!-- c&#45;&gt;ir -->
+<g id="edge1" class="edge">
+<title>c&#45;&gt;ir</title>
+<path fill="none" stroke="black" d="M72.48,-46.58C79.6,-50.42 87.5,-55.29 99.9,-63.39"/>
+<polygon fill="black" stroke="black" points="97.7,-66.14 107.98,-68.71 101.55,-60.29 97.7,-66.14"/>
+</g>
+<!-- java -->
+<g id="node2" class="node">
+<title>java</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M60,-106C60,-106 30,-106 30,-106 24,-106 18,-100 18,-94 18,-94 18,-82 18,-82 18,-76 24,-70 30,-70 30,-70 60,-70 60,-70 66,-70 72,-76 72,-82 72,-82 72,-94 72,-94 72,-100 66,-106 60,-106"/>
+<text xml:space="preserve" text-anchor="middle" x="45" y="-82.58" font-family="Helvetica,sans-Serif" font-size="14.00">Java</text>
+</g>
+<!-- java&#45;&gt;ir -->
+<g id="edge2" class="edge">
+<title>java&#45;&gt;ir</title>
+<path fill="none" stroke="black" d="M72.13,-84.34C78.71,-84.06 86.28,-84.3 97.82,-85.05"/>
+<polygon fill="black" stroke="black" points="97.33,-88.52 107.55,-85.73 97.82,-81.54 97.33,-88.52"/>
+</g>
+<!-- python -->
+<g id="node3" class="node">
+<title>python</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M62,-160C62,-160 28,-160 28,-160 22,-160 16,-154 16,-148 16,-148 16,-136 16,-136 16,-130 22,-124 28,-124 28,-124 62,-124 62,-124 68,-124 74,-130 74,-136 74,-136 74,-148 74,-148 74,-154 68,-160 62,-160"/>
+<text xml:space="preserve" text-anchor="middle" x="45" y="-136.57" font-family="Helvetica,sans-Serif" font-size="14.00">Python</text>
+</g>
+<!-- python&#45;&gt;ir -->
+<g id="edge3" class="edge">
+<title>python&#45;&gt;ir</title>
+<path fill="none" stroke="black" d="M69.79,-123.67C76.83,-119.2 85.32,-114.52 99.26,-107.28"/>
+<polygon fill="black" stroke="black" points="100.61,-110.52 107.9,-102.83 97.41,-104.3 100.61,-110.52"/>
+</g>
+<!-- x86 -->
+<g id="node5" class="node">
+<title>x86</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M242,-52C242,-52 212,-52 212,-52 206,-52 200,-46 200,-40 200,-40 200,-28 200,-28 200,-22 206,-16 212,-16 212,-16 242,-16 242,-16 248,-16 254,-22 254,-28 254,-28 254,-40 254,-40 254,-46 248,-52 242,-52"/>
+<text xml:space="preserve" text-anchor="middle" x="227" y="-28.57" font-family="Helvetica,sans-Serif" font-size="14.00">x86</text>
+</g>
+<!-- ir&#45;&gt;x86 -->
+<g id="edge4" class="edge">
+<title>ir&#45;&gt;x86</title>
+<path fill="none" stroke="black" d="M164.53,-69.78C175.57,-62.5 183.51,-57.35 189.99,-53.35"/>
+<polygon fill="black" stroke="black" points="191.68,-56.41 198.49,-48.29 188.11,-50.39 191.68,-56.41"/>
+</g>
+<!-- arm -->
+<g id="node6" class="node">
+<title>arm</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M242,-106C242,-106 212,-106 212,-106 206,-106 200,-100 200,-94 200,-94 200,-82 200,-82 200,-76 206,-70 212,-70 212,-70 242,-70 242,-70 248,-70 254,-76 254,-82 254,-82 254,-94 254,-94 254,-100 248,-106 242,-106"/>
+<text xml:space="preserve" text-anchor="middle" x="227" y="-82.58" font-family="Helvetica,sans-Serif" font-size="14.00">ARM</text>
+</g>
+<!-- ir&#45;&gt;arm -->
+<g id="edge5" class="edge">
+<title>ir&#45;&gt;arm</title>
+<path fill="none" stroke="black" d="M164.86,-85.97C174.62,-85.3 181.99,-84.86 188.03,-84.66"/>
+<polygon fill="black" stroke="black" points="188.03,-88.16 198.01,-84.61 187.99,-81.16 188.03,-88.16"/>
+</g>
+<!-- mips -->
+<g id="node7" class="node">
+<title>mips</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M242,-160C242,-160 212,-160 212,-160 206,-160 200,-154 200,-148 200,-148 200,-136 200,-136 200,-130 206,-124 212,-124 212,-124 242,-124 242,-124 248,-124 254,-130 254,-136 254,-136 254,-148 254,-148 254,-154 248,-160 242,-160"/>
+<text xml:space="preserve" text-anchor="middle" x="227" y="-136.57" font-family="Helvetica,sans-Serif" font-size="14.00">MIPS</text>
+</g>
+<!-- ir&#45;&gt;mips -->
+<g id="edge6" class="edge">
+<title>ir&#45;&gt;mips</title>
+<path fill="none" stroke="black" d="M164.97,-102.31C177.96,-109 186.9,-113.74 193.88,-117.78"/>
+<polygon fill="black" stroke="black" points="191.9,-120.67 202.25,-122.94 195.57,-114.71 191.9,-120.67"/>
+</g>
+</g>
+</svg>

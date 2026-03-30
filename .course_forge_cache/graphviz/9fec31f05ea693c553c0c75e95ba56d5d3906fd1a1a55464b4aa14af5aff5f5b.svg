@@ -1,0 +1,79 @@
+<svg width="218pt" height="449pt"
+ viewBox="0.00 0.00 218.00 449.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 445.45)">
+<title>Compiler</title>
+<!-- Lex -->
+<g id="node1" class="node">
+<title>Lex</title>
+<ellipse fill="none" stroke="black" cx="56.44" cy="-306.46" rx="53.21" ry="28.99"/>
+<text xml:space="preserve" text-anchor="middle" x="56.44" y="-309.66" font-family="Times,serif" font-size="14.00">Analisador</text>
+<text xml:space="preserve" text-anchor="middle" x="56.44" y="-293.16" font-family="Times,serif" font-size="14.00">Léxico</text>
+</g>
+<!-- Sin -->
+<g id="node2" class="node">
+<title>Sin</title>
+<ellipse fill="none" stroke="black" cx="136.44" cy="-159.97" rx="53.21" ry="28.99"/>
+<text xml:space="preserve" text-anchor="middle" x="136.44" y="-163.17" font-family="Times,serif" font-size="14.00">Analisador</text>
+<text xml:space="preserve" text-anchor="middle" x="136.44" y="-146.67" font-family="Times,serif" font-size="14.00">Sintático</text>
+</g>
+<!-- Lex&#45;&gt;Sin -->
+<g id="edge2" class="edge">
+<title>Lex:ne&#45;&gt;Sin:nw</title>
+<path fill="none" stroke="#333333" d="M82.11,-333.13C126.8,-377.82 205.54,-279.99 174.44,-224.97 161.87,-202.73 116.68,-205.94 107.66,-197.73"/>
+<polygon fill="#333333" stroke="#333333" points="111.02,-198.68 110.35,-188.1 104.28,-196.79 111.02,-198.68"/>
+<text xml:space="preserve" text-anchor="middle" x="195.01" y="-228.17" font-family="Times,serif" font-size="14.00">token</text>
+</g>
+<!-- Tab -->
+<g id="node3" class="node">
+<title>Tab</title>
+<ellipse fill="none" stroke="black" cx="48.44" cy="-28.99" rx="48.44" ry="28.99"/>
+<text xml:space="preserve" text-anchor="middle" x="48.44" y="-32.19" font-family="Times,serif" font-size="14.00">Tabela de</text>
+<text xml:space="preserve" text-anchor="middle" x="48.44" y="-15.69" font-family="Times,serif" font-size="14.00">Símbolos</text>
+</g>
+<!-- Lex&#45;&gt;Tab -->
+<g id="edge4" class="edge">
+<title>Lex&#45;&gt;Tab</title>
+<path fill="none" stroke="#333333" d="M55.28,-265.71C53.76,-213.42 51.11,-122.05 49.59,-69.75"/>
+<polygon fill="#333333" stroke="#333333" points="51.78,-265.61 55.57,-275.5 58.77,-265.4 51.78,-265.61"/>
+<polygon fill="#333333" stroke="#333333" points="53.09,-69.69 49.3,-59.79 46.09,-69.89 53.09,-69.69"/>
+</g>
+<!-- Sin&#45;&gt;Lex -->
+<g id="edge3" class="edge">
+<title>Sin:sw&#45;&gt;Lex:se</title>
+<path fill="none" stroke="#333333" d="M110.76,-133.3C102.1,-124.64 91.97,-125.72 83.23,-134.3 79.56,-137.9 76.23,-203.06 78.19,-241.47 78.8,-253.49 86.48,-261.56 86.77,-269.51"/>
+<polygon fill="#333333" stroke="#333333" points="83.68,-267.85 82.74,-278.41 90.05,-270.74 83.68,-267.85"/>
+<text xml:space="preserve" text-anchor="middle" x="124.31" y="-228.17" font-family="Times,serif" font-size="14.00">get_next_token()</text>
+</g>
+<!-- Sin&#45;&gt;Tab -->
+<g id="edge5" class="edge">
+<title>Sin&#45;&gt;Tab</title>
+<path fill="none" stroke="#333333" d="M111.84,-122.92C99.65,-105.05 84.97,-83.54 72.81,-65.72"/>
+<polygon fill="#333333" stroke="#333333" points="108.82,-124.71 117.35,-131 114.61,-120.77 108.82,-124.71"/>
+<polygon fill="#333333" stroke="#333333" points="75.73,-63.78 67.2,-57.49 69.94,-67.72 75.73,-63.78"/>
+</g>
+<!-- Output -->
+<g id="node5" class="node">
+<title>Output</title>
+<text xml:space="preserve" text-anchor="middle" x="144.44" y="-32.19" font-family="Times,serif" font-size="14.00">Análisador</text>
+<text xml:space="preserve" text-anchor="middle" x="144.44" y="-15.69" font-family="Times,serif" font-size="14.00">Semântico</text>
+</g>
+<!-- Sin&#45;&gt;Output -->
+<g id="edge6" class="edge">
+<title>Sin&#45;&gt;Output</title>
+<path fill="none" stroke="#333333" d="M138.19,-130.67C139.56,-108.62 141.44,-78.23 142.79,-56.62"/>
+<polygon fill="#333333" stroke="#333333" points="146.27,-57.04 143.39,-46.85 139.28,-56.61 146.27,-57.04"/>
+</g>
+<!-- Input -->
+<g id="node4" class="node">
+<title>Input</title>
+<text xml:space="preserve" text-anchor="middle" x="56.44" y="-428.15" font-family="Times,serif" font-size="14.00">Programa</text>
+<text xml:space="preserve" text-anchor="middle" x="56.44" y="-411.65" font-family="Times,serif" font-size="14.00">Fonte</text>
+</g>
+<!-- Input&#45;&gt;Lex -->
+<g id="edge1" class="edge">
+<title>Input&#45;&gt;Lex</title>
+<path fill="none" stroke="#333333" d="M56.44,-408.72C56.44,-393.11 56.44,-368.18 56.44,-346.97"/>
+<polygon fill="#333333" stroke="#333333" points="59.94,-347.16 56.44,-337.16 52.94,-347.16 59.94,-347.16"/>
+</g>
+</g>
+</svg>

@@ -1,0 +1,115 @@
+<svg width="512pt" height="340pt"
+ viewBox="0.00 0.00 512.00 340.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 336)">
+<title>Insulina</title>
+<!-- reservatorio -->
+<g id="node1" class="node">
+<title>reservatorio</title>
+<polygon fill="#e0e0e0" stroke="black" points="504,-332 0,-332 0,-288.8 504,-288.8 504,-332"/>
+<text xml:space="preserve" text-anchor="middle" x="252" y="-304.97" font-family="Arial" font-size="14.00">Reservatório de insulina</text>
+</g>
+<!-- bomba -->
+<g id="node2" class="node">
+<title>bomba</title>
+<polygon fill="white" stroke="black" points="281.75,-259.8 222.25,-259.8 222.25,-216.6 281.75,-216.6 281.75,-259.8"/>
+<text xml:space="preserve" text-anchor="middle" x="252" y="-232.77" font-family="Arial" font-size="14.00">Bomba</text>
+</g>
+<!-- reservatorio&#45;&gt;bomba -->
+<g id="edge1" class="edge">
+<title>reservatorio:s&#45;&gt;bomba:n</title>
+<path fill="none" stroke="black" d="M252,-288.8C252,-288.8 252,-259.8 252,-259.8"/>
+</g>
+<!-- controlador -->
+<g id="node3" class="node">
+<title>controlador</title>
+<polygon fill="white" stroke="black" points="306,-187.6 198,-187.6 198,-144.4 306,-144.4 306,-187.6"/>
+<text xml:space="preserve" text-anchor="middle" x="252" y="-160.57" font-family="Arial" font-size="14.00">Controlador</text>
+</g>
+<!-- bomba&#45;&gt;controlador -->
+<g id="edge2" class="edge">
+<title>bomba:s&#45;&gt;controlador:n</title>
+<path fill="none" stroke="black" d="M252,-205.09C252,-205.09 252,-187.6 252,-187.6"/>
+<polygon fill="black" stroke="black" points="248.5,-205.09 252,-215.09 255.5,-205.09 248.5,-205.09"/>
+</g>
+<!-- fonte -->
+<g id="node4" class="node">
+<title>fonte</title>
+<polygon fill="#e0e0e0" stroke="black" points="504,-43.2 0,-43.2 0,0 504,0 504,-43.2"/>
+<text xml:space="preserve" text-anchor="middle" x="252" y="-16.17" font-family="Arial" font-size="14.00">Fonte de energia</text>
+</g>
+<!-- controlador&#45;&gt;fonte -->
+<!-- alarme -->
+<g id="node8" class="node">
+<title>alarme</title>
+<polygon fill="white" stroke="black" points="423.75,-187.6 364.25,-187.6 364.25,-144.4 423.75,-144.4 423.75,-187.6"/>
+<text xml:space="preserve" text-anchor="middle" x="394" y="-160.57" font-family="Arial" font-size="14.00">Alarme</text>
+</g>
+<!-- controlador&#45;&gt;alarme -->
+<g id="edge7" class="edge">
+<title>controlador:e&#45;&gt;alarme</title>
+<path fill="none" stroke="black" d="M306,-173C306,-173 352.69,-173 352.69,-173"/>
+<polygon fill="black" stroke="black" points="352.69,-176.5 362.69,-173 352.69,-169.5 352.69,-176.5"/>
+</g>
+<!-- disp1 -->
+<g id="node9" class="node">
+<title>disp1</title>
+<polygon fill="white" stroke="black" points="163.75,-115.4 92.25,-115.4 92.25,-72.2 163.75,-72.2 163.75,-115.4"/>
+<text xml:space="preserve" text-anchor="middle" x="128" y="-88.37" font-family="Arial" font-size="14.00">Display 1</text>
+</g>
+<!-- controlador&#45;&gt;disp1 -->
+<g id="edge8" class="edge">
+<title>controlador:sw&#45;&gt;disp1:n</title>
+<path fill="none" stroke="black" d="M198,-159C198,-159 152.06,-159 152.06,-159 152.06,-159 152.06,-126.91 152.06,-126.91"/>
+<polygon fill="black" stroke="black" points="155.56,-126.91 152.06,-116.91 148.56,-126.91 155.56,-126.91"/>
+</g>
+<!-- disp2 -->
+<g id="node10" class="node">
+<title>disp2</title>
+<polygon fill="white" stroke="black" points="411.75,-115.4 340.25,-115.4 340.25,-72.2 411.75,-72.2 411.75,-115.4"/>
+<text xml:space="preserve" text-anchor="middle" x="376" y="-88.37" font-family="Arial" font-size="14.00">Display 2</text>
+</g>
+<!-- controlador&#45;&gt;disp2 -->
+<g id="edge9" class="edge">
+<title>controlador:se&#45;&gt;disp2:n</title>
+<path fill="none" stroke="black" d="M306,-159C306,-159 352.25,-159 352.25,-159 352.25,-159 352.25,-126.91 352.25,-126.91"/>
+<polygon fill="black" stroke="black" points="355.75,-126.91 352.25,-116.91 348.75,-126.91 355.75,-126.91"/>
+</g>
+<!-- modulo -->
+<g id="node5" class="node">
+<title>modulo</title>
+<polygon fill="white" stroke="black" points="164.62,-259.8 89.38,-259.8 89.38,-216.6 164.62,-216.6 164.62,-259.8"/>
+<text xml:space="preserve" text-anchor="middle" x="127" y="-240.65" font-family="Arial" font-size="14.00">Módulo</text>
+<text xml:space="preserve" text-anchor="middle" x="127" y="-224.9" font-family="Arial" font-size="14.00">de agulha</text>
+</g>
+<!-- modulo&#45;&gt;bomba -->
+<g id="edge4" class="edge">
+<title>modulo:e&#45;&gt;bomba:w</title>
+<path fill="none" stroke="black" d="M164.62,-238C164.62,-238 210.74,-238 210.74,-238"/>
+<polygon fill="black" stroke="black" points="210.74,-241.5 220.74,-238 210.74,-234.5 210.74,-241.5"/>
+</g>
+<!-- relogio -->
+<g id="node6" class="node">
+<title>relogio</title>
+<polygon fill="white" stroke="black" points="401.88,-259.8 340.12,-259.8 340.12,-216.6 401.88,-216.6 401.88,-259.8"/>
+<text xml:space="preserve" text-anchor="middle" x="371" y="-232.77" font-family="Arial" font-size="14.00">Relógio</text>
+</g>
+<!-- relogio&#45;&gt;controlador -->
+<g id="edge5" class="edge">
+<title>relogio&#45;&gt;controlador:ne</title>
+<path fill="none" stroke="black" d="M339.63,-238C318.28,-238 293.88,-238 293.88,-238 293.88,-238 293.88,-199.11 293.88,-199.11"/>
+<polygon fill="black" stroke="black" points="297.38,-199.11 293.88,-189.11 290.38,-199.11 297.38,-199.11"/>
+</g>
+<!-- sensor -->
+<g id="node7" class="node">
+<title>sensor</title>
+<polygon fill="white" stroke="black" points="140.38,-187.6 81.62,-187.6 81.62,-144.4 140.38,-144.4 140.38,-187.6"/>
+<text xml:space="preserve" text-anchor="middle" x="111" y="-160.57" font-family="Arial" font-size="14.00">Sensor</text>
+</g>
+<!-- sensor&#45;&gt;controlador -->
+<g id="edge6" class="edge">
+<title>sensor&#45;&gt;controlador:w</title>
+<path fill="none" stroke="black" d="M140.45,-173C140.45,-173 186.49,-173 186.49,-173"/>
+<polygon fill="black" stroke="black" points="186.49,-176.5 196.49,-173 186.49,-169.5 186.49,-176.5"/>
+</g>
+</g>
+</svg>

@@ -1,0 +1,69 @@
+<svg width="247pt" height="256pt"
+ viewBox="0.00 0.00 247.00 256.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 252)">
+<title>Flowchart</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-252 243.02,-252 243.02,4 -4,4"/>
+<!-- Inicio -->
+<g id="node1" class="node">
+<title>Inicio</title>
+<ellipse fill="#e1f5fe" stroke="#333333" cx="90.02" cy="-230" rx="28.3" ry="18"/>
+<text xml:space="preserve" text-anchor="middle" x="90.02" y="-225.72" font-family="Arial" font-size="12.00">Início</text>
+</g>
+<!-- Read -->
+<g id="node2" class="node">
+<title>Read</title>
+<path fill="#f9f9f9" stroke="#333333" d="M125.02,-181C125.02,-181 55.02,-181 55.02,-181 49.02,-181 43.02,-175 43.02,-169 43.02,-169 43.02,-157 43.02,-157 43.02,-151 49.02,-145 55.02,-145 55.02,-145 125.02,-145 125.02,-145 131.02,-145 137.02,-151 137.02,-157 137.02,-157 137.02,-169 137.02,-169 137.02,-175 131.02,-181 125.02,-181"/>
+<text xml:space="preserve" text-anchor="middle" x="90.02" y="-158.72" font-family="Arial" font-size="12.00">Leia Condição</text>
+</g>
+<!-- Inicio&#45;&gt;Read -->
+<g id="edge1" class="edge">
+<title>Inicio&#45;&gt;Read</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M90.02,-211.58C90.02,-205.9 90.02,-199.42 90.02,-193.12"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="93.52,-193.28 90.02,-183.28 86.52,-193.28 93.52,-193.28"/>
+</g>
+<!-- Cond -->
+<g id="node3" class="node">
+<title>Cond</title>
+<path fill="#fff9c4" stroke="#333333" d="M78.51,-110.6C78.51,-110.6 40.59,-99.4 40.59,-99.4 34.83,-97.7 34.83,-94.3 40.59,-92.6 40.59,-92.6 78.51,-81.4 78.51,-81.4 84.26,-79.7 95.77,-79.7 101.53,-81.4 101.53,-81.4 139.45,-92.6 139.45,-92.6 145.2,-94.3 145.2,-97.7 139.45,-99.4 139.45,-99.4 101.53,-110.6 101.53,-110.6 95.77,-112.3 84.26,-112.3 78.51,-110.6"/>
+<text xml:space="preserve" text-anchor="middle" x="90.02" y="-91.72" font-family="Arial" font-size="12.00">Verdade?</text>
+</g>
+<!-- Read&#45;&gt;Cond -->
+<g id="edge2" class="edge">
+<title>Read&#45;&gt;Cond</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M90.02,-144.58C90.02,-138.9 90.02,-132.42 90.02,-126.12"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="93.52,-126.28 90.02,-116.28 86.52,-126.28 93.52,-126.28"/>
+</g>
+<!-- Cmd -->
+<g id="node4" class="node">
+<title>Cmd</title>
+<path fill="#f9f9f9" stroke="#333333" d="M136.52,-36C136.52,-36 39.52,-36 39.52,-36 33.52,-36 27.52,-30 27.52,-24 27.52,-24 27.52,-12 27.52,-12 27.52,-6 33.52,0 39.52,0 39.52,0 136.52,0 136.52,0 142.52,0 148.52,-6 148.52,-12 148.52,-12 148.52,-24 148.52,-24 148.52,-30 142.52,-36 136.52,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="88.02" y="-13.72" font-family="Arial" font-size="12.00">Executa Comandos</text>
+</g>
+<!-- Cond&#45;&gt;Cmd -->
+<g id="edge3" class="edge">
+<title>Cond&#45;&gt;Cmd</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M89.57,-77.75C89.33,-68.97 89.05,-58.06 88.78,-48.03"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="92.29,-48.16 88.53,-38.26 85.29,-48.34 92.29,-48.16"/>
+<text xml:space="preserve" text-anchor="middle" x="97.76" y="-53.5" font-family="Arial" font-size="10.00">Sim</text>
+</g>
+<!-- Fim -->
+<g id="node5" class="node">
+<title>Fim</title>
+<ellipse fill="#e1f5fe" stroke="#333333" cx="212.02" cy="-18" rx="27" ry="18"/>
+<text xml:space="preserve" text-anchor="middle" x="212.02" y="-13.72" font-family="Arial" font-size="12.00">Fim</text>
+</g>
+<!-- Cond&#45;&gt;Fim -->
+<g id="edge5" class="edge">
+<title>Cond&#45;&gt;Fim</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M109.08,-83.12C128.84,-70.82 159.98,-51.42 182.84,-37.18"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="184.51,-40.26 191.15,-32 180.81,-34.32 184.51,-40.26"/>
+<text xml:space="preserve" text-anchor="middle" x="167.32" y="-53.5" font-family="Arial" font-size="10.00">Não</text>
+</g>
+<!-- Cmd&#45;&gt;Cond -->
+<g id="edge4" class="edge">
+<title>Cmd:w&#45;&gt;Cond:w</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M26.52,-18C-3.95,-18 -7.61,-78.25 15.49,-92.85"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="14.24,-96.13 24.82,-95.5 16.16,-89.4 14.24,-96.13"/>
+</g>
+</g>
+</svg>

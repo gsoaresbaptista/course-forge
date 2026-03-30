@@ -1,0 +1,44 @@
+<svg width="323pt" height="96pt"
+ viewBox="0.00 0.00 323.00 96.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 91.6)">
+<title>Flowchart</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-91.6 318.51,-91.6 318.51,4 -4,4"/>
+<!-- Decisão -->
+<g id="node1" class="node">
+<title>Decisão</title>
+<path fill="#fff9c4" stroke="#333333" d="M62.1,-84.75C62.1,-84.75 11.66,-72.45 11.66,-72.45 5.83,-71.02 5.83,-68.18 11.66,-66.75 11.66,-66.75 62.1,-54.45 62.1,-54.45 67.93,-53.02 79.59,-53.02 85.41,-54.45 85.41,-54.45 135.86,-66.75 135.86,-66.75 141.68,-68.18 141.68,-71.02 135.86,-72.45 135.86,-72.45 85.41,-84.75 85.41,-84.75 79.59,-86.18 67.93,-86.18 62.1,-84.75"/>
+<text xml:space="preserve" text-anchor="middle" x="73.76" y="-65.32" font-family="Arial" font-size="12.00">if (num &gt; 10)</text>
+</g>
+<!-- PrintOut -->
+<g id="node2" class="node">
+<title>PrintOut</title>
+<path fill="#f9f9f9" stroke="#333333" d="M302.51,-87.6C302.51,-87.6 195.01,-87.6 195.01,-87.6 189.01,-87.6 183.01,-81.6 183.01,-75.6 183.01,-75.6 183.01,-63.6 183.01,-63.6 183.01,-57.6 189.01,-51.6 195.01,-51.6 195.01,-51.6 302.51,-51.6 302.51,-51.6 308.51,-51.6 314.51,-57.6 314.51,-63.6 314.51,-63.6 314.51,-75.6 314.51,-75.6 314.51,-81.6 308.51,-87.6 302.51,-87.6"/>
+<text xml:space="preserve" text-anchor="middle" x="248.76" y="-65.32" font-family="Arial" font-size="12.00">printf(&quot;Maior que 10&quot;);</text>
+</g>
+<!-- Decisão&#45;&gt;PrintOut -->
+<g id="edge1" class="edge">
+<title>Decisão&#45;&gt;PrintOut</title>
+<path fill="none" stroke="#333333" d="M149.5,-69.6C156.71,-69.6 164.03,-69.6 171.26,-69.6"/>
+<polygon fill="#333333" stroke="#333333" points="171.01,-73.1 181.01,-69.6 171.01,-66.1 171.01,-73.1"/>
+<text xml:space="preserve" text-anchor="middle" x="165.26" y="-75.1" font-family="Arial" font-size="10.00">SIM</text>
+</g>
+<!-- Fim -->
+<g id="node3" class="node">
+<title>Fim</title>
+<ellipse fill="#f9f9f9" stroke="#333333" cx="160.76" cy="-1.8" rx="1.8" ry="1.8"/>
+</g>
+<!-- Decisão&#45;&gt;Fim -->
+<g id="edge2" class="edge">
+<title>Decisão&#45;&gt;Fim</title>
+<path fill="none" stroke="#333333" d="M90.95,-55.6C108.72,-42.16 135.87,-21.62 150.53,-10.54"/>
+<polygon fill="#333333" stroke="#333333" points="152.57,-13.38 158.43,-4.56 148.34,-7.8 152.57,-13.38"/>
+<text xml:space="preserve" text-anchor="middle" x="145.92" y="-24.1" font-family="Arial" font-size="10.00">NÃO</text>
+</g>
+<!-- PrintOut&#45;&gt;Fim -->
+<g id="edge3" class="edge">
+<title>PrintOut&#45;&gt;Fim</title>
+<path fill="none" stroke="#333333" d="M225.64,-51.31C207.73,-37.92 183.82,-20.04 170.6,-10.16"/>
+<polygon fill="#333333" stroke="#333333" points="173.05,-7.63 162.95,-4.44 168.86,-13.23 173.05,-7.63"/>
+</g>
+</g>
+</svg>

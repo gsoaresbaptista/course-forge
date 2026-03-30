@@ -275,9 +275,9 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         html = str(markdown(text))
 
         # Restore block divs (renders inner markdown)
-        html = self._restore_block_divs(html, block_placeholders, chapter)
+        html = self._restore_block_divs(html, block_placeholders, False, chapter)
         # Restore fragments
-        html = self._restore_fragment_containers(html, fragment_placeholders, chapter)
+        html = self._restore_fragment_containers(html, fragment_placeholders, False, chapter)
         # Restore LaTeX after markdown processing
         html = self._restore_placeholders(html, latex_placeholders)
         return html
@@ -303,8 +303,8 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         else:
             html = "<section></section>"
 
-        html = self._restore_block_divs(html, block_placeholders)
-        html = self._restore_fragment_containers(html, fragment_placeholders)
+        html = self._restore_block_divs(html, block_placeholders, True)
+        html = self._restore_fragment_containers(html, fragment_placeholders, True)
         html = self._restore_placeholders(html, latex_placeholders)
         return html
 
@@ -492,7 +492,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         return "".join(result), placeholders
 
     def _restore_block_divs(
-        self, html: str, placeholders: dict[str, str], chapter: int | None = None
+        self, html: str, placeholders: dict[str, str], is_slide: bool = False, chapter: int | None = None
     ) -> str:
         """Restore block div placeholders, rendering inner markdown."""
         for placeholder, original in placeholders.items():
@@ -521,7 +521,7 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
             # Render the inner content as markdown
             inner_md = inner_md.strip()
             if inner_md:
-                inner_html = self._render_inner_markdown(inner_md, chapter)
+                inner_html = self._render_inner_markdown(inner_md, is_slide, chapter)
             else:
                 inner_html = ""
 
@@ -534,16 +534,19 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
             html = html.replace(placeholder, restored)
         return html
 
-    def _render_inner_markdown(self, text: str, chapter: int | None = None) -> str:
+    def _render_inner_markdown(self, text: str, is_slide: bool = False, chapter: int | None = None) -> str:
         """Render a markdown fragment (used for example div content)."""
         text, latex_ph = self._preprocess_latex(text)
-        renderer = HeadingRenderer(chapter=chapter)
+        text, fragment_ph = self._preprocess_fragment_containers(text)
+
+        renderer = SlideRenderer(escape=False) if is_slide else HeadingRenderer(chapter=chapter)
         md = mistune.create_markdown(
             renderer=renderer,
             hard_wrap=True,
             plugins=["table", "strikethrough", table_in_quote, self._obsidian_comments_plugin],
         )
         html = str(md(text))
+        html = self._restore_fragment_containers(html, fragment_ph, is_slide, chapter)
         html = self._restore_placeholders(html, latex_ph)
         return html
 
@@ -581,11 +584,11 @@ class MistuneMarkdownRenderer(MarkdownRenderer):
         return new_text, placeholders
 
     def _restore_fragment_containers(
-        self, html: str, placeholders: dict, chapter: int | None = None
+        self, html: str, placeholders: dict, is_slide: bool = False, chapter: int | None = None
     ) -> str:
         """Restore fragment placeholders with rendered HTML."""
         for placeholder, (effect, index, is_list, content) in placeholders.items():
-            inner_html = self._render_inner_markdown(content, chapter)
+            inner_html = self._render_inner_markdown(content, is_slide, chapter)
 
             data_index = f' data-fragment-index="{index}"' if index else ""
 

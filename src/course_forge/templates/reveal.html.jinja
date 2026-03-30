@@ -9,15 +9,12 @@
     <link rel="icon" href="{{ base_url }}/img/dark-favicon.svg" media="(prefers-color-scheme: light)">
     <link rel="icon" href="{{ base_url }}/img/light-favicon.svg" media="(prefers-color-scheme: dark)">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reset.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/theme/beige.min.css" />
+    <link rel="stylesheet" href="{{ base_url }}/css/vendor/reveal/reset.min.css" data-no-bundle />
+    <link rel="stylesheet" href="{{ base_url }}/css/vendor/reveal/reveal.min.css" data-no-bundle />
+    <link rel="stylesheet" href="{{ base_url }}/css/vendor/reveal/theme/white.min.css" data-no-bundle />
     <link rel="stylesheet" href="{{ base_url }}/css/prism-one-light.css" data-no-bundle>
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ base_url }}/css/vendor/prism/prism-line-numbers.min.css" data-no-bundle>
+    <link rel="stylesheet" href="{{ base_url }}/css/vendor/fonts.css" data-no-bundle>
 </head>
 
 <body>
@@ -27,26 +24,23 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/notes/notes.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/markdown/markdown.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/math/math.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/zoom/zoom.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-perl.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/show-language/prism-show-language.min.js"></script>
+    <script src="{{ base_url }}/js/vendor/reveal/reveal.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/reveal/plugin/notes/notes.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/reveal/plugin/markdown/markdown.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/reveal/plugin/math/math.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/reveal/plugin/zoom/zoom.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/prism.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/components/prism-c.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/components/prism-python.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/components/prism-javascript.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/components/prism-clike.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/components/prism-perl.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/components/prism-java.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/components/prism-markup-templating.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/components/prism-php.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/plugins/line-numbers/prism-line-numbers.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/plugins/toolbar/prism-toolbar.min.js" data-no-bundle></script>
+    <script src="{{ base_url }}/js/vendor/prism/plugins/show-language/prism-show-language.min.js" data-no-bundle></script>
     <script src="{{ base_url }}/js/prism-slang.js" data-no-bundle></script>
     <script src="{{ base_url }}/js/mermaid.min.js" data-no-bundle></script>
     <script>
@@ -67,8 +61,10 @@
             controls: false,
             plugins: [RevealMarkdown, RevealNotes, RevealMath.KaTeX, RevealZoom],
             katex: {
+                local: '{{ base_url }}/js/vendor/katex',
                 output: 'html',
                 throwOnError: false,
+                strict: false,
             },
             width: 960,
             height: 800,
@@ -85,7 +81,6 @@
     <style>
         /* Modern base styles */
         .reveal {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             font-size: 20px;
             text-align: left !important;
         }
@@ -100,6 +95,7 @@
             justify-content: flex-start !important;
             text-align: left !important;
             width: 100% !important;
+            text-shadow: none !important;
         }
 
         /* Prism overrides for Reveal.js */
@@ -260,6 +256,21 @@
             margin-top: 1em !important;
             margin-bottom: 1em !important;
             overflow: visible !important; /* Prevent labels from being cut off */
+            max-width: 100%;
+            height: auto;
+        }
+
+        .centered {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 100% !important;
+            margin: 1em 0 !important;
+        }
+
+        .no-break {
+            display: block;
+            width: 100%;
         }
 
         .reveal blockquote {

@@ -102,6 +102,12 @@ class _SilencedPopen:
             self._returncode = val
         else:
             self._real.returncode = val
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if not self._silenced and self._real:
+            self._real.__exit__(exc_type, exc_val, exc_tb)
 
 subprocess.run = _silenced_subprocess_run
 subprocess.call = _silenced_subprocess_call

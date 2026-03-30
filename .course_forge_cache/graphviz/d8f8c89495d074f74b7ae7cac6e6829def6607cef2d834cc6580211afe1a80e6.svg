@@ -1,0 +1,48 @@
+<svg width="114pt" height="141pt"
+ viewBox="0.00 0.00 114.00 141.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 136.7)">
+<title>figura41</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-136.7 110.32,-136.7 110.32,4 -4,4"/>
+<!-- start -->
+<g id="node1" class="node">
+<title>start</title>
+<ellipse fill="#333333" stroke="#333333" cx="53.16" cy="-130.9" rx="1.8" ry="1.8"/>
+</g>
+<!-- cond -->
+<g id="node2" class="node">
+<title>cond</title>
+<polygon fill="#b7d8ec" stroke="#333333" points="53.16,-92.1 0,-74.1 53.16,-56.1 106.32,-74.1 53.16,-92.1"/>
+<text xml:space="preserve" text-anchor="middle" x="53.16" y="-68.67" font-family="Arial" font-size="14.00" fill="#333333">A &gt; B?</text>
+</g>
+<!-- start&#45;&gt;cond -->
+<g id="edge1" class="edge">
+<title>start&#45;&gt;cond</title>
+<path fill="none" stroke="#333333" d="M53.16,-128.95C53.16,-125.74 53.16,-114.9 53.16,-103.78"/>
+<polygon fill="#333333" stroke="#333333" points="56.66,-103.91 53.16,-93.91 49.66,-103.92 56.66,-103.91"/>
+</g>
+<!-- sim -->
+<g id="node3" class="node">
+<title>sim</title>
+<ellipse fill="#333333" stroke="#333333" cx="36.16" cy="-1.8" rx="1.8" ry="1.8"/>
+</g>
+<!-- cond&#45;&gt;sim -->
+<g id="edge2" class="edge">
+<title>cond&#45;&gt;sim</title>
+<path fill="none" stroke="#333333" d="M44.94,-58.58C41.9,-52.46 38.8,-45.13 37.16,-38.1 35.42,-30.61 35.14,-21.98 35.32,-15.13"/>
+<polygon fill="#333333" stroke="#333333" points="38.79,-15.63 35.94,-5.43 31.81,-15.19 38.79,-15.63"/>
+<text xml:space="preserve" text-anchor="middle" x="43.16" y="-24.8" font-family="Times,serif" font-size="14.00" fill="#333333">IF</text>
+</g>
+<!-- nao -->
+<g id="node4" class="node">
+<title>nao</title>
+<ellipse fill="#333333" stroke="#333333" cx="71.16" cy="-1.8" rx="1.8" ry="1.8"/>
+</g>
+<!-- cond&#45;&gt;nao -->
+<g id="edge3" class="edge">
+<title>cond&#45;&gt;nao</title>
+<path fill="none" stroke="#333333" d="M57.25,-57.15C60.56,-44.22 65.14,-26.31 68.13,-14.64"/>
+<polygon fill="#333333" stroke="#333333" points="71.48,-15.67 70.57,-5.11 64.7,-13.93 71.48,-15.67"/>
+<text xml:space="preserve" text-anchor="middle" x="82.46" y="-24.8" font-family="Times,serif" font-size="14.00" fill="#333333">ELSE</text>
+</g>
+</g>
+</svg>

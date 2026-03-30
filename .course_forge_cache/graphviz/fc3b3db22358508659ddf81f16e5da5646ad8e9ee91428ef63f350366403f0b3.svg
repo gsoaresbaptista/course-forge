@@ -1,0 +1,82 @@
+<svg width="221pt" height="446pt"
+ viewBox="0.00 0.00 221.00 446.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 442)">
+<title>ConversaoBinario</title>
+<!-- inicio -->
+<g id="node1" class="node">
+<title>inicio</title>
+<ellipse fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" cx="151.62" cy="-420" rx="38.59" ry="18"/>
+<text xml:space="preserve" text-anchor="middle" x="151.62" y="-414.57" font-family="Helvetica,sans-Serif" font-size="14.00">INÍCIO</text>
+</g>
+<!-- div2 -->
+<g id="node2" class="node">
+<title>div2</title>
+<path fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" d="M198.25,-359C198.25,-359 105,-359 105,-359 99,-359 93,-353 93,-347 93,-347 93,-335 93,-335 93,-329 99,-323 105,-323 105,-323 198.25,-323 198.25,-323 204.25,-323 210.25,-329 210.25,-335 210.25,-335 210.25,-347 210.25,-347 210.25,-353 204.25,-359 198.25,-359"/>
+<text xml:space="preserve" text-anchor="middle" x="151.62" y="-335.57" font-family="Helvetica,sans-Serif" font-size="14.00">Divida pela Base</text>
+</g>
+<!-- inicio&#45;&gt;div2 -->
+<g id="edge1" class="edge">
+<title>inicio&#45;&gt;div2</title>
+<path fill="none" stroke="#333333" d="M154.44,-401.92C155.2,-394.17 155.03,-386.34 153.93,-370.72"/>
+<polygon fill="#333333" stroke="#333333" points="157.42,-370.47 153.18,-360.76 150.44,-370.99 157.42,-370.47"/>
+</g>
+<!-- guarda -->
+<g id="node3" class="node">
+<title>guarda</title>
+<path fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" d="M147.25,-280C147.25,-280 12,-280 12,-280 6,-280 0,-274 0,-268 0,-268 0,-252.5 0,-252.5 0,-246.5 6,-240.5 12,-240.5 12,-240.5 147.25,-240.5 147.25,-240.5 153.25,-240.5 159.25,-246.5 159.25,-252.5 159.25,-252.5 159.25,-268 159.25,-268 159.25,-274 153.25,-280 147.25,-280"/>
+<text xml:space="preserve" text-anchor="middle" x="79.62" y="-262.7" font-family="Helvetica,sans-Serif" font-size="14.00">Guarde o quociente (Q)</text>
+<text xml:space="preserve" text-anchor="middle" x="79.62" y="-246.95" font-family="Helvetica,sans-Serif" font-size="14.00">e o resto (R)</text>
+</g>
+<!-- div2&#45;&gt;guarda -->
+<g id="edge2" class="edge">
+<title>div2&#45;&gt;guarda</title>
+<path fill="none" stroke="#333333" d="M117.7,-322.55C109.18,-315.7 103.2,-306.88 94.53,-290.25"/>
+<polygon fill="#333333" stroke="#333333" points="97.75,-288.85 90.1,-281.52 91.51,-292.02 97.75,-288.85"/>
+</g>
+<!-- decisao -->
+<g id="node4" class="node">
+<title>decisao</title>
+<path fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" d="M140.23,-193.74C140.23,-193.74 108.45,-183.26 108.45,-183.26 102.75,-181.38 102.75,-177.62 108.45,-175.74 108.45,-175.74 140.23,-165.26 140.23,-165.26 145.93,-163.38 157.32,-163.38 163.02,-165.26 163.02,-165.26 194.8,-175.74 194.8,-175.74 200.5,-177.62 200.5,-181.38 194.8,-183.26 194.8,-183.26 163.02,-193.74 163.02,-193.74 157.32,-195.62 145.93,-195.62 140.23,-193.74"/>
+<text xml:space="preserve" text-anchor="middle" x="151.62" y="-174.07" font-family="Helvetica,sans-Serif" font-size="14.00">Q = 0?</text>
+</g>
+<!-- guarda&#45;&gt;decisao -->
+<g id="edge3" class="edge">
+<title>guarda&#45;&gt;decisao</title>
+<path fill="none" stroke="#333333" d="M89.56,-240.04C101.85,-215.41 108.44,-204.73 119.63,-196.46"/>
+<polygon fill="#333333" stroke="#333333" points="121.37,-199.5 127.97,-191.22 117.64,-193.57 121.37,-199.5"/>
+</g>
+<!-- decisao&#45;&gt;div2 -->
+<g id="edge5" class="edge">
+<title>decisao&#45;&gt;div2</title>
+<path fill="none" stroke="#333333" d="M163.02,-312.11C181.63,-263.22 180,-251.16 158.12,-195.8"/>
+<polygon fill="#333333" stroke="#333333" points="159.78,-310.77 159.43,-321.36 166.31,-313.3 159.78,-310.77"/>
+<text xml:space="preserve" text-anchor="middle" x="194.58" y="-261.08" font-family="Helvetica,sans-Serif" font-size="14.00"> NÃO </text>
+</g>
+<!-- resultado -->
+<g id="node5" class="node">
+<title>resultado</title>
+<path fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" d="M196.38,-118.5C196.38,-118.5 106.88,-118.5 106.88,-118.5 100.88,-118.5 94.88,-112.5 94.88,-106.5 94.88,-106.5 94.88,-91 94.88,-91 94.88,-85 100.88,-79 106.88,-79 106.88,-79 196.38,-79 196.38,-79 202.38,-79 208.38,-85 208.38,-91 208.38,-91 208.38,-106.5 208.38,-106.5 208.38,-112.5 202.38,-118.5 196.38,-118.5"/>
+<text xml:space="preserve" text-anchor="middle" x="151.62" y="-101.2" font-family="Helvetica,sans-Serif" font-size="14.00">Ler R&#39;s de baixo</text>
+<text xml:space="preserve" text-anchor="middle" x="151.62" y="-85.45" font-family="Helvetica,sans-Serif" font-size="14.00">para cima</text>
+</g>
+<!-- decisao&#45;&gt;resultado -->
+<g id="edge4" class="edge">
+<title>decisao&#45;&gt;resultado</title>
+<path fill="none" stroke="#333333" d="M154.22,-162.01C156.41,-146.92 157.58,-137.48 157.71,-130.05"/>
+<polygon fill="#333333" stroke="#333333" points="161.21,-130.04 157.05,-120.3 154.23,-130.51 161.21,-130.04"/>
+<text xml:space="preserve" text-anchor="middle" x="140.91" y="-142.79" font-family="Helvetica,sans-Serif" font-size="14.00"> SIM </text>
+</g>
+<!-- fim -->
+<g id="node6" class="node">
+<title>fim</title>
+<ellipse fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" cx="151.62" cy="-18" rx="27" ry="18"/>
+<text xml:space="preserve" text-anchor="middle" x="151.62" y="-12.57" font-family="Helvetica,sans-Serif" font-size="14.00">FIM</text>
+</g>
+<!-- resultado&#45;&gt;fim -->
+<g id="edge6" class="edge">
+<title>resultado&#45;&gt;fim</title>
+<path fill="none" stroke="#333333" d="M153.22,-78.75C154.34,-64.2 154.93,-55 154.99,-47.82"/>
+<polygon fill="#333333" stroke="#333333" points="158.49,-47.73 154.57,-37.88 151.49,-48.02 158.49,-47.73"/>
+</g>
+</g>
+</svg>

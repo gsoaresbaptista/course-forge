@@ -1,0 +1,106 @@
+<svg width="307pt" height="303pt"
+ viewBox="0.00 0.00 307.00 303.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 299)">
+<title>SourceToTarget</title>
+<g id="clust1" class="cluster">
+<title>cluster_sources</title>
+<path fill="#f6f6d8" stroke="#e0e08a" d="M12,-8C12,-8 101.5,-8 101.5,-8 107.5,-8 113.5,-14 113.5,-20 113.5,-20 113.5,-275 113.5,-275 113.5,-281 107.5,-287 101.5,-287 101.5,-287 12,-287 12,-287 6,-287 0,-281 0,-275 0,-275 0,-20 0,-20 0,-14 6,-8 12,-8"/>
+<text xml:space="preserve" text-anchor="middle" x="56.75" y="-269.7" font-family="Times,serif" font-size="14.00">Linguagens Fonte</text>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_targets</title>
+<path fill="#f6f6d8" stroke="#e0e08a" d="M210.5,-8C210.5,-8 287.25,-8 287.25,-8 293.25,-8 299.25,-14 299.25,-20 299.25,-20 299.25,-275 299.25,-275 299.25,-281 293.25,-287 287.25,-287 287.25,-287 210.5,-287 210.5,-287 204.5,-287 198.5,-281 198.5,-275 198.5,-275 198.5,-20 198.5,-20 198.5,-14 204.5,-8 210.5,-8"/>
+<text xml:space="preserve" text-anchor="middle" x="248.88" y="-269.7" font-family="Times,serif" font-size="14.00">Assembly Alvo</text>
+</g>
+<!-- c -->
+<g id="node1" class="node">
+<title>c</title>
+<path fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" d="M71.25,-254C71.25,-254 41.25,-254 41.25,-254 35.25,-254 29.25,-248 29.25,-242 29.25,-242 29.25,-230 29.25,-230 29.25,-224 35.25,-218 41.25,-218 41.25,-218 71.25,-218 71.25,-218 77.25,-218 83.25,-224 83.25,-230 83.25,-230 83.25,-242 83.25,-242 83.25,-248 77.25,-254 71.25,-254"/>
+<text xml:space="preserve" text-anchor="middle" x="56.25" y="-230.57" font-family="Helvetica,sans-Serif" font-size="14.00">C</text>
+</g>
+<!-- x86 -->
+<g id="node4" class="node">
+<title>x86</title>
+<path fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" d="M263.38,-153C263.38,-153 233.38,-153 233.38,-153 227.38,-153 221.38,-147 221.38,-141 221.38,-141 221.38,-129 221.38,-129 221.38,-123 227.38,-117 233.38,-117 233.38,-117 263.38,-117 263.38,-117 269.38,-117 275.38,-123 275.38,-129 275.38,-129 275.38,-141 275.38,-141 275.38,-147 269.38,-153 263.38,-153"/>
+<text xml:space="preserve" text-anchor="middle" x="248.38" y="-129.57" font-family="Helvetica,sans-Serif" font-size="14.00">x86</text>
+</g>
+<!-- c&#45;&gt;x86 -->
+<g id="edge1" class="edge">
+<title>c&#45;&gt;x86</title>
+<path fill="none" stroke="#444444" stroke-width="1.2" d="M83.59,-233.92C147.77,-228.55 161.93,-221.26 221.76,-161.74"/>
+<polygon fill="#444444" stroke="#444444" stroke-width="1.2" points="224.22,-164.23 228.82,-154.68 219.27,-159.28 224.22,-164.23"/>
+</g>
+<!-- arm -->
+<g id="node5" class="node">
+<title>arm</title>
+<path fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" d="M263.38,-254C263.38,-254 233.38,-254 233.38,-254 227.38,-254 221.38,-248 221.38,-242 221.38,-242 221.38,-230 221.38,-230 221.38,-224 227.38,-218 233.38,-218 233.38,-218 263.38,-218 263.38,-218 269.38,-218 275.38,-224 275.38,-230 275.38,-230 275.38,-242 275.38,-242 275.38,-248 269.38,-254 263.38,-254"/>
+<text xml:space="preserve" text-anchor="middle" x="248.38" y="-230.57" font-family="Helvetica,sans-Serif" font-size="14.00">ARM</text>
+</g>
+<!-- c&#45;&gt;arm -->
+<g id="edge2" class="edge">
+<title>c&#45;&gt;arm</title>
+<path fill="none" stroke="#444444" stroke-width="1.2" d="M83.53,-246.69C142.13,-269.24 158.35,-270.74 210.13,-251.18"/>
+<polygon fill="#444444" stroke="#444444" stroke-width="1.2" points="211.22,-254.51 219.29,-247.65 208.7,-247.98 211.22,-254.51"/>
+</g>
+<!-- mips -->
+<g id="node6" class="node">
+<title>mips</title>
+<path fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" d="M263.38,-52C263.38,-52 233.38,-52 233.38,-52 227.38,-52 221.38,-46 221.38,-40 221.38,-40 221.38,-28 221.38,-28 221.38,-22 227.38,-16 233.38,-16 233.38,-16 263.38,-16 263.38,-16 269.38,-16 275.38,-22 275.38,-28 275.38,-28 275.38,-40 275.38,-40 275.38,-46 269.38,-52 263.38,-52"/>
+<text xml:space="preserve" text-anchor="middle" x="248.38" y="-28.57" font-family="Helvetica,sans-Serif" font-size="14.00">MIPS</text>
+</g>
+<!-- c&#45;&gt;mips -->
+<g id="edge3" class="edge">
+<title>c&#45;&gt;mips</title>
+<path fill="none" stroke="#444444" stroke-width="1.2" d="M68.98,-217.64C146.89,-105.32 163.26,-83.71 210.98,-55.12"/>
+<polygon fill="#444444" stroke="#444444" stroke-width="1.2" points="212.54,-58.26 219.41,-50.19 209.01,-52.22 212.54,-58.26"/>
+</g>
+<!-- java -->
+<g id="node2" class="node">
+<title>java</title>
+<path fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" d="M71.25,-52C71.25,-52 41.25,-52 41.25,-52 35.25,-52 29.25,-46 29.25,-40 29.25,-40 29.25,-28 29.25,-28 29.25,-22 35.25,-16 41.25,-16 41.25,-16 71.25,-16 71.25,-16 77.25,-16 83.25,-22 83.25,-28 83.25,-28 83.25,-40 83.25,-40 83.25,-46 77.25,-52 71.25,-52"/>
+<text xml:space="preserve" text-anchor="middle" x="56.25" y="-28.57" font-family="Helvetica,sans-Serif" font-size="14.00">Java</text>
+</g>
+<!-- java&#45;&gt;x86 -->
+<g id="edge4" class="edge">
+<title>java&#45;&gt;x86</title>
+<path fill="none" stroke="#444444" stroke-width="1.2" d="M83.72,-36.1C146.89,-41.43 161.05,-48.86 221.84,-108.66"/>
+<polygon fill="#444444" stroke="#444444" stroke-width="1.2" points="219.03,-110.81 228.61,-115.35 223.95,-105.83 219.03,-110.81"/>
+</g>
+<!-- java&#45;&gt;arm -->
+<g id="edge5" class="edge">
+<title>java&#45;&gt;arm</title>
+<path fill="none" stroke="#444444" stroke-width="1.2" d="M83.62,-45.9C158.92,-79.24 170.45,-92.92 232.88,-207.47"/>
+<polygon fill="#444444" stroke="#444444" stroke-width="1.2" points="229.75,-209.04 237.6,-216.15 235.9,-205.7 229.75,-209.04"/>
+</g>
+<!-- java&#45;&gt;mips -->
+<g id="edge6" class="edge">
+<title>java&#45;&gt;mips</title>
+<path fill="none" stroke="#444444" stroke-width="1.2" d="M83.46,-23.31C141.91,-0.75 158.12,0.74 210.03,-18.81"/>
+<polygon fill="#444444" stroke="#444444" stroke-width="1.2" points="208.62,-22.02 219.21,-22.35 211.14,-15.49 208.62,-22.02"/>
+</g>
+<!-- python -->
+<g id="node3" class="node">
+<title>python</title>
+<path fill="#efe9ff" stroke="#8a6cff" stroke-dasharray="5,2" d="M73.25,-153C73.25,-153 39.25,-153 39.25,-153 33.25,-153 27.25,-147 27.25,-141 27.25,-141 27.25,-129 27.25,-129 27.25,-123 33.25,-117 39.25,-117 39.25,-117 73.25,-117 73.25,-117 79.25,-117 85.25,-123 85.25,-129 85.25,-129 85.25,-141 85.25,-141 85.25,-147 79.25,-153 73.25,-153"/>
+<text xml:space="preserve" text-anchor="middle" x="56.25" y="-129.57" font-family="Helvetica,sans-Serif" font-size="14.00">Python</text>
+</g>
+<!-- python&#45;&gt;x86 -->
+<g id="edge7" class="edge">
+<title>python&#45;&gt;x86</title>
+<path fill="none" stroke="#444444" stroke-width="1.2" d="M85.46,-124.54C147.03,-102.87 164.01,-101.08 210.39,-119.18"/>
+<polygon fill="#444444" stroke="#444444" stroke-width="1.2" points="208.83,-122.32 219.41,-122.8 211.44,-115.83 208.83,-122.32"/>
+</g>
+<!-- python&#45;&gt;arm -->
+<g id="edge8" class="edge">
+<title>python&#45;&gt;arm</title>
+<path fill="none" stroke="#444444" stroke-width="1.2" d="M75.76,-153.43C141.76,-215.58 157.49,-226.83 209.39,-232.61"/>
+<polygon fill="#444444" stroke="#444444" stroke-width="1.2" points="208.94,-236.08 219.23,-233.59 209.63,-229.11 208.94,-236.08"/>
+</g>
+<!-- python&#45;&gt;mips -->
+<g id="edge9" class="edge">
+<title>python&#45;&gt;mips</title>
+<path fill="none" stroke="#444444" stroke-width="1.2" d="M75.52,-116.56C141,-54.09 156.5,-43.01 209.57,-37.29"/>
+<polygon fill="#444444" stroke="#444444" stroke-width="1.2" points="209.68,-40.8 219.3,-36.35 209,-33.83 209.68,-40.8"/>
+</g>
+</g>
+</svg>

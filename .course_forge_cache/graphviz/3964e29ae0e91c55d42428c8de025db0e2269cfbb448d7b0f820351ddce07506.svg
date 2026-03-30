@@ -1,0 +1,54 @@
+<svg width="470pt" height="187pt"
+ viewBox="0.00 0.00 470.00 187.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 182.75)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-182.75 466.25,-182.75 466.25,4 -4,4"/>
+<text xml:space="preserve" text-anchor="middle" x="231.12" y="-7.2" font-family="Times,serif" font-size="14.00">Se P3 liberar R1, P1 pode prosseguir, mesmo havendo um &#39;ciclo de dependência&#39;.</text>
+<!-- P1 -->
+<g id="node1" class="node">
+<title>P1</title>
+<ellipse fill="none" stroke="black" cx="81.13" cy="-49.12" rx="21.62" ry="21.62"/>
+<text xml:space="preserve" text-anchor="middle" x="81.13" y="-43.7" font-family="Arial" font-size="14.00">P1</text>
+</g>
+<!-- R1 -->
+<g id="node4" class="node">
+<title>R1</title>
+<polygon fill="#d1eaff" stroke="black" points="281.5,-178.75 164.25,-178.75 164.25,-61.5 281.5,-61.5 281.5,-178.75"/>
+<text xml:space="preserve" text-anchor="middle" x="222.88" y="-114.7" font-family="Arial" font-size="14.00">R1 (2 instâncias)</text>
+</g>
+<!-- P1&#45;&gt;R1 -->
+<g id="edge1" class="edge">
+<title>P1&#45;&gt;R1</title>
+<path fill="none" stroke="red" d="M100.97,-58.7C114.74,-65.69 134.32,-75.64 153.72,-85.5"/>
+<polygon fill="red" stroke="red" points="151.97,-88.53 162.47,-89.94 155.14,-82.29 151.97,-88.53"/>
+<text xml:space="preserve" text-anchor="middle" x="133.5" y="-83.57" font-family="Times,serif" font-size="14.00">pede</text>
+</g>
+<!-- P2 -->
+<g id="node2" class="node">
+<title>P2</title>
+<ellipse fill="none" stroke="black" cx="381.12" cy="-46.12" rx="21.62" ry="21.62"/>
+<text xml:space="preserve" text-anchor="middle" x="381.12" y="-40.7" font-family="Arial" font-size="14.00">P2</text>
+</g>
+<!-- P2&#45;&gt;P1 -->
+<!-- P3 -->
+<g id="node3" class="node">
+<title>P3</title>
+<ellipse fill="none" stroke="black" cx="381.12" cy="-120.12" rx="21.62" ry="21.62"/>
+<text xml:space="preserve" text-anchor="middle" x="381.12" y="-114.7" font-family="Arial" font-size="14.00">P3</text>
+</g>
+<!-- R1&#45;&gt;P2 -->
+<g id="edge2" class="edge">
+<title>R1&#45;&gt;P2</title>
+<path fill="none" stroke="blue" d="M281.61,-92.78C305.12,-81.64 331.28,-69.26 350.73,-60.04"/>
+<polygon fill="blue" stroke="blue" points="352.15,-63.24 359.69,-55.8 349.15,-56.92 352.15,-63.24"/>
+<text xml:space="preserve" text-anchor="middle" x="320.5" y="-86.32" font-family="Times,serif" font-size="14.00">alocado</text>
+</g>
+<!-- R1&#45;&gt;P3 -->
+<g id="edge3" class="edge">
+<title>R1&#45;&gt;P3</title>
+<path fill="none" stroke="blue" d="M281.61,-120.12C303.97,-120.12 328.72,-120.12 347.82,-120.12"/>
+<polygon fill="blue" stroke="blue" points="347.67,-123.62 357.67,-120.12 347.67,-116.62 347.67,-123.62"/>
+<text xml:space="preserve" text-anchor="middle" x="320.5" y="-123.32" font-family="Times,serif" font-size="14.00">alocado</text>
+</g>
+</g>
+</svg>

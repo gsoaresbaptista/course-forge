@@ -99,7 +99,13 @@ class FileSystemOutputWriter(OutputWriter):
 
     def _smart_copy(self, src: str, dst: str, **kwargs) -> None:
         ext = Path(src).suffix.lower()
-        if ext in [".css", ".js", ".svg"]:
+        # Skip re-minification if file already appears minified or is an SVG
+        if ext in [".css", ".js"]:
+            if ".min." in os.path.basename(src):
+                shutil.copy2(src, dst)
+            else:
+                self._minify_and_copy(src, dst, ext)
+        elif ext == ".svg":
             self._minify_and_copy(src, dst, ext)
         else:
             shutil.copy2(src, dst)

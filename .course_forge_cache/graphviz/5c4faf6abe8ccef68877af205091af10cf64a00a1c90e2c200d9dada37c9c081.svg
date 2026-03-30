@@ -1,0 +1,94 @@
+<svg width="517pt" height="289pt"
+ viewBox="0.00 0.00 517.00 289.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 285)">
+<title>CompilerPipeline</title>
+<g id="clust1" class="cluster">
+<title>cluster_frontends</title>
+<path fill="#f5f5e8" stroke="#d6d6a5" d="M20,-8C20,-8 70,-8 70,-8 76,-8 82,-14 82,-20 82,-20 82,-261 82,-261 82,-267 76,-273 70,-273 70,-273 20,-273 20,-273 14,-273 8,-267 8,-261 8,-261 8,-20 8,-20 8,-14 14,-8 20,-8"/>
+<text xml:space="preserve" text-anchor="middle" x="45" y="-255.7" font-family="Times,serif" font-size="14.00">Frontends</text>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_backends</title>
+<path fill="#f5f5e8" stroke="#d6d6a5" d="M443,-8C443,-8 489,-8 489,-8 495,-8 501,-14 501,-20 501,-20 501,-261 501,-261 501,-267 495,-273 489,-273 489,-273 443,-273 443,-273 437,-273 431,-267 431,-261 431,-261 431,-20 431,-20 431,-14 437,-8 443,-8"/>
+<text xml:space="preserve" text-anchor="middle" x="466" y="-255.7" font-family="Times,serif" font-size="14.00">Backends</text>
+</g>
+<!-- c -->
+<g id="node1" class="node">
+<title>c</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M60,-52C60,-52 30,-52 30,-52 24,-52 18,-46 18,-40 18,-40 18,-28 18,-28 18,-22 24,-16 30,-16 30,-16 60,-16 60,-16 66,-16 72,-22 72,-28 72,-28 72,-40 72,-40 72,-46 66,-52 60,-52"/>
+<text xml:space="preserve" text-anchor="middle" x="45" y="-28.57" font-family="Helvetica,sans-Serif" font-size="14.00">C</text>
+</g>
+<!-- ir -->
+<g id="node4" class="node">
+<title>ir</title>
+<path fill="none" stroke="#7a5cff" stroke-width="2" d="M341,-146C341,-146 172,-146 172,-146 166,-146 160,-140 160,-134 160,-134 160,-122 160,-122 160,-116 166,-110 172,-110 172,-110 341,-110 341,-110 347,-110 353,-116 353,-122 353,-122 353,-134 353,-134 353,-140 347,-146 341,-146"/>
+<text xml:space="preserve" text-anchor="middle" x="256.5" y="-122.58" font-family="Helvetica,sans-Serif" font-size="14.00">Linguagem Intermediária (IR)</text>
+</g>
+<!-- c&#45;&gt;ir -->
+<g id="edge1" class="edge">
+<title>c&#45;&gt;ir</title>
+<path fill="none" stroke="#333333" d="M72.34,-44.06C107.93,-57.37 127.45,-66.17 207.14,-104.33"/>
+<polygon fill="#333333" stroke="#333333" points="205.27,-107.31 215.8,-108.47 208.29,-101 205.27,-107.31"/>
+</g>
+<!-- java -->
+<g id="node2" class="node">
+<title>java</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M60,-146C60,-146 30,-146 30,-146 24,-146 18,-140 18,-134 18,-134 18,-122 18,-122 18,-116 24,-110 30,-110 30,-110 60,-110 60,-110 66,-110 72,-116 72,-122 72,-122 72,-134 72,-134 72,-140 66,-146 60,-146"/>
+<text xml:space="preserve" text-anchor="middle" x="45" y="-122.58" font-family="Helvetica,sans-Serif" font-size="14.00">Java</text>
+</g>
+<!-- java&#45;&gt;ir -->
+<g id="edge2" class="edge">
+<title>java&#45;&gt;ir</title>
+<path fill="none" stroke="#333333" d="M72.45,-125.9C96.18,-124.24 113.02,-123.8 147.89,-124.58"/>
+<polygon fill="#333333" stroke="#333333" points="147.72,-128.07 157.8,-124.82 147.89,-121.07 147.72,-128.07"/>
+</g>
+<!-- python -->
+<g id="node3" class="node">
+<title>python</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M62,-240C62,-240 28,-240 28,-240 22,-240 16,-234 16,-228 16,-228 16,-216 16,-216 16,-210 22,-204 28,-204 28,-204 62,-204 62,-204 68,-204 74,-210 74,-216 74,-216 74,-228 74,-228 74,-234 68,-240 62,-240"/>
+<text xml:space="preserve" text-anchor="middle" x="45" y="-216.57" font-family="Helvetica,sans-Serif" font-size="14.00">Python</text>
+</g>
+<!-- python&#45;&gt;ir -->
+<g id="edge3" class="edge">
+<title>python&#45;&gt;ir</title>
+<path fill="none" stroke="#333333" d="M74.38,-206.71C105.3,-190.9 126.09,-181.79 200.32,-151.15"/>
+<polygon fill="#333333" stroke="#333333" points="201.34,-154.51 209.25,-147.46 198.67,-148.04 201.34,-154.51"/>
+</g>
+<!-- x86 -->
+<g id="node5" class="node">
+<title>x86</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M481,-52C481,-52 451,-52 451,-52 445,-52 439,-46 439,-40 439,-40 439,-28 439,-28 439,-22 445,-16 451,-16 451,-16 481,-16 481,-16 487,-16 493,-22 493,-28 493,-28 493,-40 493,-40 493,-46 487,-52 481,-52"/>
+<text xml:space="preserve" text-anchor="middle" x="466" y="-28.57" font-family="Helvetica,sans-Serif" font-size="14.00">x86</text>
+</g>
+<!-- ir&#45;&gt;x86 -->
+<g id="edge4" class="edge">
+<title>ir&#45;&gt;x86</title>
+<path fill="none" stroke="#333333" d="M296.03,-109.08C373.96,-71.81 397.75,-60.74 427.99,-48.68"/>
+<polygon fill="#333333" stroke="#333333" points="429.15,-51.99 437.17,-45.07 426.59,-45.47 429.15,-51.99"/>
+</g>
+<!-- arm -->
+<g id="node6" class="node">
+<title>arm</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M481,-146C481,-146 451,-146 451,-146 445,-146 439,-140 439,-134 439,-134 439,-122 439,-122 439,-116 445,-110 451,-110 451,-110 481,-110 481,-110 487,-110 493,-116 493,-122 493,-122 493,-134 493,-134 493,-140 487,-146 481,-146"/>
+<text xml:space="preserve" text-anchor="middle" x="466" y="-122.58" font-family="Helvetica,sans-Serif" font-size="14.00">ARM</text>
+</g>
+<!-- ir&#45;&gt;arm -->
+<g id="edge5" class="edge">
+<title>ir&#45;&gt;arm</title>
+<path fill="none" stroke="#333333" d="M353.64,-124.95C389.02,-124.05 407.05,-124.16 427.33,-125.27"/>
+<polygon fill="#333333" stroke="#333333" points="426.89,-128.74 437.09,-125.87 427.32,-121.76 426.89,-128.74"/>
+</g>
+<!-- mips -->
+<g id="node7" class="node">
+<title>mips</title>
+<path fill="none" stroke="black" stroke-dasharray="5,2" d="M481,-240C481,-240 451,-240 451,-240 445,-240 439,-234 439,-228 439,-228 439,-216 439,-216 439,-210 445,-204 451,-204 451,-204 481,-204 481,-204 487,-204 493,-210 493,-216 493,-216 493,-228 493,-228 493,-234 487,-240 481,-240"/>
+<text xml:space="preserve" text-anchor="middle" x="466" y="-216.57" font-family="Helvetica,sans-Serif" font-size="14.00">MIPS</text>
+</g>
+<!-- ir&#45;&gt;mips -->
+<g id="edge6" class="edge">
+<title>ir&#45;&gt;mips</title>
+<path fill="none" stroke="#333333" d="M302.57,-146.98C376.86,-177.63 400.92,-187.97 428.7,-202.2"/>
+<polygon fill="#333333" stroke="#333333" points="426.93,-205.23 437.42,-206.73 430.16,-199.01 426.93,-205.23"/>
+</g>
+</g>
+</svg>

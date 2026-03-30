@@ -1,0 +1,84 @@
+<svg width="284pt" height="239pt"
+ viewBox="0.00 0.00 284.00 239.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 235)">
+<title>AST</title>
+<!-- ast_b62b43b7_0 -->
+<g id="node1" class="node">
+<title>ast_b62b43b7_0</title>
+<path fill="none" stroke="#8a6cff" stroke-width="2" d="M112,-231C112,-231 82,-231 82,-231 76,-231 70,-225 70,-219 70,-219 70,-207 70,-207 70,-201 76,-195 82,-195 82,-195 112,-195 112,-195 118,-195 124,-201 124,-207 124,-207 124,-219 124,-219 124,-225 118,-231 112,-231"/>
+<text xml:space="preserve" text-anchor="middle" x="97" y="-206.75" font-family="JetBrains Mono, Fira Code, Consolas, Helvetica" font-size="20.00" fill="#8a6cff">=</text>
+</g>
+<!-- ast_b62b43b7_2 -->
+<g id="node2" class="node">
+<title>ast_b62b43b7_2</title>
+<path fill="none" stroke="#8a6cff" stroke-width="2" d="M166,-166C166,-166 136,-166 136,-166 130,-166 124,-160 124,-154 124,-154 124,-142 124,-142 124,-136 130,-130 136,-130 136,-130 166,-130 166,-130 172,-130 178,-136 178,-142 178,-142 178,-154 178,-154 178,-160 172,-166 166,-166"/>
+<text xml:space="preserve" text-anchor="middle" x="151" y="-141.75" font-family="JetBrains Mono, Fira Code, Consolas, Helvetica" font-size="20.00" fill="#8a6cff">+</text>
+</g>
+<!-- ast_b62b43b7_0&#45;&gt;ast_b62b43b7_2 -->
+<g id="edge2" class="edge">
+<title>ast_b62b43b7_0&#45;&gt;ast_b62b43b7_2</title>
+<path fill="none" stroke="#333333" stroke-width="1.5" d="M112.33,-194.12C117.85,-187.68 124.17,-180.3 130.09,-173.4"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.5" points="131.65,-175.34 134.34,-168.44 127.93,-172.16 131.65,-175.34"/>
+</g>
+<!-- ast_b62b43b7_1 -->
+<g id="node4" class="node">
+<title>ast_b62b43b7_1</title>
+<path fill="none" stroke="none" stroke-width="2" d="M76,-166C76,-166 12,-166 12,-166 6,-166 0,-160 0,-154 0,-154 0,-142 0,-142 0,-136 6,-130 12,-130 12,-130 76,-130 76,-130 82,-130 88,-136 88,-142 88,-142 88,-154 88,-154 88,-160 82,-166 76,-166"/>
+<text xml:space="preserve" text-anchor="middle" x="44" y="-141.75" font-family="JetBrains Mono, Fira Code, Consolas, Helvetica" font-size="20.00" fill="#333333">&lt;id,1&gt;</text>
+</g>
+<!-- ast_b62b43b7_0&#45;&gt;ast_b62b43b7_1 -->
+<g id="edge1" class="edge">
+<title>ast_b62b43b7_0&#45;&gt;ast_b62b43b7_1</title>
+<path fill="none" stroke="#333333" stroke-width="1.5" d="M81.95,-194.12C76.35,-187.46 69.91,-179.8 63.94,-172.7"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.5" points="66.02,-171.36 59.63,-167.58 62.27,-174.52 66.02,-171.36"/>
+</g>
+<!-- ast_b62b43b7_4 -->
+<g id="node3" class="node">
+<title>ast_b62b43b7_4</title>
+<path fill="none" stroke="#8a6cff" stroke-width="2" d="M219,-101C219,-101 189,-101 189,-101 183,-101 177,-95 177,-89 177,-89 177,-77 177,-77 177,-71 183,-65 189,-65 189,-65 219,-65 219,-65 225,-65 231,-71 231,-77 231,-77 231,-89 231,-89 231,-95 225,-101 219,-101"/>
+<text xml:space="preserve" text-anchor="middle" x="204" y="-76.75" font-family="JetBrains Mono, Fira Code, Consolas, Helvetica" font-size="20.00" fill="#8a6cff">∗</text>
+</g>
+<!-- ast_b62b43b7_2&#45;&gt;ast_b62b43b7_4 -->
+<g id="edge4" class="edge">
+<title>ast_b62b43b7_2&#45;&gt;ast_b62b43b7_4</title>
+<path fill="none" stroke="#333333" stroke-width="1.5" d="M166.05,-129.12C171.46,-122.68 177.67,-115.3 183.47,-108.4"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.5" points="185.01,-110.38 187.64,-103.45 181.26,-107.23 185.01,-110.38"/>
+</g>
+<!-- ast_b62b43b7_3 -->
+<g id="node5" class="node">
+<title>ast_b62b43b7_3</title>
+<path fill="none" stroke="none" stroke-width="2" d="M129,-101C129,-101 65,-101 65,-101 59,-101 53,-95 53,-89 53,-89 53,-77 53,-77 53,-71 59,-65 65,-65 65,-65 129,-65 129,-65 135,-65 141,-71 141,-77 141,-77 141,-89 141,-89 141,-95 135,-101 129,-101"/>
+<text xml:space="preserve" text-anchor="middle" x="97" y="-76.75" font-family="JetBrains Mono, Fira Code, Consolas, Helvetica" font-size="20.00" fill="#333333">&lt;id,2&gt;</text>
+</g>
+<!-- ast_b62b43b7_2&#45;&gt;ast_b62b43b7_3 -->
+<g id="edge3" class="edge">
+<title>ast_b62b43b7_2&#45;&gt;ast_b62b43b7_3</title>
+<path fill="none" stroke="#333333" stroke-width="1.5" d="M135.67,-129.12C129.96,-122.46 123.4,-114.8 117.31,-107.7"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.5" points="119.33,-106.29 112.92,-102.57 115.61,-109.48 119.33,-106.29"/>
+</g>
+<!-- ast_b62b43b7_5 -->
+<g id="node6" class="node">
+<title>ast_b62b43b7_5</title>
+<path fill="none" stroke="none" stroke-width="2" d="M174,-36C174,-36 144,-36 144,-36 138,-36 132,-30 132,-24 132,-24 132,-12 132,-12 132,-6 138,0 144,0 144,0 174,0 174,0 180,0 186,-6 186,-12 186,-12 186,-24 186,-24 186,-30 180,-36 174,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="159" y="-11.75" font-family="JetBrains Mono, Fira Code, Consolas, Helvetica" font-size="20.00" fill="#333333">20</text>
+</g>
+<!-- ast_b62b43b7_4&#45;&gt;ast_b62b43b7_5 -->
+<g id="edge5" class="edge">
+<title>ast_b62b43b7_4&#45;&gt;ast_b62b43b7_5</title>
+<path fill="none" stroke="#333333" stroke-width="1.5" d="M191.23,-64.12C186.57,-57.6 181.23,-50.12 176.24,-43.14"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.5" points="178.42,-41.97 172.35,-37.69 174.43,-44.81 178.42,-41.97"/>
+</g>
+<!-- ast_b62b43b7_6 -->
+<g id="node7" class="node">
+<title>ast_b62b43b7_6</title>
+<path fill="none" stroke="none" stroke-width="2" d="M264,-36C264,-36 234,-36 234,-36 228,-36 222,-30 222,-24 222,-24 222,-12 222,-12 222,-6 228,0 234,0 234,0 264,0 264,0 270,0 276,-6 276,-12 276,-12 276,-24 276,-24 276,-30 270,-36 264,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="249" y="-11.75" font-family="JetBrains Mono, Fira Code, Consolas, Helvetica" font-size="20.00" fill="#333333">60</text>
+</g>
+<!-- ast_b62b43b7_4&#45;&gt;ast_b62b43b7_6 -->
+<g id="edge6" class="edge">
+<title>ast_b62b43b7_4&#45;&gt;ast_b62b43b7_6</title>
+<path fill="none" stroke="#333333" stroke-width="1.5" d="M216.77,-64.12C221.43,-57.6 226.77,-50.12 231.76,-43.14"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.5" points="233.57,-44.81 235.65,-37.69 229.58,-41.97 233.57,-44.81"/>
+</g>
+</g>
+</svg>

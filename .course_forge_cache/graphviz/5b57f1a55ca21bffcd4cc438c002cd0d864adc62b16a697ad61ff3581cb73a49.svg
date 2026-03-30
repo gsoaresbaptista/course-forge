@@ -1,0 +1,94 @@
+<svg width="343pt" height="303pt"
+ viewBox="0.00 0.00 343.00 303.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 298.5)">
+<title>Flowchart</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-298.5 339.09,-298.5 339.09,4 -4,4"/>
+<!-- WhileCond -->
+<g id="node1" class="node">
+<title>WhileCond</title>
+<polygon fill="#fff9c4" stroke="#333333" points="101.38,-294.5 16.15,-276.5 101.37,-258.5 186.6,-276.5 101.38,-294.5"/>
+<text xml:space="preserve" text-anchor="middle" x="101.38" y="-272.23" font-family="Arial" font-size="12.00">while (a &lt;= b) {</text>
+</g>
+<!-- Soma -->
+<g id="node2" class="node">
+<title>Soma</title>
+<path fill="#f9f9f9" stroke="#333333" d="M52.75,-204.25C52.75,-204.25 12,-204.25 12,-204.25 6,-204.25 0,-198.25 0,-192.25 0,-192.25 0,-180.25 0,-180.25 0,-174.25 6,-168.25 12,-168.25 12,-168.25 52.75,-168.25 52.75,-168.25 58.75,-168.25 64.75,-174.25 64.75,-180.25 64.75,-180.25 64.75,-192.25 64.75,-192.25 64.75,-198.25 58.75,-204.25 52.75,-204.25"/>
+<text xml:space="preserve" text-anchor="middle" x="32.38" y="-181.97" font-family="Arial" font-size="12.00">a = a + 1;</text>
+</g>
+<!-- WhileCond&#45;&gt;Soma -->
+<g id="edge1" class="edge">
+<title>WhileCond&#45;&gt;Soma</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M78.77,-262.96C70.9,-257.74 62.51,-251.12 56.38,-243.5 49.79,-235.33 44.72,-225.08 40.96,-215.58"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="44.3,-214.51 37.64,-206.27 37.7,-216.86 44.3,-214.51"/>
+<text xml:space="preserve" text-anchor="middle" x="65.38" y="-228" font-family="Arial" font-size="10.00">SIM</text>
+</g>
+<!-- Continua -->
+<g id="node6" class="node">
+<title>Continua</title>
+<path fill="#f9f9f9" stroke="#333333" d="M192.25,-204.5C192.25,-204.5 112.5,-204.5 112.5,-204.5 106.5,-204.5 100.5,-198.5 100.5,-192.5 100.5,-192.5 100.5,-180 100.5,-180 100.5,-174 106.5,-168 112.5,-168 112.5,-168 192.25,-168 192.25,-168 198.25,-168 204.25,-174 204.25,-180 204.25,-180 204.25,-192.5 204.25,-192.5 204.25,-198.5 198.25,-204.5 192.25,-204.5"/>
+<text xml:space="preserve" text-anchor="middle" x="152.38" y="-189.1" font-family="Arial" font-size="12.00">Continuação do </text>
+<text xml:space="preserve" text-anchor="middle" x="152.38" y="-174.85" font-family="Arial" font-size="12.00">programa</text>
+</g>
+<!-- WhileCond&#45;&gt;Continua -->
+<g id="edge2" class="edge">
+<title>WhileCond&#45;&gt;Continua:w</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M94.72,-259.54C86.49,-238.08 75.11,-201.29 88.52,-189.79"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="89.33,-193.21 97.77,-186.81 87.18,-186.54 89.33,-193.21"/>
+<text xml:space="preserve" text-anchor="middle" x="99.73" y="-234" font-family="Arial" font-size="10.00">NÃO</text>
+<text xml:space="preserve" text-anchor="middle" x="99.73" y="-222" font-family="Arial" font-size="10.00">while</text>
+</g>
+<!-- IfCont -->
+<g id="node3" class="node">
+<title>IfCont</title>
+<polygon fill="#fff9c4" stroke="#333333" points="70.38,-126 8.76,-108 70.37,-90 131.99,-108 70.38,-126"/>
+<text xml:space="preserve" text-anchor="middle" x="70.38" y="-103.72" font-family="Arial" font-size="12.00">if (a == 5):</text>
+</g>
+<!-- Soma&#45;&gt;IfCont -->
+<g id="edge3" class="edge">
+<title>Soma&#45;&gt;IfCont</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M41,-167.95C45.92,-158.06 52.19,-145.48 57.68,-134.48"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="60.68,-136.31 62,-125.8 54.41,-133.18 60.68,-136.31"/>
+</g>
+<!-- ContNode -->
+<g id="node4" class="node">
+<title>ContNode</title>
+<path fill="#e8f5e9" stroke="#333333" d="M255.75,-126C255.75,-126 215,-126 215,-126 209,-126 203,-120 203,-114 203,-114 203,-102 203,-102 203,-96 209,-90 215,-90 215,-90 255.75,-90 255.75,-90 261.75,-90 267.75,-96 267.75,-102 267.75,-102 267.75,-114 267.75,-114 267.75,-120 261.75,-126 255.75,-126"/>
+<text xml:space="preserve" text-anchor="middle" x="235.38" y="-103.72" font-family="Arial" font-size="12.00">continue;</text>
+</g>
+<!-- IfCont&#45;&gt;ContNode -->
+<g id="edge4" class="edge">
+<title>IfCont&#45;&gt;ContNode</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M133.7,-108C152.89,-108 173.56,-108 191.21,-108"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="191.08,-111.5 201.08,-108 191.08,-104.5 191.08,-111.5"/>
+<text xml:space="preserve" text-anchor="middle" x="167.49" y="-113.5" font-family="Arial" font-size="10.00">SIM</text>
+</g>
+<!-- Print -->
+<g id="node5" class="node">
+<title>Print</title>
+<path fill="#f9f9f9" stroke="#333333" d="M260.5,-36C260.5,-36 176.25,-36 176.25,-36 170.25,-36 164.25,-30 164.25,-24 164.25,-24 164.25,-12 164.25,-12 164.25,-6 170.25,0 176.25,0 176.25,0 260.5,0 260.5,0 266.5,0 272.5,-6 272.5,-12 272.5,-12 272.5,-24 272.5,-24 272.5,-30 266.5,-36 260.5,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="218.38" y="-13.72" font-family="Arial" font-size="12.00">printf(&quot;%d \n&quot;,a); }</text>
+</g>
+<!-- IfCont&#45;&gt;Print -->
+<g id="edge5" class="edge">
+<title>IfCont&#45;&gt;Print</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M90.03,-95.31C112.65,-81.86 150.37,-59.44 179.08,-42.37"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="180.83,-45.39 187.64,-37.27 177.26,-39.38 180.83,-45.39"/>
+<text xml:space="preserve" text-anchor="middle" x="172.86" y="-65.5" font-family="Arial" font-size="10.00">NÃO</text>
+<text xml:space="preserve" text-anchor="middle" x="172.86" y="-53.5" font-family="Arial" font-size="10.00">if</text>
+</g>
+<!-- ContNode&#45;&gt;WhileCond -->
+<g id="edge6" class="edge">
+<title>ContNode:e&#45;&gt;WhileCond:e</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M268.75,-108C306.63,-108 243.51,-249.39 200.85,-273.13"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="200.02,-269.73 191.46,-275.97 202.05,-276.43 200.02,-269.73"/>
+<text xml:space="preserve" text-anchor="middle" x="271.2" y="-182.75" font-family="Arial" font-size="10.00"> </text>
+</g>
+<!-- Print&#45;&gt;WhileCond -->
+<g id="edge7" class="edge">
+<title>Print:e&#45;&gt;WhileCond:e</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M273.5,-18C373.77,-18 335.87,-171.22 266.38,-243.5 243.58,-267.21 230.1,-274.82 201.48,-276.24"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="201.46,-272.74 191.54,-276.46 201.61,-279.74 201.46,-272.74"/>
+<text xml:space="preserve" text-anchor="middle" x="326.57" y="-143.5" font-family="Arial" font-size="10.00"> </text>
+</g>
+</g>
+</svg>

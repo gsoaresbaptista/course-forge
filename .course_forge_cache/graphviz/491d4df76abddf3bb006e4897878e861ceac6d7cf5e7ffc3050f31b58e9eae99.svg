@@ -1,0 +1,106 @@
+<svg width="245pt" height="391pt"
+ viewBox="0.00 0.00 245.00 391.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 386.5)">
+<title>Flowchart</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-386.5 241.12,-386.5 241.12,4 -4,4"/>
+<!-- Decl -->
+<g id="node1" class="node">
+<title>Decl</title>
+<path fill="#f9f9f9" stroke="#333333" d="M204.38,-382.5C204.38,-382.5 162.12,-382.5 162.12,-382.5 156.12,-382.5 150.12,-376.5 150.12,-370.5 150.12,-370.5 150.12,-358.5 150.12,-358.5 150.12,-352.5 156.12,-346.5 162.12,-346.5 162.12,-346.5 204.38,-346.5 204.38,-346.5 210.38,-346.5 216.38,-352.5 216.38,-358.5 216.38,-358.5 216.38,-370.5 216.38,-370.5 216.38,-376.5 210.38,-382.5 204.38,-382.5"/>
+<text xml:space="preserve" text-anchor="middle" x="183.25" y="-360.23" font-family="Arial" font-size="12.00">int a, b, c;</text>
+</g>
+<!-- ScanA -->
+<g id="node2" class="node">
+<title>ScanA</title>
+<path fill="#f9f9f9" stroke="#333333" d="M222.38,-315.5C222.38,-315.5 144.12,-315.5 144.12,-315.5 138.12,-315.5 132.12,-309.5 132.12,-303.5 132.12,-303.5 132.12,-291.5 132.12,-291.5 132.12,-285.5 138.12,-279.5 144.12,-279.5 144.12,-279.5 222.38,-279.5 222.38,-279.5 228.38,-279.5 234.38,-285.5 234.38,-291.5 234.38,-291.5 234.38,-303.5 234.38,-303.5 234.38,-309.5 228.38,-315.5 222.38,-315.5"/>
+<text xml:space="preserve" text-anchor="middle" x="183.25" y="-293.23" font-family="Arial" font-size="12.00">scanf (&quot;%d&quot;,&amp;a);</text>
+</g>
+<!-- Decl&#45;&gt;ScanA -->
+<g id="edge1" class="edge">
+<title>Decl&#45;&gt;ScanA</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M183.25,-346.08C183.25,-340.4 183.25,-333.92 183.25,-327.62"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="186.75,-327.78 183.25,-317.78 179.75,-327.78 186.75,-327.78"/>
+</g>
+<!-- ScanB -->
+<g id="node3" class="node">
+<title>ScanB</title>
+<path fill="#f9f9f9" stroke="#333333" d="M222.38,-248.5C222.38,-248.5 144.12,-248.5 144.12,-248.5 138.12,-248.5 132.12,-242.5 132.12,-236.5 132.12,-236.5 132.12,-224.5 132.12,-224.5 132.12,-218.5 138.12,-212.5 144.12,-212.5 144.12,-212.5 222.38,-212.5 222.38,-212.5 228.38,-212.5 234.38,-218.5 234.38,-224.5 234.38,-224.5 234.38,-236.5 234.38,-236.5 234.38,-242.5 228.38,-248.5 222.38,-248.5"/>
+<text xml:space="preserve" text-anchor="middle" x="183.25" y="-226.22" font-family="Arial" font-size="12.00">scanf (&quot;%d&quot;,&amp;b);</text>
+</g>
+<!-- ScanA&#45;&gt;ScanB -->
+<g id="edge2" class="edge">
+<title>ScanA&#45;&gt;ScanB</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M183.25,-279.08C183.25,-273.4 183.25,-266.92 183.25,-260.62"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="186.75,-260.78 183.25,-250.78 179.75,-260.78 186.75,-260.78"/>
+</g>
+<!-- ForInit -->
+<g id="node4" class="node">
+<title>ForInit</title>
+<path fill="#f9f9f9" stroke="#333333" d="M205.5,-181.5C205.5,-181.5 161,-181.5 161,-181.5 155,-181.5 149,-175.5 149,-169.5 149,-169.5 149,-157.5 149,-157.5 149,-151.5 155,-145.5 161,-145.5 161,-145.5 205.5,-145.5 205.5,-145.5 211.5,-145.5 217.5,-151.5 217.5,-157.5 217.5,-157.5 217.5,-169.5 217.5,-169.5 217.5,-175.5 211.5,-181.5 205.5,-181.5"/>
+<text xml:space="preserve" text-anchor="middle" x="183.25" y="-159.22" font-family="Arial" font-size="12.00">for (c = a);</text>
+</g>
+<!-- ScanB&#45;&gt;ForInit -->
+<g id="edge3" class="edge">
+<title>ScanB&#45;&gt;ForInit</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M183.25,-212.08C183.25,-206.4 183.25,-199.92 183.25,-193.62"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="186.75,-193.78 183.25,-183.78 179.75,-193.78 186.75,-193.78"/>
+</g>
+<!-- ForCond -->
+<g id="node5" class="node">
+<title>ForCond</title>
+<polygon fill="#fff9c4" stroke="#333333" points="183.25,-114.5 137.15,-96.5 183.25,-78.5 229.35,-96.5 183.25,-114.5"/>
+<text xml:space="preserve" text-anchor="middle" x="183.25" y="-92.22" font-family="Arial" font-size="12.00">c &lt;= b;</text>
+</g>
+<!-- ForInit&#45;&gt;ForCond -->
+<g id="edge4" class="edge">
+<title>ForInit&#45;&gt;ForCond</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M183.25,-145.08C183.25,-139.4 183.25,-132.92 183.25,-126.62"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="186.75,-126.78 183.25,-116.78 179.75,-126.78 186.75,-126.78"/>
+</g>
+<!-- Print -->
+<g id="node7" class="node">
+<title>Print</title>
+<path fill="#f9f9f9" stroke="#333333" d="M92.5,-36.25C92.5,-36.25 12,-36.25 12,-36.25 6,-36.25 0,-30.25 0,-24.25 0,-24.25 0,-12.25 0,-12.25 0,-6.25 6,-0.25 12,-0.25 12,-0.25 92.5,-0.25 92.5,-0.25 98.5,-0.25 104.5,-6.25 104.5,-12.25 104.5,-12.25 104.5,-24.25 104.5,-24.25 104.5,-30.25 98.5,-36.25 92.5,-36.25"/>
+<text xml:space="preserve" text-anchor="middle" x="52.25" y="-13.97" font-family="Arial" font-size="12.00">printf(&quot;%d \n&quot;,c);}</text>
+</g>
+<!-- ForCond&#45;&gt;Print -->
+<g id="edge5" class="edge">
+<title>ForCond&#45;&gt;Print</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M165.31,-85.06C146.61,-74.17 116.69,-56.76 92.32,-42.57"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="94.24,-39.64 83.84,-37.64 90.72,-45.69 94.24,-39.64"/>
+<text xml:space="preserve" text-anchor="middle" x="134.59" y="-54" font-family="Arial" font-size="10.00">SIM</text>
+</g>
+<!-- Continua -->
+<g id="node8" class="node">
+<title>Continua</title>
+<path fill="#f9f9f9" stroke="#333333" d="M225.12,-36.5C225.12,-36.5 145.38,-36.5 145.38,-36.5 139.38,-36.5 133.38,-30.5 133.38,-24.5 133.38,-24.5 133.38,-12 133.38,-12 133.38,-6 139.38,0 145.38,0 145.38,0 225.12,0 225.12,0 231.12,0 237.12,-6 237.12,-12 237.12,-12 237.12,-24.5 237.12,-24.5 237.12,-30.5 231.12,-36.5 225.12,-36.5"/>
+<text xml:space="preserve" text-anchor="middle" x="185.25" y="-21.1" font-family="Arial" font-size="12.00">Continuação do </text>
+<text xml:space="preserve" text-anchor="middle" x="185.25" y="-6.85" font-family="Arial" font-size="12.00">programa</text>
+</g>
+<!-- ForCond&#45;&gt;Continua -->
+<g id="edge8" class="edge">
+<title>ForCond&#45;&gt;Continua</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M183.7,-78.2C183.93,-69.39 184.22,-58.44 184.49,-48.38"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="187.98,-48.65 184.74,-38.56 180.98,-48.47 187.98,-48.65"/>
+<text xml:space="preserve" text-anchor="middle" x="195.24" y="-54" font-family="Arial" font-size="10.00">NÃO</text>
+</g>
+<!-- ForInc -->
+<g id="node6" class="node">
+<title>ForInc</title>
+<path fill="#f9f9f9" stroke="#333333" d="M67.25,-114.5C67.25,-114.5 37.25,-114.5 37.25,-114.5 31.25,-114.5 25.25,-108.5 25.25,-102.5 25.25,-102.5 25.25,-90.5 25.25,-90.5 25.25,-84.5 31.25,-78.5 37.25,-78.5 37.25,-78.5 67.25,-78.5 67.25,-78.5 73.25,-78.5 79.25,-84.5 79.25,-90.5 79.25,-90.5 79.25,-102.5 79.25,-102.5 79.25,-108.5 73.25,-114.5 67.25,-114.5"/>
+<text xml:space="preserve" text-anchor="middle" x="52.25" y="-92.22" font-family="Arial" font-size="12.00">c++){</text>
+</g>
+<!-- ForInc&#45;&gt;ForCond -->
+<g id="edge7" class="edge">
+<title>ForInc&#45;&gt;ForCond</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M79.63,-96.5C94.57,-96.5 109.52,-96.5 124.46,-96.5"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="124.07,-100 134.07,-96.5 124.07,-93 124.07,-100"/>
+</g>
+<!-- Print&#45;&gt;ForInc -->
+<g id="edge6" class="edge">
+<title>Print&#45;&gt;ForInc</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M52.25,-36.75C52.25,-45.59 52.25,-56.55 52.25,-66.59"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="48.75,-66.38 52.25,-76.38 55.75,-66.38 48.75,-66.38"/>
+</g>
+</g>
+</svg>

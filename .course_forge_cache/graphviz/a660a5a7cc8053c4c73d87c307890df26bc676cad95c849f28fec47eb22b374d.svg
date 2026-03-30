@@ -1,0 +1,100 @@
+<svg width="266pt" height="535pt"
+ viewBox="0.00 0.00 266.00 535.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 531)">
+<title>Flowchart</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-531 262.31,-531 262.31,4 -4,4"/>
+<!-- Do -->
+<g id="node1" class="node">
+<title>Do</title>
+<path fill="none" stroke="none" d="M130.06,-527C130.06,-527 100.06,-527 100.06,-527 94.06,-527 88.06,-521 88.06,-515 88.06,-515 88.06,-503 88.06,-503 88.06,-497 94.06,-491 100.06,-491 100.06,-491 130.06,-491 130.06,-491 136.06,-491 142.06,-497 142.06,-503 142.06,-503 142.06,-515 142.06,-515 142.06,-521 136.06,-527 130.06,-527"/>
+<text xml:space="preserve" text-anchor="middle" x="115.06" y="-504.73" font-family="Arial" font-size="12.00">do {</text>
+</g>
+<!-- Menu -->
+<g id="node2" class="node">
+<title>Menu</title>
+<path fill="#f9f9f9" stroke="#333333" d="M194.68,-460C194.68,-460 35.43,-460 35.43,-460 29.43,-460 23.43,-454 23.43,-448 23.43,-448 23.43,-436 23.43,-436 23.43,-430 29.43,-424 35.43,-424 35.43,-424 194.68,-424 194.68,-424 200.68,-424 206.68,-430 206.68,-436 206.68,-436 206.68,-448 206.68,-448 206.68,-454 200.68,-460 194.68,-460"/>
+<text xml:space="preserve" text-anchor="middle" x="115.06" y="-437.73" font-family="Arial" font-size="12.00">printf (&quot;Escolha uma opção:\n&quot;);</text>
+</g>
+<!-- Do&#45;&gt;Menu -->
+<!-- Op1 -->
+<g id="node3" class="node">
+<title>Op1</title>
+<path fill="#f9f9f9" stroke="#333333" d="M147.43,-393C147.43,-393 34.68,-393 34.68,-393 28.68,-393 22.68,-387 22.68,-381 22.68,-381 22.68,-369 22.68,-369 22.68,-363 28.68,-357 34.68,-357 34.68,-357 147.43,-357 147.43,-357 153.43,-357 159.43,-363 159.43,-369 159.43,-369 159.43,-381 159.43,-381 159.43,-387 153.43,-393 147.43,-393"/>
+<text xml:space="preserve" text-anchor="middle" x="91.06" y="-370.73" font-family="Arial" font-size="12.00">printf (&quot;(1) Opção 1\n&quot;);</text>
+</g>
+<!-- Menu&#45;&gt;Op1 -->
+<g id="edge2" class="edge">
+<title>Menu&#45;&gt;Op1</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M108.63,-423.58C106.42,-417.61 103.89,-410.76 101.45,-404.15"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="104.88,-403.34 98.14,-395.17 98.32,-405.76 104.88,-403.34"/>
+</g>
+<!-- Op2 -->
+<g id="node4" class="node">
+<title>Op2</title>
+<path fill="#f9f9f9" stroke="#333333" d="M147.43,-326C147.43,-326 34.68,-326 34.68,-326 28.68,-326 22.68,-320 22.68,-314 22.68,-314 22.68,-302 22.68,-302 22.68,-296 28.68,-290 34.68,-290 34.68,-290 147.43,-290 147.43,-290 153.43,-290 159.43,-296 159.43,-302 159.43,-302 159.43,-314 159.43,-314 159.43,-320 153.43,-326 147.43,-326"/>
+<text xml:space="preserve" text-anchor="middle" x="91.06" y="-303.73" font-family="Arial" font-size="12.00">printf (&quot;(2) Opção 2\n&quot;);</text>
+</g>
+<!-- Op1&#45;&gt;Op2 -->
+<g id="edge3" class="edge">
+<title>Op1&#45;&gt;Op2</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M91.06,-356.58C91.06,-350.9 91.06,-344.42 91.06,-338.12"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="94.56,-338.28 91.06,-328.28 87.56,-338.28 94.56,-338.28"/>
+</g>
+<!-- Op3 -->
+<g id="node5" class="node">
+<title>Op3</title>
+<path fill="#f9f9f9" stroke="#333333" d="M147.43,-248C147.43,-248 34.68,-248 34.68,-248 28.68,-248 22.68,-242 22.68,-236 22.68,-236 22.68,-224 22.68,-224 22.68,-218 28.68,-212 34.68,-212 34.68,-212 147.43,-212 147.43,-212 153.43,-212 159.43,-218 159.43,-224 159.43,-224 159.43,-236 159.43,-236 159.43,-242 153.43,-248 147.43,-248"/>
+<text xml:space="preserve" text-anchor="middle" x="91.06" y="-225.72" font-family="Arial" font-size="12.00">printf (&quot;(3) Opção 3\n&quot;);</text>
+</g>
+<!-- Op2&#45;&gt;Op3 -->
+<g id="edge4" class="edge">
+<title>Op2&#45;&gt;Op3</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M91.06,-289.75C91.06,-280.97 91.06,-270.06 91.06,-260.03"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="94.56,-260.26 91.06,-250.26 87.56,-260.26 94.56,-260.26"/>
+</g>
+<!-- Scan -->
+<g id="node6" class="node">
+<title>Scan</title>
+<path fill="#f9f9f9" stroke="#333333" d="M141.81,-181C141.81,-181 70.31,-181 70.31,-181 64.31,-181 58.31,-175 58.31,-169 58.31,-169 58.31,-157 58.31,-157 58.31,-151 64.31,-145 70.31,-145 70.31,-145 141.81,-145 141.81,-145 147.81,-145 153.81,-151 153.81,-157 153.81,-157 153.81,-169 153.81,-169 153.81,-175 147.81,-181 141.81,-181"/>
+<text xml:space="preserve" text-anchor="middle" x="106.06" y="-158.72" font-family="Arial" font-size="12.00">scanf(&quot;%d&quot;,&amp;i);</text>
+</g>
+<!-- Op3&#45;&gt;Scan -->
+<g id="edge5" class="edge">
+<title>Op3&#45;&gt;Scan</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M95.08,-211.58C96.42,-205.75 97.96,-199.09 99.45,-192.64"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="102.78,-193.77 101.62,-183.24 95.96,-192.19 102.78,-193.77"/>
+</g>
+<!-- While -->
+<g id="node7" class="node">
+<title>While</title>
+<polygon fill="#fff9c4" stroke="#333333" points="118.06,-114 29.46,-96 118.06,-78 206.66,-96 118.06,-114"/>
+<text xml:space="preserve" text-anchor="middle" x="118.06" y="-91.72" font-family="Arial" font-size="12.00">((i &lt; 1) || (i &gt; 3));</text>
+</g>
+<!-- Scan&#45;&gt;While -->
+<g id="edge6" class="edge">
+<title>Scan&#45;&gt;While</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M109.27,-144.58C110.39,-138.56 111.66,-131.66 112.89,-125.01"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="116.3,-125.83 114.67,-115.36 109.41,-124.55 116.3,-125.83"/>
+</g>
+<!-- While&#45;&gt;Menu -->
+<g id="edge7" class="edge">
+<title>While:e&#45;&gt;Menu:e</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M209.86,-96C239.26,-96 214.06,-132.61 214.06,-162 214.06,-376 214.06,-376 214.06,-376 214.06,-400.17 229.6,-429.1 218.92,-438.71"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="218.04,-435.32 209.43,-441.49 220.01,-442.04 218.04,-435.32"/>
+<text xml:space="preserve" text-anchor="middle" x="223.06" y="-265.5" font-family="Arial" font-size="10.00">SIM</text>
+</g>
+<!-- Result -->
+<g id="node8" class="node">
+<title>Result</title>
+<path fill="#f9f9f9" stroke="#333333" d="M246.31,-36C246.31,-36 39.81,-36 39.81,-36 33.81,-36 27.81,-30 27.81,-24 27.81,-24 27.81,-12 27.81,-12 27.81,-6 33.81,0 39.81,0 39.81,0 246.31,0 246.31,0 252.31,0 258.31,-6 258.31,-12 258.31,-12 258.31,-24 258.31,-24 258.31,-30 252.31,-36 246.31,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="143.06" y="-13.72" font-family="Arial" font-size="12.00">printf (&quot;Você escolheu a Opção %d.\n&quot;,i);</text>
+</g>
+<!-- While&#45;&gt;Result -->
+<g id="edge8" class="edge">
+<title>While:w&#45;&gt;Result:w</title>
+<path fill="none" stroke="#333333" stroke-width="1.2" d="M26.25,-96C-4.21,-96 -7.48,-35.75 15.72,-21.15"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="1.2" points="16.4,-24.6 25.06,-18.5 14.49,-17.87 16.4,-24.6"/>
+<text xml:space="preserve" text-anchor="middle" x="27.36" y="-53.5" font-family="Arial" font-size="10.00">NÃO } while</text>
+</g>
+</g>
+</svg>

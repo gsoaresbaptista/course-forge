@@ -1,0 +1,51 @@
+<svg width="226pt" height="106pt"
+ viewBox="0.00 0.00 226.00 106.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 101.5)">
+<title>GluedBuffer</title>
+<!-- array -->
+<g id="node1" class="node">
+<title>array</title>
+<polygon fill="white" stroke="none" points="4,-54.75 4,-97.5 37,-97.5 37,-54.75 4,-54.75"/>
+<polygon fill="none" stroke="#333333" stroke-width="2" points="5,-55.75 5,-96.5 36,-96.5 36,-55.75 5,-55.75"/>
+<text xml:space="preserve" text-anchor="start" x="16" y="-71.3" font-family="Arial" font-weight="bold" font-size="16.00" fill="#333333">s</text>
+<polygon fill="white" stroke="none" stroke-width="2" points="37,-54.75 37,-97.5 70.75,-97.5 70.75,-54.75 37,-54.75"/>
+<polygon fill="none" stroke="#333333" stroke-width="2" points="38,-55.75 38,-96.5 69.75,-96.5 69.75,-55.75 38,-55.75"/>
+<text xml:space="preserve" text-anchor="start" x="49" y="-71.3" font-family="Arial" font-weight="bold" font-size="16.00" fill="#333333">o</text>
+<polygon fill="white" stroke="none" stroke-width="2" points="70.75,-54.75 70.75,-97.5 109,-97.5 109,-54.75 70.75,-54.75"/>
+<polygon fill="none" stroke="#333333" stroke-width="2" points="71.75,-55.75 71.75,-96.5 108,-96.5 108,-55.75 71.75,-55.75"/>
+<text xml:space="preserve" text-anchor="start" x="82.75" y="-71.3" font-family="Arial" font-weight="bold" font-size="16.00" fill="#333333">m</text>
+<polygon fill="red" stroke="none" stroke-width="2" points="109,-54.75 109,-97.5 119,-97.5 119,-54.75 109,-54.75"/>
+<polygon fill="white" stroke="none" stroke-width="2" points="119,-54.75 119,-97.5 152,-97.5 152,-54.75 119,-54.75"/>
+<polygon fill="none" stroke="#333333" stroke-width="2" points="120,-55.75 120,-96.5 151,-96.5 151,-55.75 120,-55.75"/>
+<text xml:space="preserve" text-anchor="start" x="131" y="-71.3" font-family="Arial" font-weight="bold" font-size="16.00" fill="#333333">a</text>
+<polygon fill="white" stroke="none" stroke-width="2" points="152,-54.75 152,-97.5 185,-97.5 185,-54.75 152,-54.75"/>
+<polygon fill="none" stroke="#333333" stroke-width="2" points="153,-55.75 153,-96.5 184,-96.5 184,-55.75 153,-55.75"/>
+<text xml:space="preserve" text-anchor="start" x="164" y="-71.3" font-family="Arial" font-weight="bold" font-size="16.00" fill="#333333">=</text>
+<polygon fill="white" stroke="none" stroke-width="2" points="185,-54.75 185,-97.5 218,-97.5 218,-54.75 185,-54.75"/>
+<polygon fill="none" stroke="#333333" stroke-width="2" points="186,-55.75 186,-96.5 217,-96.5 217,-55.75 186,-55.75"/>
+<text xml:space="preserve" text-anchor="start" x="197" y="-71.3" font-family="Arial" font-weight="bold" font-size="16.00" fill="#333333">a</text>
+</g>
+<!-- start -->
+<g id="node2" class="node">
+<title>start</title>
+<text xml:space="preserve" text-anchor="start" x="0" y="-4.55" font-family="Arial" font-weight="bold" font-size="16.00" fill="#333333">início</text>
+</g>
+<!-- start&#45;&gt;array -->
+<g id="edge1" class="edge">
+<title>start&#45;&gt;array:0</title>
+<path fill="none" stroke="#333333" stroke-width="3" d="M20.91,-18.51C20.84,-24.62 20.74,-33.13 20.66,-40.38"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="3" points="17.16,-40.17 20.55,-50.21 24.16,-40.25 17.16,-40.17"/>
+</g>
+<!-- end -->
+<g id="node3" class="node">
+<title>end</title>
+<text xml:space="preserve" text-anchor="start" x="123" y="-4.55" font-family="Arial" font-weight="bold" font-size="16.00" fill="#333333">fim</text>
+</g>
+<!-- end&#45;&gt;array -->
+<g id="edge2" class="edge">
+<title>end&#45;&gt;array:3</title>
+<path fill="none" stroke="#333333" stroke-width="3" d="M135.09,-18.51C135.16,-24.62 135.26,-33.13 135.34,-40.38"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="3" points="131.84,-40.25 135.45,-50.21 138.84,-40.17 131.84,-40.25"/>
+</g>
+</g>
+</svg>
