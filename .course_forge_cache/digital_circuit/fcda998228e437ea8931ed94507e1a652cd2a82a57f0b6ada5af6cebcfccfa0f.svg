@@ -6,7 +6,7 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2026-03-29T21:23:04.519795</dc:date>
+    <dc:date>2026-03-31T11:00:55.385194</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -42,32 +42,32 @@ C 61.068 23.825677 61.523182 24.924585 62.333299 25.734701
 C 63.143415 26.544818 64.242323 27 65.388 27 
 L 65.388 27 
 z
-" clip-path="url(#p36055f418d)" style="fill: none; stroke: #000000; stroke-width: 2; stroke-linejoin: miter"/>
+" clip-path="url(#pfaeb0d36da)" style="fill: none; stroke: #333333; stroke-width: 2; stroke-linejoin: miter"/>
    </g>
    <g id="line2d_1">
     <path d="M 17.688 22.68 
 L 37.668 22.68 
 M 69.708 22.68 
 L 89.688 22.68 
-" clip-path="url(#p36055f418d)" style="fill: none; stroke: #000000; stroke-width: 2; stroke-linecap: round"/>
+" clip-path="url(#pfaeb0d36da)" style="fill: none; stroke: #333333; stroke-width: 2; stroke-linecap: round"/>
    </g>
    <g id="line2d_2">
     <path d="M 37.668 4.68 
 L 61.068 22.68 
 L 37.668 40.68 
 L 37.668 4.68 
-" clip-path="url(#p36055f418d)" style="fill: none; stroke: #000000; stroke-width: 2; stroke-linecap: round"/>
+" clip-path="url(#pfaeb0d36da)" style="fill: none; stroke: #333333; stroke-width: 2; stroke-linecap: round"/>
    </g>
    <g id="text_1">
-    <text style="font-size: 14px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="93.288" y="26.543125" transform="rotate(-0 93.288 26.543125)">x</text>
+    <text style="font-size: 14px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start; fill: #333333" x="93.288" y="26.543125" transform="rotate(-0 93.288 26.543125)">x</text>
    </g>
    <g id="text_2">
-    <text style="font-size: 14px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end" x="14.088" y="26.543125" transform="rotate(-0 14.088 26.543125)">A</text>
+    <text style="font-size: 14px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: end; fill: #333333" x="14.088" y="26.543125" transform="rotate(-0 14.088 26.543125)">A</text>
    </g>
   </g>
  </g>
  <defs>
-  <clipPath id="p36055f418d">
+  <clipPath id="pfaeb0d36da">
    <rect x="0" y="0" width="105.108" height="45.36"/>
   </clipPath>
  </defs>
