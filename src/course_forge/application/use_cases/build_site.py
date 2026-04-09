@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from course_forge.application.loaders import MarkdownLoader
 from course_forge.application.processors import Processor
 from course_forge.application.renders import HTMLTemplateRenderer, MarkdownRenderer
+from course_forge.application.services.build_cache import BuildCache
 from course_forge.application.writers import OutputWriter
 from course_forge.config import Config
 from course_forge.domain.entities import ContentNode
@@ -31,6 +32,7 @@ class BuildSiteUseCase:
         self.assignment_exporter = None
         self.slide_urls = []
         self._slides_lock = threading.Lock()
+        self.cache = None
 
     def execute(
         self,
@@ -39,6 +41,9 @@ class BuildSiteUseCase:
         post_processors: list[Processor],
         template_dir: str | None = None,
     ) -> None:
+        cache_dir = os.path.join(root_path, ".course_forge_cache")
+        self.cache = BuildCache(cache_dir)
+
         config_path = os.path.join(root_path, "config.yaml")
         config = ConfigLoader().load(config_path)
 
@@ -47,6 +52,21 @@ class BuildSiteUseCase:
             self.html_renderer.config = config
 
         tree = self.repository.load(root_path)
+
+        if Config.course_filter:
+            # Filter children of root node to only include the requested course
+            filtered_children = []
+            for child in tree.root.children:
+                if not child.is_file and child.slug == Config.course_filter:
+                    filtered_children.append(child)
+                elif not child.is_file and child.name == Config.course_filter:
+                    filtered_children.append(child)
+            
+            if not filtered_children:
+                print(f"Warning: Course '{Config.course_filter}' not found.")
+            else:
+                tree.root.children = filtered_children
+                print(f"Filtering build to course: {Config.course_filter}")
 
         self._detect_aliases(tree.root)
 
@@ -74,12 +94,21 @@ class BuildSiteUseCase:
         courses = self._collect_top_level_courses(tree.root)
 
         if courses:
-            index_html = self.html_renderer.render_index(courses)
-            for processor in post_processors:
-                index_html = processor.execute(tree.root, index_html)
-            self.writer.write_index(index_html)
+            if Config.course_filter and os.path.exists(os.path.join(self.writer._root_path, "index.html")):
+                print(f"Skipping main index.html update because we are filtering by course '{Config.course_filter}'.")
+            else:
+                index_html = self.html_renderer.render_index(courses)
+                for processor in post_processors:
+                    index_html = processor.execute(tree.root, index_html)
+                self.writer.write_index(index_html)
 
         if Config.export_slides:
+            # Check if any slide was actually collected
+            if not self.slide_urls:
+                # If we filtered by course, maybe we didn't collect any slide URLs because they were skipped by cache
+                # But my _process_node should handle it.
+                pass
+                
             print("Exporting slides to PDF...")
             from course_forge.infrastructure.services.chrome_pdf_exporter import ChromePdfExporter
             from course_forge.infrastructure.services.decktape_exporter import DeckTapeExporter
@@ -88,21 +117,27 @@ class BuildSiteUseCase:
             with self._slides_lock:
                 urls = sorted(list(set(self.slide_urls)))
             
-            # Prefer DeckTape for Reveal.js as it iterates through slides
-            # and handles fragments better than a simple Chrome print.
-            import shutil
-            if shutil.which("node"):
-                print("Using DeckTape for high-quality slide export (Node.js detected)")
-                exporter = DeckTapeExporter(self.writer._root_path)
-                exporter.export_slides(urls)
-            else:
-                # Fallback to Chrome if Node is missing
-                chrome_exporter = ChromePdfExporter(self.writer._root_path)
-                if chrome_exporter.chrome_path:
-                    print(f"Using Chrome for PDF export ({chrome_exporter.chrome_path})")
-                    chrome_exporter.export_slides(urls)
+            if urls:
+                # Prefer DeckTape for Reveal.js as it iterates through slides
+                # and handles fragments better than a simple Chrome print.
+                import shutil
+                if shutil.which("node"):
+                    print("Using DeckTape for high-quality slide export (Node.js detected)")
+                    exporter = DeckTapeExporter(self.writer._root_path)
+                    exporter.export_slides(urls)
                 else:
-                    print("Neither Node.js nor Chrome found. Slide export failed.")
+                    # Fallback to Chrome if Node is missing
+                    chrome_exporter = ChromePdfExporter(self.writer._root_path)
+                    if chrome_exporter.chrome_path:
+                        print(f"Using Chrome for PDF export ({chrome_exporter.chrome_path})")
+                        chrome_exporter.export_slides(urls)
+                    else:
+                        print("Neither Node.js nor Chrome found. Slide export failed.")
+            else:
+                print("No slides found for export.")
+        
+        # Save cache
+        self.cache.save()
 
     def _collect_top_level_courses(self, node: ContentNode) -> list[dict]:
         courses = []
@@ -227,6 +262,24 @@ class BuildSiteUseCase:
                 metadata = markdown.get("metadata", {})
                 slide_file.metadata = metadata
                 
+                # Incremental Build check
+                out_path = self.writer.get_output_path(slide_file)
+                if not Config.debug and not self.cache.has_changed(slide_file.src_path) and os.path.exists(out_path):
+                    # Collect URL for export
+                    with self._slides_lock:
+                        rel_path = "/".join(slide_file.slugs_path + [slide_file.slug + ".html"])
+                        self.slide_urls.append(rel_path)
+
+                    slide_name = self._clean_name(slide_file.name)
+                    if metadata.get("title"):
+                        slide_name = metadata["title"]
+                    
+                    slides.append({
+                        "name": slide_name,
+                        "slug": slide_file.slug,
+                    })
+                    continue
+
                 # Apply processors
                 for processor in pre_processors:
                     content = processor.execute(slide_file, content)
@@ -258,6 +311,7 @@ class BuildSiteUseCase:
 
                 # Write the slide file
                 self.writer.write(slide_file, html)
+                self.cache.update(slide_file.src_path)
 
                 # Collect URL for export
                 with self._slides_lock:
@@ -276,7 +330,11 @@ class BuildSiteUseCase:
             
             # Copy non-markdown files (images, etc)
             elif slide_file.is_file:
+                out_path = self.writer.get_output_path(slide_file)
+                if not Config.debug and not self.cache.has_changed(slide_file.src_path) and os.path.exists(out_path):
+                    continue
                 self.writer.copy_file(slide_file)
+                self.cache.update(slide_file.src_path)
 
         # Sort slides by numeric prefix if present
         def sort_key(s):
@@ -331,6 +389,16 @@ class BuildSiteUseCase:
                 metadata = markdown.get("metadata", {})
                 node.metadata = metadata
 
+                # Incremental Build check
+                out_path = self.writer.get_output_path(node)
+                if not Config.debug and not self.cache.has_changed(node.src_path) and os.path.exists(out_path):
+                    # Still need to collect slide URLs if we are exporting
+                    if metadata.get("type") == "slide":
+                        with self._slides_lock:
+                            rel_path = "/".join(node.slugs_path + [node.slug + ".html"])
+                            self.slide_urls.append(rel_path)
+                    return
+
                 for processor in pre_processors:
                     content = processor.execute(node, content)
 
@@ -365,40 +433,46 @@ class BuildSiteUseCase:
                     if not Config.generate_exams:
                         html = None
                     else:
-                        original_markdown = content
+                        out_dir = os.path.join(self.writer._root_path, *node.slugs_path)
+                        out_html_path = os.path.join(out_dir, node.slug + ".html")
                         
-                        # Also render for normal site view if needed, but primarily we want the assignment export
-                        rendered_body = self.markdown_renderer.render(content, chapter=chapter)
-                        
-                        if self.assignment_exporter:
-                            out_dir = os.path.join(self.writer._root_path, *node.slugs_path)
-                            os.makedirs(out_dir, exist_ok=True)
-                            out_html_path = os.path.join(out_dir, node.slug + ".html")
-                            course_name = render_config.get("name", "Unknown Course")
-                            assignment_title = metadata.get("title", "Avaliação")
-                            assignment_type = metadata.get("type")
+                        if not Config.debug and not self.cache.has_changed(node.src_path) and os.path.exists(out_html_path):
+                            html = None
+                        else:
+                            original_markdown = content
                             
-                            # Get standalone HTML
-                            html = self.assignment_exporter.export(
-                                original_markdown, 
-                                out_html_path, 
-                                assignment_title=assignment_title, 
-                                course_name=course_name, 
-                                metadata=metadata,
-                                assignment_type=assignment_type,
-                                html_renderer=self.html_renderer
-                            )
+                            # Also render for normal site view if needed, but primarily we want the assignment export
+                            rendered_body = self.markdown_renderer.render(content, chapter=chapter)
                             
-                            # Run post-processors (like asset bundling) on the standalone HTML
-                            for processor in post_processors:
-                                html = processor.execute(node, html)
-                            
-                            # Write the final processed HTML to the assignment path
-                            with open(out_html_path, "w", encoding="utf-8") as f:
-                                f.write(html)
-                            
-                            # Prevent normal write from use case (we already wrote it)
-                            html = None 
+                            if self.assignment_exporter:
+                                os.makedirs(out_dir, exist_ok=True)
+                                course_name = render_config.get("name", "Unknown Course")
+                                assignment_title = metadata.get("title", "Avaliação")
+                                assignment_type = metadata.get("type")
+                                
+                                # Get standalone HTML
+                                html = self.assignment_exporter.export(
+                                    original_markdown, 
+                                    out_html_path, 
+                                    assignment_title=assignment_title, 
+                                    course_name=course_name, 
+                                    metadata=metadata,
+                                    assignment_type=assignment_type,
+                                    html_renderer=self.html_renderer
+                                )
+                                
+                                # Run post-processors (like asset bundling) on the standalone HTML
+                                for processor in post_processors:
+                                    html = processor.execute(node, html)
+                                
+                                # Write the final processed HTML to the assignment path
+                                with open(out_html_path, "w", encoding="utf-8") as f:
+                                    f.write(html)
+                                
+                                self.cache.update(node.src_path)
+                                
+                                # Prevent normal write from use case (we already wrote it)
+                                html = None 
                     
                 else:
                     # Check if it was placed inside 'assignments' folder but missing metadata
@@ -429,13 +503,18 @@ class BuildSiteUseCase:
                     # Assignments and exams are exported as DOCX/PDF only; skip HTML page.
                     if metadata.get("type") not in ["assignment", "exam"]:
                         self.writer.write(node, html)
+                        self.cache.update(node.src_path)
                         
                         if metadata.get("type") == "slide":
                             with self._slides_lock:
                                 rel_path = "/".join(node.slugs_path + [node.slug + ".html"])
                                 self.slide_urls.append(rel_path)
             else:
+                out_path = self.writer.get_output_path(node)
+                if not Config.debug and not self.cache.has_changed(node.src_path) and os.path.exists(out_path):
+                    return
                 self.writer.copy_file(node)
+                self.cache.update(node.src_path)
 
         def process_dir():
             has_md_files = any(

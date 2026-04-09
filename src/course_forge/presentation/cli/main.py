@@ -32,6 +32,10 @@ def main() -> None:
         action="store_true", 
         help="Exportar todos os slides da apresentação para PDF (requer decktape iterativo)"
     )
+    parser.add_argument(
+        "--course",
+        help="Filtrar por uma disciplina específica (e.g., 'compiladores')"
+    )
     parser.add_argument("--port", type=int, help="Port for watch server (default: 8000)")
     args = parser.parse_args()
 

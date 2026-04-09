@@ -13,6 +13,7 @@ class Config:
     base_url = os.getenv("COURSE_FORGE_BASE_URL", "").rstrip("/")
     generate_exams = False
     export_slides = False
+    course_filter = None
 
     @classmethod
     def update_from_args(cls, args: argparse.Namespace):
@@ -32,3 +33,5 @@ class Config:
             cls.generate_exams = args.exam
         if hasattr(args, "slide_export") and args.slide_export:
             cls.export_slides = args.slide_export
+        if hasattr(args, "course") and args.course:
+            cls.course_filter = args.course

@@ -31,6 +31,10 @@ class DownloadLinkMarkerProcessor(Processor):
     LINK_PATTERN = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 
     def execute(self, node: ContentNode, content: str) -> str:
+        # Do not convert links to download links in assignments and exams
+        if node.metadata and node.metadata.get("type") in ("assignment", "exam"):
+            return content
+
         def add_marker(match: re.Match) -> str:
             text = match.group(1)
             href = match.group(2)

@@ -9,6 +9,10 @@ class OutputWriter(ABC):
         pass
 
     @abstractmethod
+    def get_output_path(self, node: ContentNode) -> str:
+        pass
+
+    @abstractmethod
     def copy_assets(
         self,
         template_dir: str,

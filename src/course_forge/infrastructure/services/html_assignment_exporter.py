@@ -25,6 +25,9 @@ class HTMLAssignmentExporter:
         # This helps rendering lists correctly even in exams or assignments
         markdown_content = re.sub(r'(?<!\n)\n([*-]|\d+\.)\s', r'\n\n\1 ', markdown_content)
 
+        # Fix <br> tags immediately followed by text which breaks Mistune parsing
+        markdown_content = re.sub(r'(<br\s*/?>)\s*\n(?=[^\n])', r'\1\n\n', markdown_content, flags=re.IGNORECASE)
+
         # Simplified return if not an exam (we don't do question wrapping)
         if not is_exam:
             return 0.0, markdown_content

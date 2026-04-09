@@ -12,8 +12,11 @@ def watch(content_path: str, output_path: str, template_dir: str | None = None):
 
     server = Server()
 
-    for root, _, files in os.walk(content_path):
+    for root, dirs, files in os.walk(content_path):
+        dirs[:] = [d for d in dirs if not d.startswith(".")]
         for file in files:
+            if file.startswith("."):
+                continue
             full_path = os.path.join(root, file)
             server.watch(  # type: ignore
                 full_path,

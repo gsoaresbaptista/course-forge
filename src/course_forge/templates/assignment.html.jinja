@@ -119,16 +119,6 @@
             text-align: justify;
         }
 
-        .assignment-content ol, .assignment-content ul {
-            padding-left: 1.5rem;
-            margin-bottom: 1em;
-        }
-
-        .assignment-content li {
-            margin-bottom: 0.5em;
-            text-align: justify;
-        }
-
         /* Question Styles */
         .question {
             margin-top: 10px;
@@ -137,6 +127,20 @@
 
         .question strong {
             display: inline-block;
+        }
+
+        .exam-gap {
+            display: inline-block;
+            height: 1em;
+            position: relative;
+        }
+
+        .exam-gap::before {
+            content: "(         )";
+            white-space: pre;
+            font-family: inherit;
+            font-size: inherit;
+            line-height: 1;
         }
 
         /* Tables */

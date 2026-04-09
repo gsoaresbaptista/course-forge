@@ -40,25 +40,23 @@ class ASTProcessor(SVGProcessorBase):
             attrs = self.parse_svg_attributes(match)
             
             try:
-                # Generate a unique prefix for this plot to avoid DOM ID collisions 
-                # between multiple SVGs on the same page.
-                import hashlib
-                prefix = "ast_" + hashlib.md5(ast_notation.encode()).hexdigest()[:8]
-
-                def render_ast():
-                    prefix = "ast_" + hashlib.md5(ast_notation.encode()).hexdigest()[:8]
+                def render_ast(notation=ast_notation, attrs=attrs):
+                    # Use a stable prefix based on notation for this specific SVG's internal IDs
+                    prefix = "ast_" + hashlib.md5(notation.encode()).hexdigest()[:8]
                     dot_code = self._convert_to_dot(
-                        ast_notation,
+                        notation,
                         highlight_leftmost=attrs["leftmost"],
                         highlight_rightmost=attrs["rightmost"],
                         node_prefix=prefix
                     )
                     return self._render_graphviz(dot_code)
                 
+                proc_name = self.__class__.__name__.lower().replace("processor", "")
                 svg_data = self.get_cached_svg_or_render(
-                    "ast",
+                    proc_name,
                     match.group(0),
-                    render_ast
+                    render_ast,
+                    node=node
                 )
                 
                 svg_html = self.generate_inline_svg(

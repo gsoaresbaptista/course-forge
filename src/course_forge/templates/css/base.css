@@ -481,12 +481,20 @@ a {
 }
 
 .article-body p,
+.content p {
+    margin: 1.5rem 0;
+}
+
+.article-body p,
 .content p,
 .assignment-content p {
-    margin: 1.5rem 0;
     line-height: 1.7;
     text-align: justify;
     hyphens: auto
+}
+
+.assignment-content p {
+    margin: 0.25rem 0;
 }
 
 .article-body p:first-child,
@@ -498,8 +506,7 @@ a {
 /* Ensure clear visual gap between consecutive paragraphs */
 .article-body p+p,
 .content p+p,
-.callout-content p+p,
-.assignment-content p+p {
+.callout-content p+p {
     margin-top: 1.25rem;
 }
 
@@ -522,7 +529,7 @@ a {
 .content h4+p,
 .content h5+p,
 .content h6+p {
-    margin-top: 0.5rem;
+    margin-top: 0.25em;
 }
 
 /* Also handle cases where there might be wrapper elements or other content between heading and paragraph */
@@ -538,7 +545,7 @@ a {
 .content h4:not(:first-child)~p:first-of-type,
 .content h5:not(:first-child)~p:first-of-type,
 .content h6:not(:first-child)~p:first-of-type {
-    margin-top: 0.5rem;
+    margin-top: 0.25em;
 }
 
 .article-body ol,
@@ -1551,9 +1558,6 @@ th .download-link {
 }
 
 .example,
-.exam,
-.assignment,
-.question,
 .block-slide,
 .block-presentation {
     border: 1px solid var(--border);
@@ -1563,9 +1567,12 @@ th .download-link {
     background: var(--bg-alt)
 }
 
+.exam,
+.assignment {
+    margin: 0;
+}
+
 .example-title,
-.exam-title,
-.assignment-title,
 .question-title,
 .block-slide-title,
 .block-presentation-title {
@@ -1586,9 +1593,23 @@ th .download-link {
     user-select: none
 }
 
+.exam-title,
+.assignment-title {
+    font-family: var(--font-headers);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--heading);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-wrap: wrap;
+    user-select: none;
+}
+
 .example-title:hover,
-.exam-title:hover,
-.assignment-title:hover,
 .question-title:hover,
 .block-slide-title:hover,
 .block-presentation-title:hover {
@@ -1864,6 +1885,24 @@ pre.mermaid {
 
 .mermaid-display {
     transition: opacity 0.2s ease;
+}
+
+.mermaid-source pre {
+    margin: 0 !important;
+    background: var(--code-bg) !important;
+    border: 1px dashed var(--border) !important;
+}
+
+.mermaid-display.centered {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+}
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+}on: opacity 0.2s ease;
 }
 
 .mermaid-source pre {

@@ -24,6 +24,11 @@ def _is_valid_minification(original: str, minified: str) -> bool:
 
 class HTMLMinifyProcessor(Processor):
     def execute(self, node: ContentNode, content: str) -> str:
+        # minify-html can corrupt complex inline SVGs by stripping nested
+        # structure from the serialized markup. Preserve pages with inline SVGs.
+        if "<svg" in content:
+            return content
+
         for strategy in _MINIFY_STRATEGIES:
             try:
                 minified = minify_html.minify(

@@ -17,6 +17,9 @@ class FileSystemOutputWriter(OutputWriter):
         super().__init__()
         self._root_path = root_path
 
+    def get_output_path(self, node: ContentNode) -> str:
+        return self._get_node_output_path(node)
+
     def _get_node_output_path(self, node: ContentNode) -> str:
         dst_folder = os.path.join(self._root_path, *node.slugs_path)
         if node.file_extension == ".md":

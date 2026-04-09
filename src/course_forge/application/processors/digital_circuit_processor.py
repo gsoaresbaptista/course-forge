@@ -18,7 +18,7 @@ class DigitalCircuitProcessor(SVGProcessorBase):
             attrs = self.parse_svg_attributes(match)
             svg_htmls = []
 
-            for line in full_content.split('\n'):
+            for line in full_content.split("\n"):
                 line = line.strip()
                 if not line:
                     continue
@@ -29,7 +29,11 @@ class DigitalCircuitProcessor(SVGProcessorBase):
                     continue
 
                 left = sub_match.group("left").strip()
-                right = sub_match.group("right").strip() if sub_match.group("right") else None
+                right = (
+                    sub_match.group("right").strip()
+                    if sub_match.group("right")
+                    else None
+                )
 
                 # Detect which side is the expression and which is the output label.
                 # Usually the label is a single word, while the expression contains operators.
@@ -39,7 +43,7 @@ class DigitalCircuitProcessor(SVGProcessorBase):
                     # If right is a single identifier and left is more complex, right is outlabel.
                     left_is_simple = bool(re.fullmatch(r"[\w\.\$]+", left))
                     right_is_simple = bool(re.fullmatch(r"[\w\.\$]+", right))
-                    
+
                     if left_is_simple and not right_is_simple:
                         expr = right
                         outlabel = left
@@ -62,27 +66,35 @@ class DigitalCircuitProcessor(SVGProcessorBase):
                 # extract the inner string content to allow LaTeX usage without quotes being rendered.
                 if expr:
                     # Check for r'...' or r"..."
-                    if (expr.startswith("r'") and expr.endswith("'")) or \
-                       (expr.startswith('r"') and expr.endswith('"')):
+                    if (expr.startswith("r'") and expr.endswith("'")) or (
+                        expr.startswith('r"') and expr.endswith('"')
+                    ):
                         expr = expr[2:-1]
                     # Check for '...' or "..."
-                    elif (expr.startswith("'") and expr.endswith("'")) or \
-                         (expr.startswith('"') and expr.endswith('"')):
+                    elif (expr.startswith("'") and expr.endswith("'")) or (
+                        expr.startswith('"') and expr.endswith('"')
+                    ):
                         expr = expr[1:-1]
-                    
+
                     # Check for LaTeX syntax (backslashes) and wrap in $ if needed
-                    if "\\" in expr and not (expr.startswith("$") and expr.endswith("$")):
+                    if "\\" in expr and not (
+                        expr.startswith("$") and expr.endswith("$")
+                    ):
                         expr = f"${expr}$"
 
-                def render_circuit(expr_copy=expr, outlabel_copy=outlabel, is_identity_copy=is_identity):
+                def render_circuit(
+                    expr_copy=expr, outlabel_copy=outlabel, is_identity_copy=is_identity
+                ):
                     def inner():
-                        return self._render_circuit(expr_copy, outlabel_copy, is_identity=is_identity_copy)
+                        return self._render_circuit(
+                            expr_copy, outlabel_copy, is_identity=is_identity_copy
+                        )
+
                     return inner
 
+                proc_name = self.__class__.__name__.lower().replace("processor", "")
                 svg_data = self.get_cached_svg_or_render(
-                    "digital_circuit",
-                    line,
-                    render_circuit()
+                    proc_name, line, render_circuit(), node=node
                 )
                 svg_html = self.generate_inline_svg(
                     svg_data,
@@ -100,31 +112,38 @@ class DigitalCircuitProcessor(SVGProcessorBase):
 
         return content
 
-    def _render_circuit(self, expr: str, outlabel: Optional[str], is_identity: bool = False) -> bytes:
-        # Configure matplotlib for SVG output (similar to schemdraw processor)
-        try:
-            import schemdraw
-            schemdraw.use("matplotlib")
-            import matplotlib.pyplot as plt
-            plt.rcParams['savefig.transparent'] = True
-            plt.rcParams['svg.fonttype'] = 'none'
-        except ImportError:
-            pass
+    def _render_circuit(
+        self, expr: str, outlabel: Optional[str], is_identity: bool = False
+    ) -> bytes:
+        with self._MATPLOTLIB_RENDER_LOCK:
+            # Configure matplotlib for SVG output (similar to schemdraw processor)
+            try:
+                import schemdraw
 
-        if is_identity:
-            import schemdraw.elements as elm
-            d = schemdraw.Drawing()
-            d += elm.Line().length(1.5).label(expr, 'left').label(outlabel, 'right')
-        else:
-            d = logicparse(expr, outlabel=outlabel)
-        
-        svg_data = d.get_imagedata("svg")
-        
-        # Explicitly close all figures to prevent "More than 20 figures have been opened" warning
-        try:
-            import matplotlib.pyplot as plt
-            plt.close('all')
-        except Exception:
-            pass
+                schemdraw.use("matplotlib")
+                import matplotlib.pyplot as plt
+
+                plt.rcParams["savefig.transparent"] = True
+                plt.rcParams["svg.fonttype"] = "none"
+            except ImportError:
+                pass
+
+            if is_identity:
+                import schemdraw.elements as elm
+
+                d = schemdraw.Drawing()
+                d += elm.Line().length(1.5).label(expr, "left").label(outlabel, "right")
+            else:
+                d = logicparse(expr, outlabel=outlabel)
+
+            svg_data = d.get_imagedata("svg")
+
+            # Explicitly close all figures to prevent warnings.
+            try:
+                import matplotlib.pyplot as plt
+
+                plt.close("all")
+            except Exception:
+                pass
 
         return svg_data
